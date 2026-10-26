@@ -65,26 +65,8 @@ function drawHud() {
     o.textAlign = 'center';
     o.fillText(B.say, sx, sy - 2);
   }
-  if (G.intro && B) {
-    const k = Math.min(1, G.intro.t / 14),
-      out = G.intro.t > 100 ? (G.intro.t - 100) / 20 : 0;
-    o.globalAlpha = 1 - out;
-    o.fillStyle = '#0b0004';
-    o.beginPath();
-    o.moveTo(0, OH - 150);
-    o.lineTo(OW * k, OH - 190);
-    o.lineTo(OW * k, OH - 90);
-    o.lineTo(0, OH - 60);
-    o.fill();
-    o.fillStyle = '#ff2a4a';
-    o.fillRect(0, OH - 196, OW * k, 6);
-    txt(B.def.n.toUpperCase(), 60 + (1 - k) * -400, OH - 130, 46, '#ffffff', 'left', 1);
-    txt(B.def.sub, 64 + (1 - k) * -400, OH - 96, 20, '#ff8a9a', 'left');
-    // Lo que dice el jefe al presentarse (datos/historia.js).
-    if (FRASES_JEFE[B.id])
-      txt('«' + FRASES_JEFE[B.id] + '»', 64 + (1 - k) * -400, OH - 70, 15, '#f1e9ff', 'left');
-    o.globalAlpha = 1;
-  }
+  // Entrada del jefe estilo anime: «VS» con tu héroe y el jefe en grande (nucleo/hud-anime.js).
+  if (G.intro && B) drawEntradaJefe(B, G.intro.t);
   if (G.banner) {
     const k = Math.min(1, G.banner.t / 8);
     o.strokeStyle = 'rgba(255,255,255,.35)';
@@ -104,7 +86,9 @@ function drawHud() {
     txt(G.banner.txt, OW / 2 + (1 - k) * 300, OH / 2 + 18, 54, '#ffffff', 'center');
     o.globalAlpha = 1;
   }
-  if (G.aviso) {
+  // Corte de anime al cargar el golpe final.
+  if (G.U && G.U.t < 55) drawCorteAnime(G.U);
+  if (G.aviso && !G.intro) {
     o.globalAlpha = Math.min(1, G.aviso.l / 20);
     txt(G.aviso.txt, OW / 2, OH / 2 - 150, 32, '#ffe94a', 'center', 1);
     o.globalAlpha = 1;

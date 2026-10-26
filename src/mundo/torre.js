@@ -165,7 +165,7 @@ function siguientePiso() {
 // Aviso de rango nuevo: la insignia entra girando en el centro de la pantalla.
 function drawNuevoTitulo() {
   const N = G.nuevoTitulo;
-  if (!N) return;
+  if (!N || G.intro) return;
   N.t++;
   if (N.t > 200) return (G.nuevoTitulo = null);
   const ent = Math.min(1, N.t / 20),

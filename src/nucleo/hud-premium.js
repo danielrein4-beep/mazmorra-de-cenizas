@@ -49,8 +49,10 @@ function drawPanelHeroe(P, t) {
   o.beginPath();
   o.rect(x0 + 16, y0 + 16, 52, 52);
   o.clip();
-  o.drawImage(P.src, fr[0], fr[1] + 9, 16, 15, x0 + 18, y0 + 20, 48, 45);
+  const [tx, ty] = temblorRetrato(P, t);
+  o.drawImage(P.src, fr[0], fr[1] + 9, 16, 15, x0 + 18 + tx, y0 + 20 + ty, 48, 45);
   o.restore();
+  drawCaraRetrato(P, x0 + 16, y0 + 16, 52, t);
   for (let i = 0; i < corazones; i++) {
     const v = P.hp - i * 2,
       r = v >= 2 ? R.hFull : v == 1 ? R.hHalf : R.hEmpty,

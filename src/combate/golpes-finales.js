@@ -132,7 +132,7 @@ function ult() {
   P.meter = 0;
   const f = B && !B.dead ? { x: B.x, y: B.y } : { x: T[0].ref.x, y: T[0].ref.y };
   G.U = { t: 0, id: P.ult, foco: f, cr: 0, own: P };
-  G.banner = { txt: ULT[P.ult].n.toUpperCase(), t: 0, c: ULT[P.ult].c };
+  G.banner = null;
   G.bul.forEach(b => burst(b.x, b.y, 4, '#ffffff', 1.5));
   G.bul = [];
   G.stop = 8;
