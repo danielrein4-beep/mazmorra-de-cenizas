@@ -106,6 +106,7 @@ function iniciarTorre() {
 }
 
 function siguientePiso() {
+  juntarTodos();
   const n = ++G.piso;
   G.zona = zonaDePiso(n);
   G.dif = difDePiso(n);

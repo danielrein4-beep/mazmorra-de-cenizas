@@ -116,6 +116,9 @@ function tocarTema(n) {
   fuenteM = { g, ss, n };
 }
 function musica(n) {
+  // Con salas separadas suena la música del cuarto del anfitrión.
+  if (typeof SALAS != 'undefined' && SALAS.length > 1 && G.jugTodos && salaActiva !== G.jugTodos[0].sala)
+    return;
   if (temaAct === n && fuenteM) return;
   temaAct = n;
   pista = null;

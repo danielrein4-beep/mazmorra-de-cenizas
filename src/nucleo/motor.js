@@ -11,8 +11,9 @@ const mk = (a, b) => {
   x.imageSmoothingEnabled = false;
   return [c, x];
 };
-const [wc, w] = mk(WW, WH),
-  [fc, fx] = mk(WW, WH);
+const [wc, w] = mk(WW, WH);
+// El piso dibujado del cuarto; cada sala separada tiene el suyo (jugadores/salas-separadas.js).
+let [fc, fx] = mk(WW, WH);
 const atlas = new Image();
 atlas.src = ATLAS_SRC;
 let white, red, cyan;
@@ -83,6 +84,7 @@ function newRun() {
   G.jug = js;
   G.coop = js.length > 1;
   G.P = js[0];
+  iniciarSalas();
 }
 function resetSala() {
   Object.assign(G, {
@@ -235,7 +237,8 @@ function pasoJugador(P, i) {
 function step() {
   G.t++;
   if (G.slowT > 0 && --G.slowT == 0) G.slow = 1;
-  G.jug.forEach((Q, i) => conJugador(Q, () => pasoJugador(Q, i)));
+  // El número del jugador (no su lugar en la sala) dice de dónde vienen sus controles.
+  G.jug.forEach(Q => conJugador(Q, () => pasoJugador(Q, Q.num - 1)));
   pasoGuia();
   pasoArena();
   const P = G.P,
@@ -292,7 +295,8 @@ function step() {
   G.cam.y += (focus.y - G.cam.y) * 0.1;
   G.zoom += (G.zt - G.zoom) * 0.1;
   if (!G.U && !(B && B.dead) && !G.intro && (!G.coop || vistaPropia())) G.zt += (zb() - G.zt) * 0.05;
-  if (vistaPropia()) camaraInvitado(G.intro || G.U || (B && B.dead && B.dt < 170) ? focus : null);
+  if (vistaPropia() && G.jug.includes(G.jugTodos[1]))
+    camaraInvitado(G.intro || G.U || (B && B.dead && B.dt < 170) ? focus : null);
   G.cam.x = vw >= WW ? WW / 2 : Math.max(vw / 2, Math.min(WW - vw / 2, G.cam.x));
   G.cam.y = vh >= WH ? WH / 2 : Math.max(vh / 2, Math.min(WH - vh / 2, G.cam.y));
   G.shake *= 0.86;
@@ -305,9 +309,14 @@ function frame(now) {
   medirCuadro(now - (last || now));
   const el = Math.min(50, now - (last || now));
   last = now;
+  porSalas(() => avanzar(el));
+  while (pendientesSala.length) pendientesSala.shift()();
+  render();
+}
+// Un cuadro de una sala: la pausa del golpe (hitstop), la cámara lenta y los pasos fijos.
+function avanzar(el) {
   if (G.stop > 0) {
     G.stop--;
-    render();
     return;
   }
   G.acc += (G.slow * el) / 16.67;
@@ -317,7 +326,6 @@ function frame(now) {
     G.acc--;
     n++;
   }
-  render();
 }
 function end(win) {
   if (!running) return;

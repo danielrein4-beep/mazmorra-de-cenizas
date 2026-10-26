@@ -173,7 +173,8 @@ function teclaJ2(code) {
 }
 // Caer y revivir: si cae uno y el otro sigue en pie, se le revive quedándose a su lado.
 function caer(P) {
-  if (G.coop && vivos().length > 1) {
+  if (G.coop && (G.jugTodos || G.jug).filter(Q => !Q.caido).length > 1) {
+    if (separadas() && !G.jug.some(Q => Q !== P && !Q.caido)) pendientesSala.push(() => rescatarCaido(P));
     P.caido = true;
     P.hp = 0;
     P.rev = 0;
@@ -243,7 +244,8 @@ function drawCaido(P) {
 function drawHudJ2() {
   if (!G.coop) return;
   // En la vista del invitado, el recuadro pequeño muestra al anfitrión.
-  const P = G.jug[G.P === G.jug[1] ? 0 : 1],
+  const T = G.jugTodos || G.jug,
+    P = T[G.P === T[1] ? 0 : 1],
     t = G.t,
     x0 = OW - 18;
   for (let i = 0; i < P.max / 2; i++) {

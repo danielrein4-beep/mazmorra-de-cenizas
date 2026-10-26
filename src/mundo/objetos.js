@@ -201,7 +201,7 @@ function updateObjetos() {
           )
           .sort((a, b) => Math.hypot(Q.x - a.x, Q.y - a.y) - Math.hypot(Q.x - b.x, Q.y - b.y))[0] || null;
   G.cerca = cercaDe(G.jug[0]);
-  G.cerca2 = G.coop ? cercaDe(G.jug[1]) : null;
+  G.cerca2 = G.coop && G.jug[1] ? cercaDe(G.jug[1]) : null;
   if (G.mimicoSala && !G.enem.length) {
     G.mimicoSala = 0;
     G.cerrado = 0;

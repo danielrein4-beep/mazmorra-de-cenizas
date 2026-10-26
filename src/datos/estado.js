@@ -16,7 +16,7 @@ function estado() {
 }
 // Lo que suma cada acción durante la partida (solo el jugador de este aparato).
 function hazaña(k, v) {
-  if (!G || !G.hazañas || G.P !== G.jug[0]) return;
+  if (!G || !G.hazañas || G.P !== (G.jugTodos || G.jug)[0]) return;
   G.hazañas[k] += v;
 }
 

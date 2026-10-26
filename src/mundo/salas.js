@@ -62,7 +62,8 @@ function jefeDerrotado() {
 function mostrarMejoras(k) {
   k = k || 0;
   G.elige = k;
-  const P = G.jug[k];
+  if (!k) salaJefe = salaActiva;
+  const P = (G.jugTodos || G.jug)[k];
   running = false;
   mouse.down = false;
   keys = {};
@@ -103,8 +104,13 @@ function mostrarMejoras(k) {
   document.getElementById('mejoras').hidden = false;
   L.querySelector('button')?.focus();
 }
+// La mejora se aplica en la sala donde cayó el jefe, aunque el anfitrión esté en otro cuarto.
+let salaJefe = null;
 function elegirMejora(m) {
-  const P = G.jug[G.elige || 0];
+  return conSala(SALAS.includes(salaJefe) ? salaJefe : salaActiva, () => elegirMejoraAqui(m));
+}
+function elegirMejoraAqui(m) {
+  const P = (G.jugTodos || G.jug)[G.elige || 0];
   P.mej[m.id] = (P.mej[m.id] || 0) + 1;
   if (m.id == 'corazon') {
     P.max += 2;

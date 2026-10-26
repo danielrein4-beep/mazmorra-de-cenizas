@@ -11,7 +11,7 @@ const VISTA2 = {
 VISTA2.o = VISTA2.cv.getContext('2d');
 VISTA2.cv.width = VISTA2.OW;
 VISTA2.cv.height = VISTA2.OH;
-const vistaPropia = () => !!(enRed && enRed.rol == 'anfitrion' && G && G.jug && G.jug.length > 1);
+const vistaPropia = () => !!(enRed && enRed.rol == 'anfitrion' && G && G.jugTodos && G.jugTodos.length > 1);
 
 // El invitado manda el tamaño de su lienzo; la vista se rehace cuando cambia (por ejemplo, al girar el teléfono).
 function medidasInvitado(e) {
@@ -27,7 +27,7 @@ function medidasInvitado(e) {
 // Cámara del invitado: igual que la de un jugador solo, pero con su pantalla y su héroe.
 function camaraInvitado(especial) {
   const V = VISTA2,
-    P = G.jug[1],
+    P = G.jugTodos[1],
     B = G.B,
     t = (enRed.entrada && enRed.entrada.raton) || !coarse,
     vw0 = V.OW / 3,
@@ -53,6 +53,9 @@ function camaraInvitado(especial) {
 
 // Dibuja la vista del invitado cambiando por un momento el lienzo, el tamaño, la cámara y el héroe activo.
 function renderInvitado() {
+  conSala(G.jugTodos[1].sala, pintarInvitado);
+}
+function pintarInvitado() {
   const V = VISTA2,
     antes = [o, OW, OH, VW, VH, VINETA, G.cam, G.zoom, G.P];
   o = V.o;
@@ -63,8 +66,10 @@ function renderInvitado() {
   VINETA = V.vineta || (V.vineta = hacerVineta());
   G.cam = V.cam;
   G.zoom = V.zoom;
-  G.P = G.jug[1];
+  G.P = G.jugTodos[1];
   try {
+    // Si el invitado está en otro cuarto, se dibuja su cuarto antes de su pantalla.
+    if (separadas()) drawWorld();
     pintarSalida();
   } finally {
     [o, OW, OH, VW, VH, VINETA, G.cam, G.zoom, G.P] = antes;

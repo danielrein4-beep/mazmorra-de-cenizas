@@ -87,6 +87,7 @@ function generarZona(zi) {
   return { cu, W, H, inicio: camino[0] };
 }
 function entrarZona(i) {
+  juntarTodos();
   G.zona = i;
   G.mundo = generarZona(i);
   G.room = null;
@@ -221,7 +222,8 @@ function golpePared(x, y, r) {
 function updateMundo() {
   const c = G.room,
     P = G.P,
-    algun = f => vivos().some(f);
+    algun = f => vivos().some(f),
+    quien = f => vivos().find(f);
   if (!c || G.over || G.salir) return;
   Object.keys(c.p).forEach(l => {
     const pc = c.p[l],
@@ -240,14 +242,22 @@ function updateMundo() {
       }
     }
   });
-  const sale = (l, cond) => {
-    if (cond && puertaAbierta(l)) {
+  const sale = (l, Q) => {
+    if (Q && puertaAbierta(l)) {
       // En la Torre, la puerta de arriba lleva al piso siguiente.
       if (G.torre) {
         siguientePiso();
         return true;
       }
       const n = vecino(c, l);
+      // En línea, cada uno cruza solo y puede ir a otro cuarto (jugadores/salas-separadas.js).
+      if (n && puedeSeparar()) {
+        if (!Q.cruzando) {
+          Q.cruzando = 1;
+          pendientesSala.push(() => salirSolo(Q, n, OPUESTO[l]));
+        }
+        return true;
+      }
       if (n) {
         entrarCuarto(n, OPUESTO[l]);
         return true;
@@ -258,19 +268,19 @@ function updateMundo() {
   if (
     sale(
       'N',
-      algun(Q => Q.y < 26),
+      quien(Q => Q.y < 26),
     ) ||
     sale(
       'S',
-      algun(Q => Q.y > 306),
+      quien(Q => Q.y > 306),
     ) ||
     sale(
       'W',
-      algun(Q => Q.x < 12),
+      quien(Q => Q.x < 12),
     ) ||
     sale(
       'E',
-      algun(Q => Q.x > 468),
+      quien(Q => Q.x > 468),
     )
   )
     return;
@@ -371,11 +381,17 @@ function drawMinimapa(x0, y0) {
     o.fillStyle =
       c === G.room
         ? '#ffe94a'
-        : c.visto
-          ? c.limpio || c.tipo == 'inicio' || c.tipo == 'tienda' || c.tipo == 'tesoro' || c.tipo == 'secreto'
-            ? '#6a4cff'
-            : '#a0204a'
-          : 'rgba(78,64,112,.5)';
+        : c === cuartoDelAmigo()
+          ? '#ff8a2a'
+          : c.visto
+            ? c.limpio ||
+              c.tipo == 'inicio' ||
+              c.tipo == 'tienda' ||
+              c.tipo == 'tesoro' ||
+              c.tipo == 'secreto'
+              ? '#6a4cff'
+              : '#a0204a'
+            : 'rgba(78,64,112,.5)';
     o.fillRect(x, y, cw, ch);
     o.strokeStyle = '#0b0812';
     o.lineWidth = 1;
