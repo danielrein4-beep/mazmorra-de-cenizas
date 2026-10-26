@@ -55,8 +55,10 @@ async function crearSala() {
   }
   cerrarRed();
   initAudio();
-  const codigo = codigoNuevo();
-  const peer = new Peer(PREFIJO_SALA + codigo);
+  const codigo = codigoNuevo(),
+    opciones = await opcionesRed();
+  const peer = new Peer(PREFIJO_SALA + codigo, opciones);
+  vigilarAnfitrion(peer);
   enRed = {
     rol: 'anfitrion',
     peer,
@@ -253,12 +255,13 @@ async function unirseSala() {
   initAudio();
   precargarMusica();
   avisoRed('Conectando con la sala ' + codigo + '…');
-  const peer = new Peer();
+  const peer = new Peer(await opcionesRed());
   enRed = { rol: 'invitado', peer, codigo, acc: [] };
   peer.on('error', e => avisoRed(mensajeError(e)));
   peer.on('open', () => {
     const con = peer.connect(PREFIJO_SALA + codigo, { reliable: true });
     enRed.con = con;
+    vigilarInvitado(con, codigo);
     con.on('open', () => {
       const p = PERSONAJES[ELEGIDO.p];
       con.send({
@@ -284,7 +287,7 @@ function verTransmision(stream) {
   v.srcObject = stream;
   v.hidden = false;
   v.volume = OPC.efectos / 100;
-  v.play().catch(() => {});
+  reproducirTransmision(v);
   ['menu', 'endScr', 'mejoras', 'elegir'].forEach(id => (document.getElementById(id).hidden = true));
   document.getElementById('tbtns').hidden = !coarse;
   pantallaCompleta();

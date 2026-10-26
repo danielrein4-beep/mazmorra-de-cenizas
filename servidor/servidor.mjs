@@ -19,6 +19,17 @@ try {
   db = JSON.parse(fs.readFileSync(ARCHIVO, 'utf8'));
 } catch (e) {}
 db.retos = db.retos || {};
+// La clave del servidor de enlace se genera en el VPS y se deja en el volumen de datos (nunca en el repo).
+let claveTurnCache = null;
+function claveTurn() {
+  if (claveTurnCache === null)
+    try {
+      claveTurnCache = fs.readFileSync(CARPETA + '/turn.secreto', 'utf8').trim();
+    } catch (e) {
+      claveTurnCache = '';
+    }
+  return claveTurnCache;
+}
 let pendiente = null;
 // Escribe a disco como mucho una vez por segundo, en un archivo aparte que luego reemplaza al bueno.
 function guardarDisco() {
@@ -142,6 +153,20 @@ const RUTAS = {
         .slice(0, 30)
         .map(({ apodo, piso, ok, seg }) => ({ apodo, piso, ok, seg }));
     return [200, { fecha, lista }];
+  },
+  // Claves temporales (6 horas) para el servidor de enlace TURN, firmadas con la clave que vive solo en el VPS.
+  // Sin ellas, dos aparatos en redes distintas (datos móviles, routers estrictos) no logran conectarse.
+  'GET /api/turn': () => {
+    const secreto = claveTurn();
+    const stun = { urls: 'stun:stun.l.google.com:19302' };
+    if (!secreto) return [200, { iceServers: [stun] }];
+    const username = Math.floor(Date.now() / 1000) + 6 * 3600 + ':mazmorra',
+      credential = crypto.createHmac('sha1', secreto).update(username).digest('base64'),
+      host = process.env.TURN_HOST || 'mazmorra.auroracontigo.com';
+    return [
+      200,
+      { iceServers: [stun, { urls: ['turn:' + host + ':3478?transport=udp', 'turn:' + host + ':3478?transport=tcp'], username, credential }] },
+    ];
   },
   'GET /salud': () => [200, { ok: 1 }],
 };

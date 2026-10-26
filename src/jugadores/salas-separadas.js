@@ -127,7 +127,10 @@ function salirSolo(Q, n, lado) {
       G.aviso = { txt: 'Exploras solo: tu amigo está en el cuarto naranja del mapa', l: 150 };
     });
     // Al que se quedó también se le avisa, para que no parezca que se perdió la partida.
-    conSala(vieja, () => (G.aviso = { txt: Q.nombre + ' fue a otro cuarto: búscalo en naranja en el mapa', l: 150 }));
+    conSala(
+      vieja,
+      () => (G.aviso = { txt: Q.nombre + ' fue a otro cuarto: búscalo en naranja en el mapa', l: 150 }),
+    );
   }
   volverACasa();
 }
