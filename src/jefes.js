@@ -8,7 +8,7 @@ cenizas:{n:'Señor de las Cenizas',sub:'Dueño de la mazmorra',idle:f4(16,428,32
  ataques:{1:['ring','fan','ring','spiral'],2:['spiral','charge','fan','ring2','charge'],3:['charge','spiral2','imps','ring2','fan','charge']}}};
 function crearJefe(id){const d=JEFES[id];return{id,def:d,x:240,y:150,z:0,hp:d.hp,max:d.hp,phase:1,st:'move',t:0,cd:90,tx:240,ty:120,face:1,hit:0,moving:false,ang:0,dir:[0,0],dead:0,dt:0,say:'',sayT:0,tele:null,n:0}}
 function limpiarBalas(){G.bul.forEach(b=>burst(b.x,b.y,3,b.c,1.5));G.bul=[];G.marcas=[]}
-function hurtBoss(d,heavy){const B=G.B;if(!B||B.dead)return;B.hp-=d;B.hit=4;num(B.x,B.y-B.z-70,d,d>=100);sfx('hit');
+function hurtBoss(d,heavy,quieto){const B=G.B;if(!B||B.dead)return;B.hp-=d;if(!quieto){B.hit=4;sfx('hit')}num(B.x,B.y-B.z-70,d,d>=100);
 if(heavy){G.shake=Math.max(G.shake,heavy);G.stop=Math.max(G.stop,Math.round(heavy/2))}
 const f=B.def.fases[B.phase-1];if(f&&B.hp>0&&B.hp<B.max*f[0])fase(f[1]);
 if(B.hp<=0){B.hp=0;B.dead=1;B.dt=0;B.z=0;B.tele=null;limpiarBalas();G.enem.forEach(m=>{m.hp=0});G.spawns=[];G.slow=.35;G.slowT=9999;G.zt=1.3;sfx('roar');musica(null)}}
@@ -51,8 +51,8 @@ if(B.dead){B.dt++;if(B.dt%6==0&&B.dt<100){burst(B.x+rnd(-24,24),B.y-rnd(10,60),2
 if(B.dt==100){burst(B.x,B.y-34,220,'#ff5a3c',7,60,2);burst(B.x,B.y-34,90,'#ffffff',5,60);ring(B.x,B.y-30,90,'#ffffff',26,4);decal(B.x,B.y+2,34,'#140806',2000);G.flash=10;G.fcol='#ffffff';G.inv=6;G.shake=24;sfx('boom')}
 if(B.dt==170)jefeDerrotado();return}
 G.marcas.forEach(m=>{if(--m.t<=0){m.d=1;bossFire(8,1.3,rnd(0,1),'#7cff4a',m.x,m.y-4);burst(m.x,m.y,16,'#7cff4a',2.5);ring(m.x,m.y,16,'#7cff4a',10);decal(m.x,m.y+2,8,'#14240a',300);sfx('hit')}});G.marcas=G.marcas.filter(m=>!m.d);
-if(G.U||G.over)return;B.t++;const ul=B.phase>B.def.fases.length,f=ul?1.3:1,cx=B.x,cy=B.y-B.z-34;
-if(B.st=='move'){if(Math.hypot(B.tx-B.x,B.ty-B.y)<6){B.tx=rnd(80,400);B.ty=rnd(70,200)}const d=Math.max(1,Math.hypot(B.tx-B.x,B.ty-B.y)),sp=B.def.sp*(ul?1.5:1);B.moving=true;B.x+=(B.tx-B.x)/d*sp;B.y+=(B.ty-B.y)/d*sp;
+const vel=estados(B,B.x,B.y-B.z-34);if(G.U||G.over)return;B.t++;const ul=B.phase>B.def.fases.length,f=ul?1.3:1,cx=B.x,cy=B.y-B.z-34;
+if(B.st=='move'){if(Math.hypot(B.tx-B.x,B.ty-B.y)<6){B.tx=rnd(80,400);B.ty=rnd(70,200)}const d=Math.max(1,Math.hypot(B.tx-B.x,B.ty-B.y)),sp=B.def.sp*(ul?1.5:1)*vel;B.moving=true;B.x+=(B.tx-B.x)/d*sp;B.y+=(B.ty-B.y)/d*sp;
 if(--B.cd<=0){const L=B.def.ataques[B.phase];B.st=L[Math.floor(Math.random()*L.length)];B.t=0;B.moving=false;B.n=0}}
 else if(ATAQUES[B.st](B,cx,cy,f))toMove();
 if(B.st!='charge'&&B.st!='giro')B.face=P.x<B.x?-1:1;
@@ -62,5 +62,6 @@ if(B.tele){const tl=B.tele;w.globalAlpha=.25;w.fillStyle=tl.c;w.beginPath();w.el
 const sh=Math.max(.3,1-B.z/120);w.fillStyle='rgba(0,0,0,.35)';w.beginPath();w.ellipse(B.x,B.y,20*sh,5*sh,0,0,7);w.fill();
 const fr=(B.moving?B.def.run:B.def.idle)[Math.floor(t/(B.moving?6:10))%4],jx=(B.st=='charge'&&B.t<42)||(B.st=='roca'&&B.t<18)||(G.intro&&G.intro.t>40&&G.intro.t<70)?rnd(-1.5,1.5):0,y=B.y-B.z;
 spr(w,B.dead&&t%4<2?white:atlas,fr,B.x+jx,y,B.face<0,2);if(B.hit>2)spr(w,white,fr,B.x+jx,y,B.face<0,2);
+if(B.frio>0){w.globalAlpha=.45;spr(w,cyan,fr,B.x+jx,y,B.face<0,2);w.globalAlpha=1}
 if(B.phase>B.def.fases.length&&!B.dead){w.globalAlpha=.22+Math.sin(t*.2)*.1;spr(w,red,fr,B.x+jx,y,B.face<0,2);w.globalAlpha=1}
 if(B.st=='charge'&&B.t<42&&!B.dead){w.strokeStyle=B.t%6<3?'rgba(255,58,42,.8)':'rgba(255,233,74,.5)';w.lineWidth=2;w.setLineDash([4,3]);w.beginPath();w.moveTo(B.x,B.y-10);w.lineTo(B.x+B.dir[0]*400,B.y-10+B.dir[1]*400);w.stroke();w.setLineDash([])}}

@@ -8,7 +8,6 @@ wallTop:[32,0],wallMid:[32,16],bannerRed:[16,32],bannerBlue:[32,32],bannerGreen:
 fTop:[64,0],fMidRed:[[64,16],[80,16],[96,16]],fBasinRed:[[64,32],[80,32],[96,32]],fMidBlue:[[64,48],[80,48],[96,48]],fBasinBlue:[[64,64],[80,64],[96,64]],
 staff:[324,129,8,30],hFull:[289,370,13,12],hHalf:[305,370,13,12],hEmpty:[321,370,13,12],skull:[288,432,16,16],
 flask:[288,336,16,16],doorClosed:[32,240,32,32],doorOpen:[80,240,32,32],doorL:[16,240,16,32],doorR:[64,240,16,32]};
-const SPELLS=[{n:'Hielo',c:'#5ee7ff',c2:'#ffffff',cd:9},{n:'Fuego',c:'#ff8a2a',c2:'#ffe94a',cd:24},{n:'Rayo',c:'#b9f3ff',c2:'#ffffff',cd:42}];
 // ia: perseguir (va a por ti), tirador (guarda distancia y dispara), embestir (corre hacia ti),
 // abanico (tres balas), anillo (círculo de balas desde lejos)
 const ENEMIGOS={
@@ -30,11 +29,3 @@ const SALAS=[
 {n:'Forja infernal',tipo:'pelea',cols:[[5,10],[24,10],[11,6],[18,6]],banner:'bannerRed',fuente:'Red',
  oleadas:[['chort','chort','chort','masked','skelet','skelet'],['orcW','orcW','shaman','shaman','imp','imp','imp','imp']]},
 {n:'Trono de Cenizas',tipo:'jefe',jefe:'cenizas',cols:[[7,7],[22,7],[7,14],[22,14]],banner:'bannerRed',fuente:'Red'}];
-const MEJORAS=[
-{id:'corazon',n:'Corazón de dragón',d:'Un corazón más y la vida llena.',max:3},
-{id:'hielo',n:'Hielo cortante',d:'El hielo sale en abanico de tres y pega más.',max:2},
-{id:'fuego',n:'Fuego voraz',d:'Explosiones más grandes y más fuertes.',max:2},
-{id:'rayo',n:'Rayo en cadena',d:'El rayo salta a los enemigos cercanos.',max:2},
-{id:'abismo',n:'Abismo hambriento',d:'El poder abismal se carga un 50 % más rápido.',max:2},
-{id:'pies',n:'Pies de viento',d:'Corres más rápido y ruedas más seguido.',max:2},
-{id:'cura',n:'Pócima mayor',d:'Recuperas toda la vida.',max:99}];
