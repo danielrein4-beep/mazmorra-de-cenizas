@@ -305,6 +305,7 @@ function pintarElegir() {
   });
   try {
     localStorage.setItem('mazmorra-heroe', JSON.stringify(ELEGIDO));
+    pintarRecordTorre();
   } catch (e) {}
 }
 function animarElegir() {

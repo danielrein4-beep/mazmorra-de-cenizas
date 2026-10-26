@@ -54,12 +54,19 @@ function drawHud() {
     o.fillRect(181, 166, 3, 4);
     txt('x' + P.llaves, 200, 170, 15, '#ffe94a');
   }
-  const mmx = OW - 18 - (G.mundo ? G.mundo.W : 5) * 26 + 4;
-  o.fillStyle = 'rgba(10,6,16,.6)';
-  o.fillRect(mmx - 6, 10, OW - mmx - 6, 90);
-  drawMinimapa(mmx, 16);
+  if (G.torre) {
+    // En la Torre, en vez del minimapa: la insignia del rango que llevas en esta partida.
+    dibujarInsignia(o, G.rangoPartida, OW - 58, 56, 76, G.t);
+  } else {
+    const mmx = OW - 18 - (G.mundo ? G.mundo.W : 5) * 26 + 4;
+    o.fillStyle = 'rgba(10,6,16,.6)';
+    o.fillRect(mmx - 6, 10, OW - mmx - 6, 90);
+    drawMinimapa(mmx, 16);
+  }
   txt(
-    ZONAS[G.zona].n + (G.dif.id == 'pesadilla' ? ' · Pesadilla' : ''),
+    (G.torre ? 'Piso ' + G.piso + ' · ' : '') +
+      ZONAS[G.zona].n +
+      (G.dif.id == 'pesadilla' ? ' · Pesadilla' : ''),
     OW - 18,
     118,
     15,
@@ -147,6 +154,7 @@ function drawHud() {
     txt(t2, cx, cy - 10, 13, '#c3b6d9', 'center');
   });
   drawHudJ2();
+  drawNuevoTitulo();
   if (G.vendedor) {
     const [vx, vy] = toS(G.vendedor.x, G.vendedor.y - 30);
     txt('Zaro, el mercader', vx, vy - 24, 15, '#ffe94a', 'center', 1);

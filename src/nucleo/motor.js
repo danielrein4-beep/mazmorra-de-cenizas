@@ -335,6 +335,7 @@ function end(win) {
       ' de ' +
       ZONAS.length +
       '). Rueda a través de las balas: mientras ruedas no te tocan.';
+  if (G.torre) finTorre(win);
   finAlInvitado(
     document.getElementById('endTitle').textContent,
     document.getElementById('endText').textContent,
@@ -355,7 +356,10 @@ function start() {
   initAudio();
   precargarMusica();
   newRun();
-  entrarZona(0);
+  if (ELEGIDO.juego == 'torre') iniciarTorre();
+  else entrarZona(0);
+  document.getElementById('cartaImg').hidden = true;
+  document.getElementById('cartaBtn').hidden = true;
   ['menu', 'endScr', 'mejoras', 'elegir'].forEach(id => (document.getElementById(id).hidden = true));
   document.getElementById('tbtns').hidden = !coarse;
   running = true;

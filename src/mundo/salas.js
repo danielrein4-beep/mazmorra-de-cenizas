@@ -28,7 +28,8 @@ function updateSala() {
     P.moving = true;
     if (G.fade >= 1.2) {
       G.salir = 0;
-      entrarZona(G.zona + 1);
+      if (G.torre) siguientePiso();
+      else entrarZona(G.zona + 1);
     }
   }
 }
@@ -48,9 +49,10 @@ function jefeDerrotado() {
   G.zt = zb();
   const antes = VESTUARIOS.filter(desbloqueado).length;
   guardarLogro(G.B.id);
-  if (G.zona == ZONAS.length - 1 && G.dif.id == 'pesadilla') guardarLogro('pesadilla');
+  const ultimo = G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1;
+  if (ultimo && G.dif.id == 'pesadilla') guardarLogro('pesadilla');
   if (VESTUARIOS.filter(desbloqueado).length > antes) G.vestNuevo = 1;
-  if (G.zona == ZONAS.length - 1) {
+  if (ultimo) {
     end(true);
     return;
   }

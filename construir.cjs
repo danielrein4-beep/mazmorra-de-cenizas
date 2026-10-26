@@ -11,6 +11,7 @@ const src = (...p) => path.join(raiz, 'src', ...p);
 // El orden importa: cada archivo usa lo que definen los anteriores al cargar.
 const ORDEN = [
   'datos/datos.js',
+  'datos/titulos.js',
   'nucleo/motor.js',
   'nucleo/rendimiento.js',
   'nucleo/pantalla.js',
@@ -37,8 +38,10 @@ const ORDEN = [
   'combate/furia-rey.js',
   'combate/furia-gruk.js',
   'mundo/mundo.js',
+  'mundo/torre.js',
   'mundo/salas.js',
   'jugadores/en-linea.js',
+  'nucleo/carta.js',
   'nucleo/controles.js',
 ];
 

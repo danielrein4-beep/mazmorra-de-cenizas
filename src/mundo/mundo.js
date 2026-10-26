@@ -135,10 +135,10 @@ function entrarCuarto(c, lado) {
   G.cam = { x: P.x, y: P.y - 20 };
   G.fade = lado ? 0.7 : 1;
   if (c.tipo == 'jefe' && !c.limpio) {
-    G.B = crearJefe(Z.jefe);
+    G.B = crearJefe(c.jefe || Z.jefe);
     G.cerrado = 1;
     G.intro = { t: 0 };
-    musica(Z.jefe == 'cenizas' ? 'final' : 'jefe_' + Z.jefe);
+    musica((c.jefe || Z.jefe) == 'cenizas' ? 'final' : 'jefe_' + (c.jefe || Z.jefe));
     return;
   }
   musica('sala');
@@ -241,6 +241,11 @@ function updateMundo() {
   });
   const sale = (l, cond) => {
     if (cond && puertaAbierta(l)) {
+      // En la Torre, la puerta de arriba lleva al piso siguiente.
+      if (G.torre) {
+        siguientePiso();
+        return true;
+      }
       const n = vecino(c, l);
       if (n) {
         entrarCuarto(n, OPUESTO[l]);

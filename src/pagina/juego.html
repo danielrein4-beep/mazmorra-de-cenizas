@@ -60,7 +60,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .tec canvas{width:27px;height:27px;image-rendering:pixelated}
 .fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
 .etq{font-size:13px;color:var(--muted)}
-.njug[aria-pressed="true"],.sexo2[aria-pressed="true"],.modo[aria-pressed="true"],.sexo[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
+.juego[aria-pressed="true"],.njug[aria-pressed="true"],.sexo2[aria-pressed="true"],.modo[aria-pressed="true"],.sexo[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
 #vestuarios{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .vest{font:700 13px var(--font);color:var(--ink);background:#17111f;border:2px solid #4e4070;border-radius:6px;padding:4px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
 .vest i{width:14px;height:14px;border-radius:3px;display:block}
@@ -70,6 +70,9 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 #tbtns{z-index:2}
 #codigoSala{font:700 16px var(--font);width:5.5em;text-transform:uppercase;letter-spacing:.15em;text-align:center;color:var(--ink);background:#17111f;border:2px solid var(--muted);border-radius:6px;padding:5px 8px}
 #codigoSala:focus-visible{outline:3px solid var(--ice);outline-offset:2px}
+#cartaImg{width:min(520px,90%);height:auto;border-radius:8px;image-rendering:auto}
+#recordInsignia{width:36px;height:39px}
+#recordTexto{font-size:14px;color:#ffe94a}
 #redAviso{min-height:1.2em;color:var(--ice)!important}
 @media (max-height:520px){.barras,#heroeDesc{display:none}.heroe{padding:4px 6px}.heroe canvas{width:26px}.overlay{gap:6px}.h-chico{font-size:22px!important}.play{padding:6px 22px}}
 .sec,.vest,.heroe .clase,.barra,.carta .desc,.tec,.keys span,.overlay p{font-weight:400!important}
@@ -113,6 +116,8 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
     <p id="heroeDesc"></p>
     <div id="heroeTecs"></div>
     <div class="fila"><span class="etq">Versión</span><button type="button" class="sec sexo" data-s="f">Chica</button><button type="button" class="sec sexo" data-s="m">Chico</button></div>
+    <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button></div>
+    <div class="fila" id="filaRecord"><canvas id="recordInsignia" width="48" height="52"></canvas><span id="recordTexto"></span></div>
     <div class="fila" id="filaJug"><span class="etq">Jugadores</span><button type="button" class="sec njug" data-n="1">Uno</button><button type="button" class="sec njug" data-n="2">Dos en esta pantalla</button></div>
     <div class="fila" id="j2" hidden><span class="etq">Jugador 2</span><button type="button" class="sec" id="j2ant" aria-label="Héroe anterior">‹</button><strong id="j2nombre"></strong><button type="button" class="sec" id="j2sig" aria-label="Héroe siguiente">›</button><button type="button" class="sec sexo2" data-s="f">Chica</button><button type="button" class="sec sexo2" data-s="m">Chico</button><span class="etq">Flechas · L lanza · K rueda · J cambia · O final · U toma · Y pócima, o un mando</span></div>
     <div class="fila"><span class="etq">Modo</span><button type="button" class="sec modo" data-m="normal">Normal</button><button type="button" class="sec modo" data-m="pesadilla">Pesadilla</button></div>
@@ -130,6 +135,8 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
   <div class="overlay" id="endScr" hidden>
     <h1 id="endTitle">Caíste</h1>
     <p id="endText"></p>
+    <img id="cartaImg" alt="Tu carta de aventurero" hidden>
+    <button class="sec" id="cartaBtn" hidden>Compartir mi carta</button>
     <button class="play" id="againBtn">Otra vez</button>
     <p class="creditos">Música de MintoDog y nene. Dibujos de 0x72. Todo de uso libre (CC0), vía OpenGameArt e itch.io.</p>
   </div>
