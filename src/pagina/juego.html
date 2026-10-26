@@ -69,7 +69,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 #vestPrevia{width:clamp(40px,10vh,110px);height:auto;image-rendering:pixelated}
 .fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
 .etq{font-size:13px;color:var(--muted)}
-.juego[aria-pressed="true"],.njug[aria-pressed="true"],.sexo2[aria-pressed="true"],.modo[aria-pressed="true"],.sexo[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
+#pisos [aria-pressed="true"],.juego[aria-pressed="true"],.njug[aria-pressed="true"],.sexo2[aria-pressed="true"],.modo[aria-pressed="true"],.sexo[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
 #vestuarios{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .vest{font:700 13px var(--font);color:var(--ink);background:#17111f;border:2px solid #4e4070;border-radius:6px;padding:4px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
 .vest i{width:14px;height:14px;border-radius:3px;display:block}
@@ -129,6 +129,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
       <h1 class="h-chico">¿A qué jugamos?</h1>
       <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button></div>
       <div class="fila" id="filaRecord"><canvas id="recordInsignia" width="48" height="52"></canvas><span id="recordTexto"></span></div>
+      <div class="fila" id="filaPiso" hidden><span class="etq">Empezar en</span><div id="pisos" class="fila"></div></div>
       <div class="fila"><span class="etq">Modo</span><button type="button" class="sec modo" data-m="normal">Normal</button><button type="button" class="sec modo" data-m="pesadilla">Pesadilla</button></div>
       <p id="modoAviso" aria-live="polite"></p>
       <div class="fila" id="filaJug"><span class="etq">Jugadores</span><button type="button" class="sec njug" data-n="1">Uno</button><button type="button" class="sec njug" data-n="2">Dos en esta pantalla</button></div>

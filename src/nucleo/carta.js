@@ -110,6 +110,25 @@ function pintarRecordTorre() {
   document.getElementById('recordTexto').textContent = rec
     ? 'Tu récord: piso ' + rec + ' · ' + tituloDe(rec).n
     : 'Todavía no subiste la Torre: ' + TITULOS[0].n;
+  const salidas = pisosDeSalida(),
+    torre = ELEGIDO.juego == 'torre',
+    P = document.getElementById('pisos');
+  if (!salidas.includes(ELEGIDO.pisoInicio)) ELEGIDO.pisoInicio = 1;
+  document.getElementById('filaPiso').hidden = !torre || salidas.length < 2;
+  P.innerHTML = '';
+  salidas.forEach(s => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'sec';
+    b.textContent = 'Piso ' + s;
+    b.title = tituloDe(s).n;
+    b.setAttribute('aria-pressed', s == ELEGIDO.pisoInicio);
+    b.onclick = () => {
+      ELEGIDO.pisoInicio = s;
+      pintarRecordTorre();
+    };
+    P.appendChild(b);
+  });
   document
     .querySelectorAll('.juego')
     .forEach(b => b.setAttribute('aria-pressed', b.dataset.j == (ELEGIDO.juego || 'aventura')));

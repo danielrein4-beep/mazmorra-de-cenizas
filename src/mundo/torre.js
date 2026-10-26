@@ -77,10 +77,31 @@ function difDePiso(n) {
   });
 }
 
+// Pisos desde los que puedes volver a empezar: el 1 y el que sigue a cada guardián que ya venciste.
+const pisosDeSalida = () => {
+  const L = [1];
+  for (let s = 11; s <= Math.min(91, LOGROS.torre || 0); s += 10) L.push(s);
+  return L;
+};
+
 function iniciarTorre() {
+  const ini = pisosDeSalida().includes(ELEGIDO.pisoInicio) ? ELEGIDO.pisoInicio : 1;
   G.torre = 1;
-  G.piso = 0;
-  G.rangoPartida = 0;
+  G.piso = ini - 1;
+  G.rangoPartida = nivelTitulo(ini);
+  // Si empiezas más arriba, recibes los poderes de los guardianes que te saltas y algo de oro.
+  const saltados = Math.floor((ini - 1) / 10);
+  G.jug.forEach(P => {
+    for (let i = 0; i < saltados; i++) {
+      const pool = mejorasDe(PERSONAJES[P.pid]).filter(m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max);
+      if (!pool.length) break;
+      const m = pool[Math.floor(Math.random() * pool.length)];
+      P.mej[m.id] = (P.mej[m.id] || 0) + 1;
+      if (m.id == 'corazon') P.max += 2;
+    }
+    P.hp = P.max;
+  });
+  G.jug[0].oro += saltados * 25;
   siguientePiso();
 }
 
