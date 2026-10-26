@@ -281,6 +281,8 @@ function drawJefe() {
         ? rnd(-1.5, 1.5)
         : 0,
     y = B.y - B.z;
+  // Jefes con hoja de animaciones de artista (Kiplot): se dibujan aparte (combate/jefes-hoja.js).
+  if (B.def.hoja && drawJefeHoja(B, t, jx, y)) return drawTornados();
   // Los guardianes de la Torre llevan un contorno de su color para que se lean sobre cualquier suelo.
   if (B.def.tono && !B.dead) {
     const tc = atlasTono(B.def.tono);

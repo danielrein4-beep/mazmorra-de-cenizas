@@ -164,13 +164,15 @@ demonio(
     n: 'Kiplot',
     sub: 'Rey de los Demonios',
     musica: 'reyDemonio',
+    // Se dibuja con la hoja del Dragón Demonio de Sombras (combate/jefes-hoja.js); idle/run quedan de respaldo.
+    hoja: 1,
     idle: ALAS_DRAGON,
     run: ALAS_DRAGON,
     vel: 7,
-    esc: 1.8,
-    r: 46,
-    cy: 60,
-    boca: 76,
+    esc: 3.5,
+    r: 40,
+    cy: 46,
+    boca: 74,
     horda: 'imp',
     hp: 7200,
     sp: 0.65,
@@ -231,3 +233,5 @@ function auraDemonio(B) {
   if (B.berserk && !B.trans && G.t % 130 == 0)
     zonaEn(B, G.P.x + rnd(-50, 50), G.P.y + rnd(-36, 36), 22, 40, RAYO_NEGRO, 'rayoNegro', 1);
 }
+// Kiplot ya es negro en su dibujo: no hace falta teñirlo.
+['kiplot', 'kiplotF'].forEach(id => Object.assign(JEFES[id], { cuerpo: null, hoja: 1 }));

@@ -189,8 +189,10 @@ function drawEntradaJefe(B, t) {
     (al * 0.9) / frP[3],
     false,
   );
-  const frB = B.def.idle[Math.floor(G.t / 10) % B.def.idle.length],
-    imgB = B.def.cuerpo ? atlasTono(B.def.cuerpo) : atlas;
+  // Los jefes con hoja de artista (Kiplot) usan su propio dibujo.
+  const hoja = B.def.hoja && retratoHoja(B),
+    frB = hoja ? hoja[1] : B.def.idle[Math.floor(G.t / 10) % B.def.idle.length],
+    imgB = hoja ? hoja[0] : B.def.cuerpo ? atlasTono(B.def.cuerpo) : atlas;
   panelConSprite(
     imgB,
     frB,
