@@ -197,6 +197,7 @@ function miPerfil() {
     forja: LOGROS.forja || {},
     estado: estado(),
     tecs: tecsEquipadas(ELEGIDO.p),
+    vest: ELEGIDO.vest,
   };
 }
 // Al terminar, el amigo recibe sus cenizas y lo que ganó su héroe, y lo guarda en su aparato.

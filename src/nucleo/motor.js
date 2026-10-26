@@ -75,6 +75,7 @@ function newRun() {
     js.push(crearJugador(ELEGIDO.p2 || 0, ELEGIDO.sexo2 || 'm', 'normal', 2));
   compartirBolsa(js);
   // Cada héroe lleva el grimorio que eligió en la Biblioteca (ver datos/grimorios.js).
+  js[0].traje = ELEGIDO.vest;
   js.forEach(P => {
     P.grim = grimorioDe(P);
     P.hojas = hojasDe(P.grim, PERSONAJES[P.pid].id);
@@ -86,6 +87,10 @@ function newRun() {
     js[1].grim = amigo.grim;
     js[1].hojas = amigo.hojas;
     js[1].forja = amigo.forja || {};
+    if (amigo.vest && VESTUARIOS.some(v => v.id == amigo.vest)) {
+      js[1].traje = amigo.vest;
+      js[1].src = atlasVestuario(amigo.vest);
+    }
     if (Array.isArray(amigo.tecs) && amigo.tecs.length == 3 && amigo.tecs.every(id => TEC[id]))
       js[1].tecs = amigo.tecs;
   }

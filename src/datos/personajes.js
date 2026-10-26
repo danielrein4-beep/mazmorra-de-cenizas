@@ -336,8 +336,11 @@ function animarElegir() {
   const vp = document.getElementById('vestPrevia').getContext('2d'),
     rv = PERSONAJES[ELEGIDO.p][ELEGIDO.sexo].spr.run[t];
   vp.imageSmoothingEnabled = false;
-  vp.clearRect(0, 0, 48, 84);
-  vp.drawImage(src, rv[0], rv[1], 16, 28, 0, 0, 48, 84);
+  vp.clearRect(0, 0, 96, 96);
+  const tt = Math.floor(performance.now() / 16);
+  dibujarTraje(vp, ELEGIDO.vest, 48, 92, 1, 3, tt, 0);
+  vp.drawImage(src, rv[0], rv[1], 16, 28, 24, 8, 48, 84);
+  dibujarTraje(vp, ELEGIDO.vest, 48, 92, 1, 3, tt, 1);
   requestAnimationFrame(animarElegir);
 }
 function abrirElegir() {

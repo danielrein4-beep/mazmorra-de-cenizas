@@ -58,6 +58,7 @@ const ORDEN = [
   'datos/estado.js',
   'nucleo/forja.js',
   'datos/logros.js',
+  'datos/trajes.js',
   'nucleo/nube.js',
   'nucleo/bolsa.js',
   'nucleo/armario.js',

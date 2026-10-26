@@ -67,8 +67,10 @@ function drawPlayer() {
     w.restore();
   };
   if (back) staff();
+  dibujarTraje(w, P.traje, P.x, P.y, P.face, 1, G.t, 0);
   spr(w, P.dash || P.est ? white : P.src, fr, P.x, P.y, P.face < 0);
   if (P.hurt > 0) spr(w, white, fr, P.x, P.y, P.face < 0);
+  dibujarTraje(w, P.traje, P.x, P.y, P.face, 1, G.t, 1);
   if (!back) staff();
 }
 function drawWorld() {

@@ -135,7 +135,7 @@ body.botonesGrandes #tbtns{gap:16px}
 .sec:disabled{opacity:.8;cursor:default}
 @media (max-width:420px){.paso-tab:not([aria-current]) span{display:none}.pasos{gap:0}.paso-tab{padding:4px 5px;font-size:12px}.paso-tab b{width:18px;height:18px;margin-right:3px}}
 @media (max-height:520px){#grimGrande{width:56px;height:56px}#cenizasTxt{display:none}}
-#vestPrevia{width:clamp(40px,10vh,110px);height:auto;image-rendering:pixelated}
+#vestPrevia{width:clamp(56px,13vh,128px);height:auto;image-rendering:pixelated}
 .fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
 .etq{font-size:13px;color:var(--muted)}
 #pisos [aria-pressed="true"],.juego[aria-pressed="true"],.njug[aria-pressed="true"],.sexo2[aria-pressed="true"],.modo[aria-pressed="true"],.sexo[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
@@ -228,7 +228,7 @@ body.botonesGrandes #tbtns{gap:16px}
     </section>
     <section class="paso" data-paso="4" hidden>
       <h1 class="h-chico">Tu vestuario</h1>
-      <canvas id="vestPrevia" width="48" height="84" aria-label="Tu héroe con el vestuario elegido"></canvas>
+      <canvas id="vestPrevia" width="96" height="96" aria-label="Tu héroe con el vestuario elegido"></canvas>
       <div class="fila"><span class="etq">Vestuario</span><div id="vestuarios"></div></div>
       <p id="vestAviso" aria-live="polite"></p>
       <div class="fila"><button type="button" class="sec" data-ir="3">Atrás</button><button class="play" id="empezarBtn">Empezar</button></div>

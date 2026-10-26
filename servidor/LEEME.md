@@ -15,7 +15,14 @@ No guarda datos personales, solo un apodo. Además:
 - limita cada dirección a 60 pedidos por minuto;
 - cada respaldo pesa como máximo 64 KB.
 
-## Montarlo en Coolify (el mismo VPS de Aurora, como recurso aparte)
+## Dónde está montado
+
+Desde el 26-10-2026 corre en el Coolify del VPS de Aurora, como aplicación aparte llamada `mazmorra-records`,
+con su propio volumen `/datos`, en https://mazmorra.auroracontigo.com. El DNS ya sirve porque `*.auroracontigo.com`
+apunta al VPS. Coolify la construye desde el repo público, así que un push no la vuelve a desplegar sola:
+si cambias `servidor.mjs`, toca «Redeploy» en Coolify.
+
+## Montarlo de nuevo en Coolify (si hiciera falta)
 
 1. En Hostinger (hPanel → DNS) agregar un registro `A` con nombre `mazmorra`, apuntando a `2.25.251.103`.
 2. En Coolify:
