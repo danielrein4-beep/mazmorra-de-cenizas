@@ -170,7 +170,10 @@ function guardarLogro(k, v) {
     localStorage.setItem('mazmorra-logros', JSON.stringify(LOGROS));
   } catch (e) {}
 }
-const desbloqueado = v => !v.req || (v.req == 'dos' ? (LOGROS.ganadores || []).length >= 2 : !!LOGROS[v.req]);
+const desbloqueado = v =>
+  v.precio
+    ? trajeComprado(v)
+    : !v.req || (v.req == 'dos' ? (LOGROS.ganadores || []).length >= 2 : !!LOGROS[v.req]);
 const tintes = {};
 // Recolorea el atlas respetando luces y sombras: así el traje cambia de color sin perder el dibujo.
 function atlasVestuario(id) {
@@ -287,18 +290,25 @@ function pintarElegir() {
       '<i style="background:' +
       (v.c ? 'rgb(' + v.c.join(',') + ')' : 'linear-gradient(90deg,#6a4cff,#ff5a3c)') +
       '"></i><span></span>';
-    b.querySelector('span').textContent = ok ? v.n : 'Bloqueado';
-    b.title = ok ? v.n : v.txt;
+    b.querySelector('span').textContent = ok ? v.n : v.precio ? v.precio + ' cenizas' : 'Bloqueado';
+    b.title = ok ? v.n : v.precio ? v.n + ': ' + v.precio + ' cenizas' : v.txt;
     b.setAttribute('aria-pressed', ELEGIDO.vest == v.id);
-    b.setAttribute('aria-label', ok ? 'Vestuario ' + v.n : 'Vestuario ' + v.n + ' bloqueado: ' + v.txt);
+    b.setAttribute(
+      'aria-label',
+      ok
+        ? 'Vestuario ' + v.n
+        : 'Vestuario ' + v.n + (v.precio ? ' a la venta: ' + v.precio + ' cenizas' : ' bloqueado: ' + v.txt),
+    );
     b.onclick = () => {
-      if (!ok) {
+      if (!ok && v.precio) {
+        if (!tocarTrajeEnVenta(v)) return;
+      } else if (!ok) {
         document.getElementById('vestAviso').textContent =
           'Para desbloquear ' + v.n + ': ' + v.txt.toLowerCase() + '.';
         return;
       }
       ELEGIDO.vest = v.id;
-      document.getElementById('vestAviso').textContent = '';
+      if (ok) document.getElementById('vestAviso').textContent = '';
       pintarElegir();
     };
     V.appendChild(b);

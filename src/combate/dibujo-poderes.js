@@ -76,6 +76,7 @@ function drawPoderes() {
     w.drawImage(atlas, 320, 352, 16, 16, -8, -8, 16, 16);
     w.restore();
   });
+  drawBrillos();
   G.shots.forEach(s => SHOT_T[s.k].draw(s));
   G.tajos.forEach(s => {
     const k = s.l / 9;

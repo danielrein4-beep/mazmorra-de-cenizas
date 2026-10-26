@@ -2,13 +2,14 @@
 // hasta el nivel V. Cada nivel de forja suma un 15 % de daño y recarga un 8 % más rápido.
 const PRECIO_FORJA = [150, 300];
 const ROMANO = ['I', 'II', 'III', 'IV', 'V'];
-const forjaDe = id => (LOGROS.forja || {})[id] || 0;
+// La forja de cada héroe: la tuya, o la del amigo en línea que llegó con su perfil.
+const forjaDe = (id, P) => ((P && P.forja) || LOGROS.forja || {})[id] || 0;
 // Nivel de la técnica en la partida: 1 de base, más la forja (0-2) y las mejoras tras los jefes (0-2).
-const nivelTec = (P, id) => 1 + forjaDe(id) + (P.mej[id] || 0);
+const nivelTec = (P, id) => 1 + forjaDe(id, P) + (P.mej[id] || 0);
 
 // cast() llama a esto alrededor de cada técnica: el daño de golpes y proyectiles sale con su forja.
 function conForja(P, id, fn) {
-  P.multTec = 1 + 0.15 * forjaDe(id);
+  P.multTec = 1 + 0.15 * forjaDe(id, P);
   try {
     fn();
   } finally {
@@ -55,17 +56,16 @@ function mostrarForja() {
         guardarLogro('polvo', cenizasTengo() - precio);
         guardarLogro('forja', Object.assign({}, LOGROS.forja, { [id]: f + 1 }));
         sfx('martillazo');
+        revisarLogros();
         mostrarForja();
       };
     }
     fila.appendChild(b);
     L.appendChild(fila);
   });
-  document.getElementById('menu').hidden = true;
-  document.getElementById('forja').hidden = false;
+  irAPanel('forja');
 }
 document.getElementById('forjaBtn').onclick = mostrarForja;
 document.getElementById('forjaVolver').onclick = () => {
-  document.getElementById('forja').hidden = true;
-  document.getElementById('menu').hidden = false;
+  volverDePanel('forja');
 };

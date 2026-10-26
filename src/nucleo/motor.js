@@ -80,6 +80,13 @@ function newRun() {
     P.hojas = hojasDe(P.grim, PERSONAJES[P.pid].id);
     P.gcd = 0;
   });
+  // En línea, el héroe del amigo usa su propio grimorio y su forja.
+  const amigo = enRed && enRed.rol == 'anfitrion' && enRed.perfil;
+  if (js[1] && amigo) {
+    js[1].grim = amigo.grim;
+    js[1].hojas = amigo.hojas;
+    js[1].forja = amigo.forja || {};
+  }
   aplicarEstado(js);
   G.jug = js;
   G.coop = js.length > 1;
@@ -173,6 +180,7 @@ function hurtPlayer() {
   const P = G.P;
   if (P.caido || P.inv > 0 || P.dash > 0 || P.est || G.U || G.over || G.intro) return;
   if (corazaAguanta(P)) return;
+  if (G.B && !G.B.dead) G.tocadoJefe = 1;
   hazaña('res', 5);
   P.hp -= G.dif.golpe;
   P.inv = 70;
@@ -197,7 +205,7 @@ function hurtPlayer() {
 }
 function pasoJugador(P, i) {
   P.cds = P.cds.map(c => (c > 0 ? c - 1 : 0));
-  ['dcd', 'inv', 'hurt', 'kick', 'circ', 'swing', 'gcd'].forEach(k => {
+  ['dcd', 'inv', 'hurt', 'kick', 'circ', 'swing', 'gcd', 'aura'].forEach(k => {
     if (P[k] > 0) P[k]--;
   });
   if (P.caido) {
@@ -335,7 +343,8 @@ function end(win) {
   musica(win ? 'victoria' : null);
   const s = Math.round((performance.now() - G.start) / 1000),
     antes = VESTUARIOS.filter(desbloqueado).length;
-  if (win) {
+  // Ganar la Aventura (no la Torre, el reto ni la arena) cuenta para el logro y los vestuarios.
+  if (win && !G.torre && !G.arena) {
     guardarLogro('cenizas');
     const g = LOGROS.ganadores || [];
     if (!g.includes(PERS().id)) guardarLogro('ganadores', g.concat([PERS().id]));
@@ -357,16 +366,20 @@ function end(win) {
       ' (' +
       (G.zona + 1) +
       ' de ' +
-      ZONAS.length +
+      ZONAS_AVENTURA +
       '). Rueda a través de las balas: mientras ruedas no te tocan.';
   if (G.torre) finTorre(win);
   if (G.arena) finArena();
+  if (G.reto) finReto(win);
+  const textoBase = document.getElementById('endText').textContent;
   ganarCenizas();
   ganarEstado();
-  finAlInvitado(
-    document.getElementById('endTitle').textContent,
-    document.getElementById('endText').textContent,
-  );
+  guardarLogro('maxKills', Math.max(LOGROS.maxKills || 0, G.kills || 0));
+  if (enRed) guardarLogro('jugoEnLinea');
+  document.getElementById('endText').textContent += revisarLogros();
+  subirALaNube();
+  finAlInvitado(document.getElementById('endTitle').textContent, textoBase);
+  premiosAlInvitado();
   document.getElementById('endScr').hidden = false;
   document.getElementById('againBtn').focus();
 }
@@ -391,7 +404,8 @@ function start() {
   initAudio();
   precargarMusica();
   newRun();
-  if (ELEGIDO.juego == 'torre') iniciarTorre();
+  if (ELEGIDO.juego == 'reto') iniciarReto();
+  else if (ELEGIDO.juego == 'torre') iniciarTorre();
   else if (ELEGIDO.juego == 'arena') iniciarArena();
   else entrarZona(0);
   if (!G.arena) empezarGuia();

@@ -71,6 +71,7 @@ function finRonda(perdedor) {
   burst(perdedor.x, perdedor.y - 12, 60, '#ff4a5a', 4, 40, 2);
   if (A.r[gana] >= RONDAS_PARA_GANAR) {
     A.campeon = gana;
+    guardarLogro('ganoArena');
     G.over = 1;
     G.banner = { txt: G.jug[gana].nombre.toUpperCase() + ' GANA', t: 0, c: '#ffe94a' };
     sfx('ultFinal');

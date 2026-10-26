@@ -117,6 +117,7 @@ function drawWorld() {
         conJugador(Q, () => {
           drawPlayer();
           drawCoraza(Q);
+          drawAura(Q);
         }),
     }),
   );

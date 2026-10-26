@@ -40,6 +40,9 @@ function drawHud() {
   txt(AI.d, 66, 138, 12, '#c3b6d9');
   o.drawImage(atlas, 289 + 8 * (Math.floor(t / 8) % 4), 385, 6, 7, 22, 154, 18, 21);
   txt('' + P.oro, 48, 170, 15, '#ffe94a');
+  // Cenizas que llevas ganadas en esta partida (se suman a tu bolsa al terminar).
+  dibujarGema(o, 31, 196, 8);
+  txt('+' + cenizasDePartida(), 48, 202, 13, '#5ee7ff');
   o.drawImage(atlas, 288, 352, 16, 16, 96, 150, 30, 30);
   txt('x' + P.poc, 128, 170, 15, P.poc ? '#ff8a9a' : '#8f82a6');
   if (!coarse && P.poc) txt('F', 150, 170, 13, '#8f82a6');
@@ -113,6 +116,11 @@ function drawHud() {
     o.strokeRect(x + 1, y + 1, 56, 56);
     icono(o, id, x + 29, y + 23, 3);
     const nv = nivelTec(P, id);
+    if (nv >= 5) {
+      o.strokeStyle = t % 20 < 10 ? '#ffe94a' : '#ffffff';
+      o.lineWidth = 2;
+      o.strokeRect(x - 2, y - 2, 62, 62);
+    }
     if (nv > 1) {
       o.font = '8px ' + CIFRAS;
       o.fillStyle = '#ffe94a';

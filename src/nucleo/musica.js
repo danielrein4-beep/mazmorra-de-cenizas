@@ -14,6 +14,10 @@ const TEMAS = {
   jefe_zombi: { src: 'musica/rey.mp3' },
   jefe_ogro: { src: 'musica/gruk.mp3' },
   final: { src: 'musica/cenizas.mp3', intro: 'musica/cenizas-intro.mp3' },
+  // Guardianes de la Torre y el Dragón: Emma_MA, Juhani Junkala y Umplix (CC0, OpenGameArt).
+  persecucion: { src: 'musica/persecucion.mp3' },
+  batalla: { src: 'musica/batalla.mp3' },
+  dragon: { src: 'musica/dragon.mp3' },
 };
 const FANFARRIA = {
   bpm: 132,
@@ -115,10 +119,18 @@ function tocarTema(n) {
   ss.push(l);
   fuenteM = { g, ss, n };
 }
+// El anfitrión decide qué suena en cada sala: si el amigo está en esta sala, se le manda;
+// si el anfitrión no está en ella, no suena en su compu. Devuelve si debe sonar aquí.
+function musicaDeMiCuarto(msg) {
+  if (!G || !G.jugTodos || !enRed || enRed.rol != 'anfitrion') return true;
+  const aqui = G.jug || G.jugTodos;
+  if (msg.tipo == 'musica') G.temaSala = msg.n;
+  if (aqui.includes(G.jugTodos[1]) && enRed.con && enRed.con.open) enRed.con.send(msg);
+  return aqui.includes(G.jugTodos[0]);
+}
 function musica(n) {
-  // Con salas separadas suena la música del cuarto del anfitrión.
-  if (typeof SALAS != 'undefined' && SALAS.length > 1 && G.jugTodos && salaActiva !== G.jugTodos[0].sala)
-    return;
+  // En línea, cada uno escucha la música de su propio cuarto: la del amigo se le manda y suena en su aparato.
+  if (!musicaDeMiCuarto({ tipo: 'musica', n })) return;
   if (temaAct === n && fuenteM) return;
   temaAct = n;
   pista = null;
@@ -192,8 +204,6 @@ function pasoM(i, t) {
 }
 function alternarMusica() {
   musicaOn = !musicaOn;
-  const vr = document.getElementById('videoRed');
-  if (vr) vr.muted = !musicaOn;
   try {
     localStorage.setItem('mazmorra-musica', musicaOn ? 'si' : 'no');
   } catch (e) {}

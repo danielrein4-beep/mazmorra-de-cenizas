@@ -50,8 +50,10 @@ function jefeDerrotado() {
   const antes = VESTUARIOS.filter(desbloqueado).length;
   guardarLogro(G.B.id);
   G.jefesVencidos = (G.jefesVencidos || 0) + 1;
-  const ultimo = G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1;
-  if (ultimo && G.dif.id == 'pesadilla') guardarLogro('pesadilla');
+  if (!G.tocadoJefe) guardarLogro('sinGolpes');
+  revisarLogros();
+  const ultimo = G.reto ? retoCumplido() : G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1;
+  if (ultimo && !G.reto && G.dif.id == 'pesadilla') guardarLogro('pesadilla');
   if (VESTUARIOS.filter(desbloqueado).length > antes) G.vestNuevo = 1;
   if (ultimo) {
     end(true);

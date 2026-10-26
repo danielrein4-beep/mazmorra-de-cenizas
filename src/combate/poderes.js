@@ -153,7 +153,7 @@ function cast() {
     a = Math.atan2(P.ay - (P.y - 14), P.ax - P.x),
     ox = P.x + Math.cos(a) * 14,
     oy = P.y - 14 + Math.sin(a) * 14;
-  P.cds[P.spell] = Math.round(T.cd * A.cdm * (P.cdm || 1) * (1 - 0.08 * forjaDe(id)));
+  P.cds[P.spell] = Math.round(T.cd * A.cdm * (P.cdm || 1) * (1 - 0.08 * forjaDe(id, P)));
   hazaña('mag', 0.4);
   P.kick = 4;
   P.circ = 12;
@@ -172,7 +172,9 @@ function cast() {
       g: 0,
     });
   }
+  const antes = G.shots.length;
   conForja(P, id, () => T.usar(P, a, ox, oy));
+  despertarTecnica(P, id, antes, a, ox, oy);
 }
 function rayoPts(x1, y1, x2, y2) {
   const d = Math.hypot(x2 - x1, y2 - y1),
@@ -336,7 +338,10 @@ function updatePoderes() {
         if (muere || s.hits.includes(tg.ref)) return;
         if (Math.hypot(s.x - tg.x, s.y - tg.y) < tg.r + s.r) {
           s.hits.push(tg.ref);
-          conJugador(dueño, () => dañar(tg, s.dmg * (s.forja || 1), s.k == 'fuego' ? 4 : 0));
+          conJugador(dueño, () => {
+            dañar(tg, s.dmg * (s.forja || 1), s.k == 'fuego' ? 4 : 0);
+            if (s.estalla) almaEstalla(s, tg);
+          });
           if (s.pierce > 0) s.pierce--;
           else muere = true;
         }
@@ -364,7 +369,7 @@ function updatePoderes() {
       return true;
     });
     if (G.t % 2 == 0)
-      burst(o2.x + Math.cos(G.t) * o2.r, o2.y + Math.sin(G.t) * o2.r * 0.6, 3, '#8a7a6a', 1, 14);
+      burst(o2.x + Math.cos(G.t) * o2.r, o2.y + Math.sin(G.t) * o2.r * 0.6, 3, o2.c || '#8a7a6a', 1, 14);
   });
   G.ondas = G.ondas.filter(o2 => o2.r < o2.max);
   G.frascos.forEach(f => {

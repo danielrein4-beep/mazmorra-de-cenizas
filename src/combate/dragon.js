@@ -12,7 +12,7 @@ JEFES.dragon = {
   cy: 58,
   boca: 74,
   tono: '#ff8a2a',
-  musica: 'final',
+  musica: 'dragon',
   hp: 5200,
   sp: 0.55,
   fases: [

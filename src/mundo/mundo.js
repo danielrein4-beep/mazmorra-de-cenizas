@@ -137,6 +137,7 @@ function entrarCuarto(c, lado) {
   G.fade = lado ? 0.7 : 1;
   if (c.tipo == 'jefe' && !c.limpio) {
     G.B = crearJefe(c.jefe || Z.jefe);
+    G.tocadoJefe = 0;
     G.cerrado = 1;
     G.intro = { t: 0 };
     const idJ = c.jefe || Z.jefe;

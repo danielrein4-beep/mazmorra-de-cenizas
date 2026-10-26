@@ -68,6 +68,7 @@ function pintarBiblioteca() {
     guardarLogro('polvo', cenizasTengo() - precio);
     guardarLogro('grim', Object.assign({}, LOGROS.grim, { [g.id]: h + 1 }));
     sfx('cofre');
+    revisarLogros();
     pintarBiblioteca();
   };
 }

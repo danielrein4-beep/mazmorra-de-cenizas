@@ -22,6 +22,7 @@ function clavesDeSala() {
     'cerca2',
     'jug',
     'P',
+    'temaSala',
   ]);
   G = antes;
   return clavesSala;
@@ -106,6 +107,7 @@ function salirSolo(Q, n, lado) {
       Q.dash = 0;
       Q.est = null;
       G.aviso = { txt: Q.nombre + ' entró', l: 70 };
+      musicaAlUnirse();
     });
   } else if (vacia) {
     conSala(vieja, () => {
@@ -158,6 +160,7 @@ function rescatarCaido(P) {
     P.y = amigo.y;
     P.safe = [P.x, P.y];
     G.aviso = { txt: P.nombre + ' cayó: ve a su lado para revivirlo', l: 120 };
+    musicaAlUnirse();
   });
   volverACasa();
 }
@@ -168,3 +171,10 @@ const cuartoDelAmigo = () => {
   const otro = G.jugTodos.find(Q => !G.jug.includes(Q));
   return otro && otro.sala.d.room;
 };
+
+// Quien entra a una sala ya ocupada pasa a escuchar la música de ese cuarto.
+function musicaAlUnirse() {
+  const n = G.temaSala;
+  G.temaSala = null;
+  musica(n);
+}

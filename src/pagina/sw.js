@@ -1,5 +1,5 @@
 // Guarda el juego y la música en el teléfono para que abra sin internet.
-const CACHE = 'mazmorra-v17',
+const CACHE = 'mazmorra-v18',
   ARCHIVOS = [
     './',
     'index.html',
@@ -11,6 +11,9 @@ const CACHE = 'mazmorra-v17',
     'musica/gruk.mp3',
     'musica/cenizas-intro.mp3',
     'musica/cenizas.mp3',
+    'musica/persecucion.mp3',
+    'musica/batalla.mp3',
+    'musica/dragon.mp3',
   ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)));

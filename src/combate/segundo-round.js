@@ -305,6 +305,7 @@ function drawTornados() {
 // El tema del jefe se acelera un poco y encima suena una batería rápida con bajo grave.
 let capaFuria = null;
 function musicaFuria(bpm) {
+  if (!musicaDeMiCuarto({ tipo: 'furia', bpm })) return;
   if (!AC) return;
   if (fuenteM) {
     fuenteM.g.gain.linearRampToValueAtTime(1, AC.currentTime + 0.5);

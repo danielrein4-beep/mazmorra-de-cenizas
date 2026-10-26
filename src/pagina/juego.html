@@ -67,6 +67,29 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .paso[hidden]{display:none!important}
 #modoAviso{min-height:1.2em}
 #forjaHeroe{color:#ffe94a}
+#bolsa{position:absolute;top:max(8px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));z-index:7;display:flex;align-items:center;gap:6px;font:400 13px var(--font);color:var(--ink);background:rgba(23,17,31,.9);border:2px solid #177e89;border-radius:6px;padding:4px 10px;cursor:pointer}
+#bolsa b{color:#ffe94a;font-weight:400}
+#bolsa span{color:#5ee7ff}
+@media (pointer:coarse){#bolsa{position:fixed}}
+#logrosCuenta{color:#ffe94a}
+#apodo,#nubeCodigo{font:400 16px var(--font);width:10em;color:var(--ink);background:#17111f;border:2px solid var(--muted);border-radius:6px;padding:5px 8px}
+#nubeCodigo{width:7em;text-transform:uppercase;letter-spacing:.1em}
+#recordsLista{display:grid;gap:4px;width:min(520px,94vw);max-height:52vh;overflow-y:auto}
+.fila-record{display:grid;grid-template-columns:2em 1fr auto;gap:2px 10px;align-items:center;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:5px 10px}
+.fila-record b{color:#ffe94a;font:400 13px "Press Start 2P",monospace}
+.fila-record .apodo{color:var(--ink)}
+.fila-record .piso{color:#ffe94a}
+.fila-record small{grid-column:2/4;color:var(--muted);font-size:12px}
+.fila-record.mia{border-color:#177e89;background:#0f2226}
+#nubeTexto{max-width:46ch;font-size:13px}
+#logrosLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:5px;width:min(760px,94vw)}
+@media (max-width:420px){.logro{padding:4px 6px}.logro b{font-size:12px}.logro small{font-size:10px}.logro span{font-size:11px}}
+.logro{display:grid;grid-template-columns:1fr auto;gap:2px 8px;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:6px 10px}
+.logro b{color:var(--ink);font-size:14px}
+.logro small{grid-column:1;color:var(--muted);font-size:12px}
+.logro span{grid-row:1/3;grid-column:2;align-self:center;color:#ffe94a;font-size:13px}
+.logro.hecho{border-color:#3aff8a}
+.logro.hecho span{color:#3aff8a}
 #forjaLista{display:grid;gap:8px;width:min(480px,92vw)}
 .forja{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:10px;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:6px 10px}
 .forja b{display:block;color:var(--ink)}
@@ -98,7 +121,7 @@ body.botonesGrandes #tbtns{gap:16px}
 #grimNombre{color:#ffe94a}
 #grimGrande{width:84px;height:84px;flex:none}
 .sec:disabled{opacity:.8;cursor:default}
-@media (max-width:420px){.pasos{gap:0}.paso-tab{padding:4px 5px;font-size:12px}.paso-tab b{width:18px;height:18px;margin-right:3px}}
+@media (max-width:420px){.paso-tab:not([aria-current]) span{display:none}.pasos{gap:0}.paso-tab{padding:4px 5px;font-size:12px}.paso-tab b{width:18px;height:18px;margin-right:3px}}
 @media (max-height:520px){#grimGrande{width:56px;height:56px}#cenizasTxt{display:none}}
 #vestPrevia{width:clamp(40px,10vh,110px);height:auto;image-rendering:pixelated}
 .fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
@@ -153,18 +176,19 @@ body.botonesGrandes #tbtns{gap:16px}
       <b>Botones</b><span>rodar, cambiar técnica, grimorio, golpe final, tomar armas</span>
     </div>
     <button class="play" id="playBtn">Entrar a la mazmorra</button>
-    <div class="fila"><button type="button" class="sec" id="estadoBtn">Tu estado</button><button type="button" class="sec" id="forjaBtn">Forja</button><button class="sec btnMusica" aria-pressed="true">Música: sí</button><button type="button" class="sec abrirOpciones">Opciones</button></div>
+    <div class="fila"><button type="button" class="sec" id="estadoBtn">Tu estado</button><button type="button" class="sec" id="forjaBtn">Forja</button><button type="button" class="sec" id="logrosBtn">Logros</button><button type="button" class="sec" id="recordsBtn">Récords</button><button class="sec btnMusica" aria-pressed="true">Música: sí</button><button type="button" class="sec abrirOpciones">Opciones</button></div>
   </div>
   <div class="overlay" id="elegir" hidden>
     <nav class="pasos" aria-label="Pasos">
-      <button type="button" class="paso-tab" data-ir="1"><b>1</b> Juego</button>
-      <button type="button" class="paso-tab" data-ir="2"><b>2</b> Héroe</button>
-      <button type="button" class="paso-tab" data-ir="3"><b>3</b> Grimorio</button>
-      <button type="button" class="paso-tab" data-ir="4"><b>4</b> Vestuario</button>
+      <button type="button" class="paso-tab aMenu" aria-label="Volver al menú principal">‹<span> Menú</span></button>
+      <button type="button" class="paso-tab" data-ir="1"><b>1</b><span> Juego</span></button>
+      <button type="button" class="paso-tab" data-ir="2"><b>2</b><span> Héroe</span></button>
+      <button type="button" class="paso-tab" data-ir="3"><b>3</b><span> Grimorio</span></button>
+      <button type="button" class="paso-tab" data-ir="4"><b>4</b><span> Vestuario</span></button>
     </nav>
     <section class="paso" data-paso="1">
       <h1 class="h-chico">¿A qué jugamos?</h1>
-      <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button><button type="button" class="sec juego" data-j="arena">Arena PvP</button></div>
+      <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button><button type="button" class="sec juego" data-j="arena">Arena PvP</button><button type="button" class="sec juego" data-j="reto">Reto del día</button></div>
       <div class="fila" id="filaRecord"><canvas id="recordInsignia" width="48" height="52"></canvas><span id="recordTexto"></span></div>
       <div class="fila" id="filaPiso" hidden><span class="etq">Empezar en</span><div id="pisos" class="fila"></div></div>
       <div class="fila"><span class="etq">Modo</span><button type="button" class="sec modo" data-m="normal">Normal</button><button type="button" class="sec modo" data-m="pesadilla">Pesadilla</button></div>
@@ -200,6 +224,7 @@ body.botonesGrandes #tbtns{gap:16px}
     </section>
   </div>
   <button type="button" id="botonPausa" aria-label="Pausa" hidden>II</button>
+  <button type="button" id="bolsa" aria-label="Tu nivel y tus cenizas" hidden><canvas id="bolsaGema" width="20" height="20"></canvas><b id="bolsaNivel"></b><span id="bolsaCenizas"></span></button>
   <div class="overlay" id="estado" hidden>
     <h1 class="h-chico">Tu estado</h1>
     <p>Como en DanMachi: cada habilidad crece con lo que haces y va del rango I al S.</p>
@@ -216,11 +241,24 @@ body.botonesGrandes #tbtns{gap:16px}
     <div id="forjaLista"></div>
     <button class="play" id="forjaVolver">Volver</button>
   </div>
+  <div class="overlay" id="logros" hidden>
+    <h1 class="h-chico">Logros</h1>
+    <strong id="logrosCuenta"></strong>
+    <div id="logrosLista"></div>
+    <button class="play" id="logrosVolver">Volver</button>
+  </div>
+  <div class="overlay" id="records" hidden>
+    <h1 class="h-chico">Récords de la Torre</h1>
+    <div class="fila"><input id="apodo" maxlength="18" placeholder="Tu apodo" aria-label="Tu apodo para la tabla" autocomplete="off" spellcheck="false"><button type="button" class="sec" id="apodoGuardar">Guardar apodo</button></div>
+    <p id="recordsNota" aria-live="polite"></p>
+    <div id="recordsLista"></div>
+    <button class="play" id="recordsVolver">Volver</button>
+  </div>
   <div class="overlay" id="pausa" hidden>
     <h1 class="h-chico">Pausa</h1>
     <p id="pausaTexto"></p>
     <button class="play" id="seguirBtn">Seguir</button>
-    <div class="fila"><button type="button" class="sec abrirOpciones">Opciones</button><button type="button" class="sec" id="salirBtn">Salir al menú</button></div>
+    <div class="fila"><button type="button" class="sec" id="pausaEstado">Tu estado</button><button type="button" class="sec abrirOpciones">Opciones</button><button type="button" class="sec" id="salirBtn">Salir al menú</button></div>
   </div>
   <div class="overlay" id="opciones" hidden>
     <h1 class="h-chico">Opciones</h1>
@@ -229,6 +267,8 @@ body.botonesGrandes #tbtns{gap:16px}
     <div class="fila"><span class="etq">Vibración</span><button type="button" class="sec opVibrar" data-v="1">Sí</button><button type="button" class="sec opVibrar" data-v="0">No</button></div>
     <div class="fila"><span class="etq">Botones del teléfono</span><button type="button" class="sec opBotones" data-b="normal">Normales</button><button type="button" class="sec opBotones" data-b="grande">Grandes</button></div>
     <div class="fila"><span class="etq">Guía</span><button type="button" class="sec" id="opGuia">Ver la guía otra vez</button></div>
+    <div class="fila"><span class="etq">Nube</span><button type="button" class="sec" id="nubeGuardar">Guardar mi progreso</button><input id="nubeCodigo" maxlength="10" placeholder="Código" aria-label="Código de respaldo" autocomplete="off" spellcheck="false"><button type="button" class="sec" id="nubeRecuperar">Recuperar</button></div>
+    <p id="nubeTexto" aria-live="polite"></p>
     <button class="play" id="opListo">Listo</button>
   </div>
   <div class="overlay" id="mejoras" hidden>
@@ -239,9 +279,9 @@ body.botonesGrandes #tbtns{gap:16px}
   <div class="overlay" id="endScr" hidden>
     <h1 id="endTitle">Caíste</h1>
     <p id="endText"></p>
-    <div class="fila"><button class="play" id="againBtn">Otra vez</button><button class="sec" id="cartaBtn" hidden>Compartir mi carta</button></div>
+    <div class="fila"><button class="play" id="againBtn">Otra vez</button><button type="button" class="sec aMenu">Menú</button><button class="sec" id="cartaBtn" hidden>Compartir mi carta</button></div>
     <img id="cartaImg" alt="Tu carta de aventurero" hidden>
-    <p class="creditos">Música de MintoDog y nene. Dibujos de 0x72 y Reaktori (Debts in the Depths). Todo de uso libre (CC0), vía OpenGameArt e itch.io.</p>
+    <p class="creditos">Música de MintoDog, nene, Emma_MA, Juhani Junkala y Umplix. Dibujos de 0x72 y Reaktori (Debts in the Depths). Todo de uso libre (CC0), vía OpenGameArt e itch.io.</p>
   </div>
 </div>
 

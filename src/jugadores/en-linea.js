@@ -85,6 +85,7 @@ function alRecibirAnfitrion(d) {
     ELEGIDO.p2 = d.p;
     ELEGIDO.sexo2 = d.sexo;
     enRed.amigo = d.nombre;
+    enRed.perfil = d.perfil || null;
     avisoRed('¡' + d.nombre + ' se unió! Empezando…');
     start();
     transmitir();
@@ -110,7 +111,6 @@ function transmitir() {
     prepararSonido();
     const dest = AC.createMediaStreamDestination();
     if (fxSalida) fxSalida.connect(dest);
-    if (musBus) musBus.connect(dest);
     enRed.audioDest = dest;
     dest.stream.getAudioTracks().forEach(t => video.addTrack(t));
   }
@@ -187,6 +187,40 @@ function mejorasAlInvitado(ops, k) {
   return false;
 }
 
+// Lo que el amigo lleva a la partida: su grimorio, su forja y su estado, guardados en su aparato.
+function miPerfil() {
+  const P = { pid: ELEGIDO.p },
+    grim = grimorioDe(P);
+  return {
+    grim,
+    hojas: hojasDe(grim, PERSONAJES[ELEGIDO.p].id),
+    forja: LOGROS.forja || {},
+    estado: estado(),
+  };
+}
+// Al terminar, el amigo recibe sus cenizas y lo que ganó su héroe, y lo guarda en su aparato.
+function premiosAlInvitado() {
+  const Q = G.jugTodos && G.jugTodos[1];
+  if (!enRed || enRed.rol != 'anfitrion' || !enRed.con || !Q || !Q.hazañas) return;
+  enRed.con.send({
+    tipo: 'premios',
+    cenizas: cenizasDePartida(),
+    haz: Q.hazañas,
+    exp: expDePartida(),
+    kills: G.kills,
+  });
+  Q.hazañas = null;
+}
+function recibirPremios(d) {
+  if (d.cenizas) guardarLogro('polvo', cenizasTengo() + d.cenizas);
+  const t =
+    (d.cenizas ? ' Ganaste ' + d.cenizas + (d.cenizas == 1 ? ' ceniza.' : ' cenizas.') : '') +
+    sumarEstado(d.haz || {}, d.exp || 0);
+  guardarLogro('jugoEnLinea');
+  guardarLogro('maxKills', Math.max(LOGROS.maxKills || 0, d.kills || 0));
+  document.getElementById('endText').textContent += t + revisarLogros();
+  subirALaNube();
+}
 function finAlInvitado(titulo, texto) {
   if (enRed && enRed.rol == 'anfitrion' && enRed.con) enRed.con.send({ tipo: 'fin', titulo, texto });
 }
@@ -203,6 +237,8 @@ async function unirseSala() {
     return avisoRed(e.message);
   }
   cerrarRed();
+  initAudio();
+  precargarMusica();
   avisoRed('Conectando con la sala ' + codigo + '…');
   const peer = new Peer();
   enRed = { rol: 'invitado', peer, codigo, acc: [] };
@@ -212,7 +248,13 @@ async function unirseSala() {
     enRed.con = con;
     con.on('open', () => {
       const p = PERSONAJES[ELEGIDO.p];
-      con.send({ tipo: 'hola', p: ELEGIDO.p, sexo: ELEGIDO.sexo, nombre: p[ELEGIDO.sexo].n });
+      con.send({
+        tipo: 'hola',
+        p: ELEGIDO.p,
+        sexo: ELEGIDO.sexo,
+        nombre: p[ELEGIDO.sexo].n,
+        perfil: miPerfil(),
+      });
       avisoRed('Conectado. Esperando la imagen del juego…');
     });
     con.on('data', d => alRecibirInvitado(d));
@@ -228,7 +270,7 @@ function verTransmision(stream) {
   const v = document.getElementById('videoRed');
   v.srcObject = stream;
   v.hidden = false;
-  v.muted = !musicaOn;
+  v.volume = OPC.efectos / 100;
   v.play().catch(() => {});
   ['menu', 'endScr', 'mejoras', 'elegir'].forEach(id => (document.getElementById(id).hidden = true));
   document.getElementById('tbtns').hidden = !coarse;
@@ -287,6 +329,10 @@ function botonInvitado(accion) {
 }
 
 function alRecibirInvitado(d) {
+  if (d.tipo == 'premios') return recibirPremios(d);
+  // La música de su cuarto suena en su propio aparato; por la llamada solo llegan los efectos.
+  if (d.tipo == 'musica') return musica(d.n);
+  if (d.tipo == 'furia') return musicaFuria(d.bpm);
   if (d.tipo == 'mejoras') {
     const L = document.getElementById('mejorasLista');
     L.innerHTML = '';

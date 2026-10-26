@@ -84,8 +84,8 @@ const pisosDeSalida = () => {
   return L;
 };
 
-function iniciarTorre() {
-  const ini = pisosDeSalida().includes(ELEGIDO.pisoInicio) ? ELEGIDO.pisoInicio : 1;
+function iniciarTorre(desde) {
+  const ini = desde || (pisosDeSalida().includes(ELEGIDO.pisoInicio) ? ELEGIDO.pisoInicio : 1);
   G.torre = 1;
   G.piso = ini - 1;
   G.rangoPartida = nivelTitulo(ini);
@@ -109,7 +109,7 @@ function siguientePiso() {
   juntarTodos();
   const n = ++G.piso;
   G.zona = zonaDePiso(n);
-  G.dif = difDePiso(n);
+  G.dif = conReglasDelReto(difDePiso(n));
   const Z = ZONAS[G.zona],
     tipo = n % 10 == 0 ? 'jefe' : n % 5 == 0 ? 'tienda' : 'pelea',
     plano =
@@ -130,6 +130,7 @@ function siguientePiso() {
       est: null,
     };
   if (tipo == 'jefe') c.jefe = guardianDe(n);
+  G.tocadoJefe = 0;
   G.mundo = { cu: { '0,0': c }, W: 1, H: 1, inicio: c };
   G.room = null;
   entrarCuarto(c, null);
@@ -143,7 +144,7 @@ function siguientePiso() {
     l: 110,
   };
   if (tipo == 'tienda') G.jug.forEach(P => (P.hp = Math.min(P.max, P.hp + 2)));
-  if (n > (LOGROS.torre || 0)) guardarLogro('torre', n);
+  if (!G.reto && n > (LOGROS.torre || 0)) guardarLogro('torre', n);
   const nv = nivelTitulo(n);
   if (nv > G.rangoPartida) {
     G.rangoPartida = nv;

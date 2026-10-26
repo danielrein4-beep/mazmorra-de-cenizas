@@ -14,17 +14,20 @@ const expParaNivel = n => 300 * n;
 function estado() {
   return Object.assign({ nivel: 1, exp: 0, fue: 0, res: 0, des: 0, agi: 0, mag: 0 }, LOGROS.estado);
 }
-// Lo que suma cada acción durante la partida (solo el jugador de este aparato).
+// Lo que suma cada acción durante la partida, para el héroe que la hace (el de esta compu o el amigo en línea).
 function hazaña(k, v) {
-  if (!G || !G.hazañas || G.P !== (G.jugTodos || G.jug)[0]) return;
-  G.hazañas[k] += v;
+  if (G && G.P && G.P.hazañas) G.P.hazañas[k] += v;
 }
 
-// Al empezar: el estado le da a cada héroe de este aparato su bono.
+// Al empezar: el estado le da su bono al héroe de esta compu y al del amigo en línea (con su propio estado).
 function aplicarEstado(js) {
-  const E = estado(),
-    P = js[0];
-  G.hazañas = { fue: 0, res: 0, des: 0, agi: 0, mag: 0 };
+  bonoDeEstado(js[0], estado());
+  const amigo = enRed && enRed.rol == 'anfitrion' && enRed.perfil;
+  if (js[1] && amigo) bonoDeEstado(js[1], Object.assign(estado0(), amigo.estado));
+}
+const estado0 = () => ({ nivel: 1, exp: 0, fue: 0, res: 0, des: 0, agi: 0, mag: 0 });
+function bonoDeEstado(P, E) {
+  P.hazañas = { fue: 0, res: 0, des: 0, agi: 0, mag: 0 };
   P.bono = (1 + 0.03 * (E.nivel - 1)) * (1 + E.fue / 2000);
   P.critico = E.des / 10000;
   P.sp *= 1 + E.agi / 10000;
@@ -45,12 +48,18 @@ function dañoConEstado(P, tg, d) {
   return d;
 }
 
-// Al terminar: la experiencia y lo ganado en cada habilidad, con rendimiento decreciente cerca de S.
+const expDePartida = () =>
+  Math.round((G.kills || 0) * 3 + (G.jefesVencidos || 0) * 60 + (G.torre ? G.piso * 8 : 0));
+// Al terminar: el héroe de esta compu guarda lo suyo; el del amigo se le manda (jugadores/en-linea.js).
 function ganarEstado() {
-  if (!G.hazañas) return;
+  const P = (G.jugTodos || G.jug)[0];
+  if (!P.hazañas) return;
+  document.getElementById('endText').textContent += sumarEstado(P.hazañas, expDePartida());
+  P.hazañas = null;
+}
+// Suma a tu estado guardado lo ganado, con rendimiento decreciente cerca de S. Devuelve el texto del resumen.
+function sumarEstado(H, exp) {
   const E = estado(),
-    H = G.hazañas,
-    exp = Math.round((G.kills || 0) * 3 + (G.jefesVencidos || 0) * 60 + (G.torre ? G.piso * 8 : 0)),
     subidas = [];
   HABILIDADES.forEach(h => {
     const g = Math.round(H[h.id] / (1 + E[h.id] / 300));
@@ -67,10 +76,10 @@ function ganarEstado() {
     subio = 1;
   }
   guardarLogro('estado', E);
-  G.hazañas = null;
-  document.getElementById('endText').textContent +=
+  return (
     (subio ? ' ¡Subiste a nivel ' + E.nivel + '!' : '') +
-    (subidas.length ? ' Estado: ' + subidas.join(', ') + '.' : '');
+    (subidas.length ? ' Estado: ' + subidas.join(', ') + '.' : '')
+  );
 }
 
 // Pantalla «Tu estado» del menú, como la hoja de estado que lee la diosa.
@@ -92,12 +101,10 @@ function mostrarEstado() {
     fila.querySelector('small').textContent = h.d;
     L.appendChild(fila);
   });
-  document.getElementById('menu').hidden = true;
-  document.getElementById('estado').hidden = false;
+  irAPanel('estado');
   document.getElementById('estadoVolver').focus();
 }
 document.getElementById('estadoBtn').onclick = mostrarEstado;
 document.getElementById('estadoVolver').onclick = () => {
-  document.getElementById('estado').hidden = true;
-  document.getElementById('menu').hidden = false;
+  volverDePanel('estado');
 };
