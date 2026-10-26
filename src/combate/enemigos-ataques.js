@@ -338,10 +338,13 @@ function pasoZonasEn() {
       G.shake = Math.max(G.shake, 4);
       sfx('fuego');
     } else {
-      G.bolts.push(Object.assign(rayoPts(z.x + rnd(-8, 8), z.y - 200, z.x, z.y), { l: 10 }));
-      anilloEn(z.x, z.y - 4, 6, 1.3, '#5ee7ff', rnd(0, 1));
+      if (z.tipo == 'rayoNegro') truenoNegro(z.x, z.y);
+      else {
+        G.bolts.push(Object.assign(rayoPts(z.x + rnd(-8, 8), z.y - 200, z.x, z.y), { l: 10 }));
+        anilloEn(z.x, z.y - 4, 6, 1.3, '#5ee7ff', rnd(0, 1));
+        sfx('rayo');
+      }
       dañoZona(z.x, z.y, z.r);
-      sfx('rayo');
     }
   });
   G.zonasEn = G.zonasEn.filter(z => !z.d);

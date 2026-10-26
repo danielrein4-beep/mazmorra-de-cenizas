@@ -82,8 +82,6 @@ CAE.meteoroNegro = m => {
   ring(m.x, m.y, 30, '#b06bff', 14, 3);
   burst(m.x, m.y, 30, '#8a2aff', 3.5, 26, 2, 0.05);
   burst(m.x, m.y, 12, '#12051e', 2.5, 30, 3);
-  bossFire(9, 1.3, rnd(0, 1), '#b06bff', m.x, m.y - 4);
-  G.bul.slice(-9).forEach(b => (b.llama = 2));
   decal(m.x, m.y + 2, 14, '#0b0010', 600);
   sueloEnLlamas(m.x, m.y, { berserk: 1 });
   sfx('explosion');
@@ -160,7 +158,7 @@ Object.assign(ATAQUES, {
   // Llama negra (solo al renacer): tres brazos de fuego negro que giran y dejan el suelo ardiendo.
   llamaNegra: (B, cx, cy, f) => {
     B.moving = false;
-    if (B.t % 3 == 0 && B.t < 100)
+    if (B.t % 6 == 0 && B.t < 100)
       for (let k = 0; k < 3; k++) {
         const a = B.t * 0.09 + (k * 6.283) / 3;
         G.bul.push({

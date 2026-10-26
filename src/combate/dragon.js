@@ -121,8 +121,7 @@ Object.assign(ATAQUES, {
       G.stop = 6;
       sfx('caida');
       sfx('explosion');
-      bossFire(B.berserk ? 32 : 24, 1.5 * f, 0, '#ff8a2a', B.x, B.y - 10);
-      bossFire(B.berserk ? 32 : 24, 1.1 * f, 0.13, '#ffe94a', B.x, B.y - 10);
+      bossFire(B.berserk ? 20 : 16, 1.3 * f, 0, '#ff8a2a', B.x, B.y - 10);
       ring(B.x, B.y, 90, '#ff8a2a', 24, 4);
       decal(B.x, B.y + 2, 40, '#140806', 900);
       vivos().forEach(Q => Math.hypot(Q.x - B.x, Q.y - B.y) < 44 && conJugador(Q, hurtPlayer));

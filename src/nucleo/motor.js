@@ -306,7 +306,8 @@ function step() {
     n.l--;
   });
   G.nums = G.nums.filter(n => n.l > 0);
-  if (G.banner) G.banner.t++;
+  // Cada cartel grande dura poco más de un segundo (antes algunos se quedaban pegados en pantalla).
+  if (G.banner && ++G.banner.t > (G.banner.dura || 75)) G.banner = null;
   if (G.aviso && --G.aviso.l <= 0) G.aviso = null;
   if (!G.U && !(G.B && G.B.dead)) G.dark = Math.max(0, G.dark - 0.04);
   const B = G.B;

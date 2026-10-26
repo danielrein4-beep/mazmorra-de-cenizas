@@ -53,6 +53,7 @@ const ORDEN = [
   'combate/dragon.js',
   'combate/fuego-dragon.js',
   'combate/ataques-jefes-nuevos.js',
+  'combate/dragon-rugido.js',
   'mundo/mundo.js',
   'mundo/torre.js',
   'mundo/arena.js',

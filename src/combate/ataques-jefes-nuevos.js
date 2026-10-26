@@ -7,6 +7,8 @@ function avisoLinea(B, x, y, ang, len, c, t) {
   (B.lineas = B.lineas || []).push({ x, y, ang, len, c, t, m: t });
 }
 function drawAvisosJefe(B) {
+  drawConoDragon(B);
+  drawLatigoDragon(B);
   if (!B.lineas) return;
   B.lineas.forEach(l => {
     l.t--;

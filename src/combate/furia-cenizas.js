@@ -87,7 +87,7 @@ Object.assign(ATAQUES, {
     if (B.t == 12) {
       const n = G.dif.id == 'pesadilla' ? 3 : 2;
       for (let i = 0; i < n; i++)
-        G.tornados.push({ x: B.x + Math.cos(i * 2.1) * 30, y: B.y + Math.sin(i * 2.1) * 20, l: 480, t: 0 });
+        G.tornados.push({ x: B.x + Math.cos(i * 2.1) * 30, y: B.y + Math.sin(i * 2.1) * 20, l: 300, t: 0 });
       ring(B.x, B.y, 50, '#c3b6d9', 16, 3);
       sfx('dash');
     }

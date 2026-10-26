@@ -144,18 +144,23 @@ function updateFinal() {
     tn.t++;
     tn.l--;
     const P = masCercano(tn),
-      a = Math.atan2(P.y - tn.y, P.x - tn.x) + Math.sin(tn.t * 0.05) * 0.8;
-    [tn.x, tn.y] = enSala(tn.x + Math.cos(a) * 0.9, tn.y + Math.sin(a) * 0.9);
+      a =
+        tn.sale !== undefined && tn.t < 50
+          ? tn.sale
+          : Math.atan2(P.y - tn.y, P.x - tn.x) + Math.sin(tn.t * 0.04 + (tn.sale || 0)) * 1.5,
+      v = tn.sale !== undefined && tn.t < 50 ? 1.6 : 0.65;
+    [tn.x, tn.y] = enSala(tn.x + Math.cos(a) * v, tn.y + Math.sin(a) * v);
     vivos().forEach(Q => {
       const d = Math.hypot(Q.x - tn.x, Q.y - tn.y);
       if (d < 16) conJugador(Q, hurtPlayer);
-      else if (d < 70 && !Q.dash) {
-        const k = 0.6 * (1 - d / 70);
+      else if (d < 60 && !Q.dash) {
+        const k = 0.45 * (1 - d / 60);
         if (!solidAt(Q.x + ((tn.x - Q.x) / d) * k, Q.y, 4)) Q.x += ((tn.x - Q.x) / d) * k;
         if (!solidAt(Q.x, Q.y + ((tn.y - Q.y) / d) * k, 4)) Q.y += ((tn.y - Q.y) / d) * k;
       }
     });
-    if (tn.t % 24 == 0) bossFire(4, 1.3, tn.t * 0.1, '#c3b6d9', tn.x, tn.y - 12);
+    if (tn.t % 45 == 0 && !tn.sinBalas)
+      bossFire(3, 1.2, tn.t * 0.1, tn.negro ? '#8a2aff' : '#c3b6d9', tn.x, tn.y - 12);
     if (tn.t % 2 == 0)
       G.pt.push({
         x: tn.x + rnd(-10, 10),
@@ -164,7 +169,7 @@ function updateFinal() {
         vy: -0.6,
         l: 18,
         m: 18,
-        c: '#8a7a9a',
+        c: tn.negro ? (tn.t % 4 ? '#8a2aff' : '#12051e') : '#8a7a9a',
         s: 1,
         g: 0,
       });

@@ -54,24 +54,36 @@ function rayoSegunNivel(P, x, y, a, fin) {
     cerca(160)
       .slice(0, nv >= 5 ? 8 : 2)
       .forEach(t => {
-        G.bolts.push(rayoFino(x, y, t.x + rnd(-4, 4), t.y + rnd(-4, 4)));
+        G.bolts.push(
+          nv >= 5 ? rayoGordo(x, y, t.x, t.y, 16) : rayoFino(x, y, t.x + rnd(-4, 4), t.y + rnd(-4, 4)),
+        );
         dañar(t, nv >= 5 ? 12 : 8, 0, true);
         chispasRayo(t.x, t.y, 6);
         if (nv >= 4) electrizar(P, t);
       });
   if (nv < 5) return;
-  // Ráfaga: rayos finos en abanico hacia donde apuntas, aunque no haya nadie.
-  for (let i = 0; i < 7; i++) {
-    const b = a + rnd(-0.6, 0.6),
-      L = rnd(70, 170);
-    G.bolts.push(rayoFino(x, y, x + Math.cos(b) * L, y + Math.sin(b) * L, 7));
+  // Ráfaga: rayos gruesos en abanico hacia donde apuntas, aunque no haya nadie.
+  for (let i = 0; i < 4; i++) {
+    const b = a + (i - 1.5) * 0.3 + rnd(-0.1, 0.1),
+      L = rnd(120, 190);
+    G.bolts.push(rayoGordo(x, y, x + Math.cos(b) * L, y + Math.sin(b) * L, 14));
   }
-  G.flash = Math.max(G.flash, 3);
+  G.shake = Math.max(G.shake, 6);
+  G.flash = Math.max(G.flash, 4);
   G.fcol = '#b9f3ff';
   if (fin) lluviaDeRayos(P);
 }
-// El remate del nivel V: catorce rayos finos caen del cielo por toda la sala, primero sobre los enemigos.
+// El remate del nivel V: catorce truenos caen del cielo por toda la sala, primero sobre los enemigos.
 // Van a una fila de la sala y caen de a uno cada tres pasos (se frenan con la pausa como todo lo demás).
+// Rayo grueso con ramas largas: el de los niveles altos (nada de destellitos).
+function rayoGordo(x1, y1, x2, y2, l) {
+  const r = rayoPts(x1, y1, x2, y2);
+  r.br.forEach(b => {
+    const [p, , q] = b;
+    b[2] = [p[0] + (q[0] - p[0]) * 2.2, p[1] + (q[1] - p[1]) * 2.2];
+  });
+  return Object.assign(r, { gordo: 1, grueso: 1, l, m: l });
+}
 function lluviaDeRayos(P) {
   const blancos = objetivos().slice(0, 10);
   for (let i = 0; i < 14; i++) {
@@ -88,17 +100,25 @@ function pasoRayos() {
   G.rayosPend.forEach(z => {
     if (z.t-- > 0) return;
     z.d = 1;
-    G.bolts.push(rayoFino(z.tx + rnd(-14, 14), z.ty - 240, z.tx, z.ty, 12));
-    chispasRayo(z.tx, z.ty, 10);
-    ring(z.tx, z.ty, 14, '#5ee7ff', 10, 2);
-    decal(z.tx, z.ty + 4, 5, '#1a3a4a', 300);
+    // Cada uno es un trueno: rayo grueso desde arriba, destello, temblor y estruendo.
+    G.bolts.push(rayoGordo(z.tx + rnd(-30, 30), z.ty - 300, z.tx, z.ty, 18));
+    chispasRayo(z.tx, z.ty, 16);
+    ring(z.tx, z.ty, 30, '#5ee7ff', 12, 4);
+    burst(z.tx, z.ty, 10, '#ffffff', 3, 14);
+    decal(z.tx, z.ty + 4, 12, '#0a2030', 400);
+    G.shake = Math.max(G.shake, 8);
+    if (z.i % 3 == 0) {
+      G.flash = Math.max(G.flash, 4);
+      G.fcol = '#b9f3ff';
+    }
     const t = z.ref && objetivos(z.P).find(o2 => o2.ref === z.ref);
     if (t)
       conJugador(z.P, () => {
         dañar(t, 18, 2, true);
         electrizar(z.P, t);
       });
-    if (z.i % 4 == 0) sfx('rayo');
+    if (z.i % 2 == 0) sfx('rayo');
+    if (z.i % 5 == 0) sfx('trueno');
   });
   G.rayosPend = G.rayosPend.filter(z => !z.d);
 }

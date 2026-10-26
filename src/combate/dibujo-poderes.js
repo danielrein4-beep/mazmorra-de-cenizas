@@ -127,7 +127,7 @@ function drawPoderes() {
   w.globalAlpha = 1;
   G.bolts.forEach(b => {
     const k = b.l / (b.m || (b.gordo ? 14 : 10)),
-      g = b.gordo ? 2.2 : b.fino ? 0.45 : 1;
+      g = b.gordo ? (b.negro || b.grueso ? 3.4 : 2.2) : b.fino ? 0.45 : 1;
     w.lineCap = 'round';
     w.lineJoin = 'round';
     const path = p => {
@@ -136,16 +136,16 @@ function drawPoderes() {
       w.stroke();
     };
     w.globalAlpha = 0.35 * k;
-    w.strokeStyle = '#5ee7ff';
+    w.strokeStyle = b.negro ? '#8a2aff' : '#5ee7ff';
     w.lineWidth = 7 * k * g;
     path(b.pts);
     w.globalAlpha = 1;
     w.lineWidth = 3 * k * g;
     path(b.pts);
-    w.strokeStyle = '#ffffff';
+    w.strokeStyle = b.negro ? '#12051e' : '#ffffff';
     w.lineWidth = 1.4 * g;
     path(b.pts);
-    w.strokeStyle = '#b9f3ff';
+    w.strokeStyle = b.negro ? '#d9b0ff' : '#b9f3ff';
     w.lineWidth = 1;
     b.br.forEach(path);
   });
