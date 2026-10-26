@@ -10,7 +10,7 @@ function comprasPosibles() {
   });
   tecsEquipadas(pi).forEach(id => {
     const f = forjaDe(id);
-    if (f < 2) L.push({ n: 'forjar ' + TEC[id].n + ' ' + ROMANO[f + 1], p: PRECIO_FORJA[f] });
+    if (f < FORJA_MAX) L.push({ n: 'forjar ' + TEC[id].n + ' ' + ROMANO[f + 1], p: PRECIO_FORJA[f] });
   });
   TECS_EXTRA.filter(t => t.heroe == pid && !tecComprada(t.id)).forEach(t =>
     L.push({ n: 'la técnica ' + TEC[t.id].n, p: t.precio }),

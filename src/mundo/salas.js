@@ -73,7 +73,9 @@ function mostrarMejoras(k) {
   keys = {};
   touch.move = touch.aim = null;
   const MJ = mejorasDe(Object.assign({}, PERSONAJES[P.pid], { tecs: P.tecs })),
-    pool = MJ.filter(m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max).sort(() => Math.random() - 0.5);
+    pool = MJ.filter(
+      m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max && !(TEC[m.id] && nivelTec(P, m.id) >= 5),
+    ).sort(() => Math.random() - 0.5);
   // Dos reliquias al azar y una mejora de técnica o de vida; con la vida baja, también curarse.
   const ops = pool.slice(0, 1),
     r1 = reliquiaAlAzar(P),

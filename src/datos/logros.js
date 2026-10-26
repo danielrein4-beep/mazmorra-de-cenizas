@@ -48,9 +48,9 @@ const LISTA_LOGROS = [
   {
     id: 'forjaMax',
     n: 'Herrero de almas',
-    d: 'Forja una técnica al máximo.',
+    d: 'Forja una técnica hasta el nivel V.',
     p: 50,
-    ok: () => Object.values(LOGROS.forja || {}).some(v => v >= 2),
+    ok: () => Object.values(LOGROS.forja || {}).some(v => v >= FORJA_MAX),
   },
   {
     id: 'nivel10',

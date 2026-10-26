@@ -95,7 +95,7 @@ function iniciarTorre(desde) {
   G.jug.forEach(P => {
     for (let i = 0; i < saltados; i++) {
       const pool = mejorasDe(Object.assign({}, PERSONAJES[P.pid], { tecs: P.tecs })).filter(
-        m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max,
+        m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max && !(TEC[m.id] && nivelTec(P, m.id) >= 5),
       );
       if (!pool.length) break;
       const m = pool[Math.floor(Math.random() * pool.length)];

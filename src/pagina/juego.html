@@ -101,7 +101,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 @media (max-width:640px){.dock{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-height:440px){.logo small,.placa{display:none}.logo-a{font-size:34px}.dock{grid-template-columns:repeat(8,minmax(0,64px))}.tile canvas{width:26px;height:26px}.play.grande{font-size:18px}}
 #bolsa{border:8px solid transparent;border-image:var(--marco-tile) 6 fill / 8px;background:none;padding:0 6px}
-.ficha{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;width:min(780px,94vw);align-items:start}
+.ficha{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;width:min(780px,100%);align-items:start}
 .ficha-izq{display:flex;flex-direction:column;align-items:center;gap:4px;border:10px solid transparent;border-image:var(--marco-tile) 6 fill / 10px;padding:4px 8px}
 #fichaHeroe{width:120px;height:150px;image-rendering:pixelated}
 #fichaNombre{color:var(--ink)}
@@ -127,14 +127,14 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .prologo p{opacity:0;animation:aparecerTexto 1s forwards;font-size:clamp(14px,1.9vw,20px)!important;color:#ffe9c0!important;max-width:46ch;margin:8px auto!important;line-height:1.5}
 @keyframes aparecerTexto{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 #prologoSeguir{opacity:0;animation:aparecerTexto 1s 4.4s forwards}
-.que-viene{list-style:none;margin:0;padding:2px 12px;border:10px solid transparent;border-image:var(--marco-tile) 6 fill / 10px;text-align:left;max-width:min(560px,92vw);font-size:clamp(12px,1.5vw,15px);color:var(--ink)}
+.que-viene{list-style:none;margin:0;padding:2px 12px;border:10px solid transparent;border-image:var(--marco-tile) 6 fill / 10px;text-align:left;max-width:min(560px,100%);font-size:clamp(12px,1.5vw,15px);color:var(--ink)}
 .que-viene li{padding:2px 0 2px 16px;position:relative}
 .que-viene li::before{content:"›";position:absolute;left:2px;color:#ffd24a}
 @media (max-height:440px){#cartaImg{max-height:26vh}.que-viene li:nth-child(n+3){display:none}#endScr p#endText{font-size:12px}}
 #armarioEspacios{display:flex;gap:8px;justify-content:center}
 #armarioEspacios .espacio{display:flex;flex-direction:column;align-items:center;gap:2px;font:400 12px var(--font);color:var(--ink);background:#140e1e;border:2px dashed #4e4070;border-radius:6px;padding:6px 8px;cursor:pointer}
 #armarioEspacios .espacio[aria-pressed="true"]{border:2px solid var(--ember);background:#24182e}
-#armarioLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;width:min(720px,94vw)}
+#armarioLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;width:min(720px,100%)}
 .tecArm{display:grid;grid-template-columns:40px 1fr;gap:0 8px;align-items:center;text-align:left;font:400 14px var(--font);color:var(--ink);background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:4px 8px;cursor:pointer}
 .tecArm canvas{grid-row:1/3}
 .tecArm small{color:var(--muted);font-size:11px}
@@ -150,7 +150,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 #logrosCuenta{color:#ffe94a}
 #apodo,#nubeCodigo{font:400 16px var(--font);width:10em;color:var(--ink);background:#17111f;border:2px solid var(--muted);border-radius:6px;padding:5px 8px}
 #nubeCodigo{width:7em;text-transform:uppercase;letter-spacing:.1em}
-#recordsLista{display:grid;gap:4px;width:min(520px,94vw);max-height:52vh;overflow-y:auto}
+#recordsLista{display:grid;gap:4px;width:min(520px,100%);max-height:52vh;overflow-y:auto}
 .fila-record{display:grid;grid-template-columns:2em 1fr auto;gap:2px 10px;align-items:center;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:5px 10px}
 .fila-record b{color:#ffe94a;font:400 13px "Press Start 2P",monospace}
 .fila-record .apodo{color:var(--ink)}
@@ -172,14 +172,14 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .mision i{grid-column:1;height:4px;background:#2a2040;border-radius:2px;overflow:hidden}
 .mision em{display:block;height:100%;background:#5ee7ff}
 .mision.hecho em{background:#3aff8a}
-#forjaLista{display:grid;gap:8px;width:min(480px,92vw)}
+#forjaLista{display:grid;gap:8px;width:min(480px,100%)}
 .forja{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:10px;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:6px 10px}
 .forja b{display:block;color:var(--ink)}
 .forja small{color:var(--muted);font-size:12px}
 #estadoNivel{font-size:clamp(22px,4vw,32px);color:#ffe94a}
 #estadoBarra{width:min(320px,80vw);height:10px;background:#17111f;border:2px solid #4e4070;border-radius:6px;overflow:hidden}
 #estadoExp{height:100%;background:#177e89}
-#estadoLista{display:grid;gap:6px;width:min(460px,92vw)}
+#estadoLista{display:grid;gap:6px;width:min(460px,100%)}
 .hab{display:grid;grid-template-columns:7.5em 2em 3em 1fr;align-items:center;gap:8px;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:6px 10px}
 .hab .rango{font:400 16px "Press Start 2P",monospace;color:#ffe94a}
 .hab .val{color:var(--ink)}
