@@ -66,7 +66,7 @@ ANTORCHAS.forEach(tx=>{const x=tx*16+8,f=Math.sin(t*.3+tx)*1.2;w.fillStyle='#5a4
 const [lc,lx]=mk(WW,WH);
 function drawLuz(){const osc=ZONAS[G.zona].oscuro||.42;if(osc<=0)return;lx.globalCompositeOperation='source-over';lx.clearRect(0,0,WW,WH);lx.fillStyle='rgba(6,3,14,'+osc+')';lx.fillRect(0,0,WW,WH);lx.globalCompositeOperation='destination-out';
 const L=(x,y,r,k)=>{const g=lx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,'rgba(0,0,0,'+k+')');g.addColorStop(1,'rgba(0,0,0,0)');lx.fillStyle=g;lx.fillRect(x-r,y-r,r*2,r*2)};
-const P=G.P,t=G.t;L(P.x,P.y-12,95,1);ANTORCHAS.forEach(tx=>L(tx*16+8,26,60+Math.sin(t*.2+tx)*4,.95));[7,22].forEach(tx=>L(tx*16+8,30,40,.7));
+const t=G.t;G.jug.forEach(Q=>L(Q.x,Q.y-12,95,1));ANTORCHAS.forEach(tx=>L(tx*16+8,26,60+Math.sin(t*.2+tx)*4,.95));[7,22].forEach(tx=>L(tx*16+8,30,40,.7));
 for(let ty=2;ty<19;ty+=2)for(let tx=1;tx<29;tx+=2)if(G.mapa[ty][tx]=='L')L(tx*16+8,ty*16+8,38,.6);
 G.shots.forEach(s=>{if(s.k=='fuego'||s.k=='reflejo')L(s.x,s.y,40,.8)});G.bolts.forEach(b=>{const e=b.pts[b.pts.length-1];L(e[0],e[1],70,.9)});G.rings.forEach(r=>{if(r.r>25)L(r.x,r.y,r.r*1.2,.5*r.l/r.m)});
 if(G.B&&!G.B.dead)L(G.B.x,G.B.y-30,70,.6);G.inter.forEach(c=>L(c.x,c.y-8,30,.5));Object.keys(G.room.p).forEach(l=>{if(puertaAbierta(l)){const [px,py]=PUERTA_POS[l];L(px,py,46,.7)}});if(G.escalera)L(G.escalera.x,G.escalera.y+8,55,.85);

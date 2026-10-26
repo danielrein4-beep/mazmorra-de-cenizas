@@ -22,7 +22,7 @@ function guardarCuarto(){const c=G.room;if(c)c.est={inter:G.inter,monedas:G.mone
 function vecino(c,l){const [dx,dy]=LADOS[l];return G.mundo.cu[claveC(c.x+dx,c.y+dy)]}
 function entrarCuarto(c,lado){guardarCuarto();const P=G.P,Z=ZONAS[G.zona];resetSala();G.room=c;c.visto=true;
 Object.keys(c.p).forEach(l=>{const n=vecino(c,l);if(n&&(c.p[l].tipo!='secreta'||c.p[l].abierta))n.conocido=true});
-buildFloor(c);if(c.est)Object.assign(G,c.est);const e=lado?ENTRADA[lado]:[240,286];P.x=e[0];P.y=e[1];P.dash=0;P.est=null;P.safe=[P.x,P.y];G.cam={x:P.x,y:P.y-20};G.fade=lado?.7:1;
+buildFloor(c);if(c.est)Object.assign(G,c.est);const e=lado?ENTRADA[lado]:[240,286];G.jug.forEach((Q,i)=>{const off=i?(lado=='W'||lado=='E'?[0,18]:[18,0]):[0,0];Q.x=e[0]+off[0];Q.y=e[1]+off[1];Q.dash=0;Q.est=null;Q.safe=[Q.x,Q.y]});G.cam={x:P.x,y:P.y-20};G.fade=lado?.7:1;
 if(c.tipo=='jefe'&&!c.limpio){G.B=crearJefe(Z.jefe);G.cerrado=1;G.intro={t:0};musica(Z.jefe=='cenizas'?'final':'jefe_'+Z.jefe);return}
 musica('sala');if((c.tipo=='pelea'||c.tipo=='llave')&&!c.limpio){G.cerrado=1;G.olaT=45;G.oleadas=crearOleadas(c)}
 if(!c.est){if(c.tipo=='tienda')ponerTienda();if(c.tipo=='tesoro'){ponerCofre(240,160,false,'raro');soltarMonedas(240,200,8)}
@@ -30,7 +30,7 @@ if(c.tipo=='secreto'){ponerCofre(240,150,false,'raro');soltarMonedas(240,195,22)
 if(!lado)G.aviso={txt:Z.n,l:120};if(c.tipo=='secreto'&&!c.est)G.aviso={txt:'Sala secreta',l:90}}
 function crearOleadas(c){const Z=ZONAS[G.zona],D=G.dif,n=(c.tipo=='llave'?2:1+(Math.random()<.55?1:0))+D.olas,L=[];
 for(let i=0;i<n;i++){const k=Math.round(rnd(4,6.5)*D.cant)+G.zona;L.push([...Array(k)].map(()=>Z.enem[Math.floor(Math.random()*Z.enem.length)]))}return L}
-function cuartoLimpio(){const c=G.room;c.limpio=true;G.cerrado=0;G.oleadas=null;sfx('puerta');G.aviso={txt:'Cuarto despejado',l:80};
+function cuartoLimpio(){const c=G.room;c.limpio=true;revivirTodos();G.cerrado=0;G.oleadas=null;sfx('puerta');G.aviso={txt:'Cuarto despejado',l:80};
 if(c.tipo=='llave')ponerCofre(240,170,false,'llave');else if(Math.random()<.45)ponerCofre(240,170,Math.random()<.15);else if(Math.random()<.3*G.dif.poc)G.pick.push({x:240,y:170,t:0})}
 function ponerEscalera(){G.escalera={x:240,y:150};burst(240,150,40,'#ffe94a',3);ring(240,150,24,'#ffe94a',16)}
 // Puertas: abiertas si el cuarto no está en pelea; la del jefe pide la llave; la secreta se rompe a golpes.
@@ -38,13 +38,13 @@ const puertaAbierta=l=>{const pc=G.room&&G.room.p[l];return !!pc&&pc.abierta&&!G
 function golpePared(x,y,r){const c=G.room;if(!c)return;Object.keys(c.p).forEach(l=>{const pc=c.p[l],[px,py]=PUERTA_POS[l];if(pc.tipo!='secreta'||pc.abierta||Math.hypot(x-px,y-py)>(r||0)+28)return;
 pc.golpes=(pc.golpes||0)+1;burst(px,py,10,'#8a7a9a',2.5,24,2,.12);G.shake=Math.max(G.shake,3);sfx('golpe');
 if(pc.golpes>=3){pc.abierta=true;const n=vecino(c,l);if(n)n.conocido=true;burst(px,py,40,'#c3b6d9',3.5,30,2,.12);ring(px,py,26,'#ffe94a',16);G.aviso={txt:'¡Un pasaje secreto!',l:90};sfx('cofre')}})}
-function updateMundo(){const c=G.room,P=G.P;if(!c||G.over||G.salir)return;
-Object.keys(c.p).forEach(l=>{const pc=c.p[l],[px,py]=PUERTA_POS[l];if(pc.tipo=='llave'&&!pc.abierta&&!G.cerrado&&Math.hypot(P.x-px,P.y-py)<34){
+function updateMundo(){const c=G.room,P=G.P,algun=f=>vivos().some(f);if(!c||G.over||G.salir)return;
+Object.keys(c.p).forEach(l=>{const pc=c.p[l],[px,py]=PUERTA_POS[l];if(pc.tipo=='llave'&&!pc.abierta&&!G.cerrado&&algun(Q=>Math.hypot(Q.x-px,Q.y-py)<34)){
 if(P.llaves>0){P.llaves--;pc.abierta=true;sfx('puerta');burst(px,py,30,'#ffe94a',3);ring(px,py,22,'#ffe94a',14);G.aviso={txt:'Puerta del jefe abierta',l:80}}
 else if(!G.avisoLlave||G.t-G.avisoLlave>120){G.avisoLlave=G.t;G.aviso={txt:'Necesitas la llave de esta zona',l:80}}}});
 const sale=(l,cond)=>{if(cond&&puertaAbierta(l)){const n=vecino(c,l);if(n){entrarCuarto(n,OPUESTO[l]);return true}}return false};
-if(sale('N',P.y<26)||sale('S',P.y>306)||sale('W',P.x<12)||sale('E',P.x>468))return;
-if(G.escalera&&Math.hypot(P.x-G.escalera.x,P.y-G.escalera.y-4)<12){G.salir=1;sfx('puerta')}}
+if(sale('N',algun(Q=>Q.y<26))||sale('S',algun(Q=>Q.y>306))||sale('W',algun(Q=>Q.x<12))||sale('E',algun(Q=>Q.x>468)))return;
+if(G.escalera&&algun(Q=>Math.hypot(Q.x-G.escalera.x,Q.y-G.escalera.y-4)<12)){G.salir=1;sfx('puerta')}}
 function drawPuertas(){const c=G.room,t=G.t;if(!c)return;
 Object.keys(c.p).forEach(l=>{const pc=c.p[l],ab=puertaAbierta(l),[px,py]=PUERTA_POS[l];
 if(pc.tipo=='secreta'&&!pc.abierta){w.strokeStyle='#120c18';w.lineWidth=1;w.beginPath();const g=pc.golpes||0;for(let k=0;k<3+g*3;k++){const a=k*2.1,r0=2+k%3*3;w.moveTo(px+Math.cos(a)*r0,py+Math.sin(a)*r0);w.lineTo(px+Math.cos(a)*(r0+5+g*2),py+Math.sin(a)*(r0+4+g*2))}w.stroke();return}

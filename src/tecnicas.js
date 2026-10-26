@@ -1,6 +1,6 @@
 // Técnicas (teclas 1-3) y golpes finales (Q) de cada personaje.
 // usar(P, ángulo, x, y) dispara la técnica desde la punta del arma; mej = [nombre de la mejora, qué hace].
-const disparo=(k,x,y,a,v,o)=>G.shots.push(Object.assign({k,x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:3,l:90,dmg:10,pierce:0,hits:[]},o));
+const disparo=(k,x,y,a,v,o)=>G.shots.push(Object.assign({own:G.P,k,x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:3,l:90,dmg:10,pierce:0,hits:[]},o));
 const TEC={
 hielo:{n:'Hielo',cd:9,c:'#5ee7ff',mej:['Hielo cortante','El hielo sale en abanico de tres y pega más.'],
  usar(P,a,x,y){const n=lvl('hielo')?3:1;for(let i=0;i<n;i++)disparo('hielo',x,y,a+(i-(n-1)/2)*.17,5.2,{dmg:Math.round(13*(lvl('hielo')>1?1.5:lvl('hielo')?1.2:1))});sfx('hielo')}},
@@ -28,11 +28,11 @@ martillazo:{n:'Martillazo',cd:28,c:'#ffb04a',mej:['Golpe de montaña','Más alca
 hacha:{n:'Hacha',cd:40,c:'#c3c8d8',mej:['Hachas gemelas','Lanzas dos hachas que vuelven a tu mano.'],
  usar(P,a,x,y){const n=lvl('hacha')?2:1;for(let i=0;i<n;i++)disparo('hacha',x,y,a+(i-(n-1)/2)*.35,4.2,{r:6,l:200,dmg:25,pierce:99,ida:30});sfx('hacha')}},
 pisoton:{n:'Pisotón',cd:90,c:'#ff8a2a',mej:['Pisada de gigante','La onda llega más lejos y pega más.'],
- usar(P){dañarCajas(P.x,P.y,80*(1+.35*lvl('pisoton')),35);G.ondas.push({x:P.x,y:P.y,r:6,max:80*(1+.35*lvl('pisoton')),dmg:Math.round(35*(1+.3*lvl('pisoton'))),hits:[]});G.shake=10;G.stop=4;sfx('pisoton');burst(P.x,P.y,30,'#8a7a6a',3,30,2,.1);decal(P.x,P.y+2,20,'#1a120a',500)}},
+ usar(P){dañarCajas(P.x,P.y,80*(1+.35*lvl('pisoton')),35);G.ondas.push({own:P,x:P.x,y:P.y,r:6,max:80*(1+.35*lvl('pisoton')),dmg:Math.round(35*(1+.3*lvl('pisoton'))),hits:[]});G.shake=10;G.stop=4;sfx('pisoton');burst(P.x,P.y,30,'#8a7a6a',3,30,2,.1);decal(P.x,P.y+2,20,'#1a120a',500)}},
 dagas:{n:'Dagas',cd:6,c:'#c3c8d8',mej:['Mil cortes','Lanzas dos dagas a la vez.'],
  usar(P,a,x,y){const n=lvl('dagas')?2:1;for(let i=0;i<n;i++)disparo('daga',x,y,a+rnd(-.06,.06)+(i-(n-1)/2)*.12,6.2,{dmg:Math.round(9*(lvl('dagas')>1?1.3:1))});sfx('dagas')}},
 veneno:{n:'Veneno',cd:70,c:'#7cff4a',mej:['Peste','La nube es más grande y dura más.'],
- usar(P,a,x,y){const d=Math.min(120,Math.hypot(P.ax-x,P.ay-y));G.frascos.push({x,y,x0:x,y0:y,tx:x+Math.cos(a)*d,ty:y+Math.sin(a)*d,t:0,T:30});sfx('lanzar')}},
+ usar(P,a,x,y){const d=Math.min(120,Math.hypot(P.ax-x,P.ay-y));G.frascos.push({own:P,x,y,x0:x,y0:y,tx:x+Math.cos(a)*d,ty:y+Math.sin(a)*d,t:0,T:30});sfx('lanzar')}},
 sombra:{n:'Sombra',cd:60,c:'#9a3aff',mej:['Paso de sombra','Pega más y se recarga antes.'],
  usar(P,a){const tg=objetivoCercano();burst(P.x,P.y-10,24,'#2a1650',2.5,30,2);ring(P.x,P.y-10,14,'#9a3aff',12);let nx,ny;
  if(tg&&Math.hypot(tg.x-P.x,tg.y-P.y)<170){const b=Math.atan2(tg.y-P.y,tg.x-P.x);nx=tg.ref.x+Math.cos(b)*18;ny=tg.ref.y+Math.sin(b)*10}else{nx=P.x+Math.cos(a)*60;ny=P.y+Math.sin(a)*60}
@@ -63,10 +63,10 @@ reflejo:{trail:s=>G.pt.push({x:s.x,y:s.y,vx:0,vy:0,l:10,m:10,c:'#ffd24a',s:1,g:0
  draw:s=>{w.fillStyle='#ffd24a';w.beginPath();w.arc(s.x,s.y,3.5,0,7);w.fill();w.fillStyle='#fff';w.fillRect(Math.round(s.x-1),Math.round(s.y-1),2,2)}}};
 // Golpes finales: paso(U) corre desde U.t=55, cuando termina la carga; el remate llega cerca de U.t=114.
 const ULT={
-abismo:{n:'Lanzas del Abismo',c:'#ff2a4a',paso(U){if(U.t>=60&&U.t<=104&&U.t%5==0)caerSobre('lanza',32,16);if(U.t==114)G.spears.push({kind:'lanza',x:U.foco.x,y:U.foco.y-340,ty:U.foco.y-6,big:1,dmg:260,rad:60})}},
+abismo:{n:'Lanzas del Abismo',c:'#ff2a4a',paso(U){if(U.t>=60&&U.t<=104&&U.t%5==0)caerSobre('lanza',32,16);if(U.t==114)G.spears.push({own:G.P,kind:'lanza',x:U.foco.x,y:U.foco.y-340,ty:U.foco.y-6,big:1,dmg:260,rad:60})}},
 celestial:{n:'Corte Celestial',c:'#ffe94a',paso(U){if(U.t>=60&&U.t<=104&&U.t%6==0){const T=objetivos(),tg=T[Math.floor(Math.random()*T.length)];if(tg){golpeArco(tg.x,tg.y,rnd(0,6.3),38,6.3,30,4,true,'#ffe94a');sfx('tajo')}}
  if(U.t==114){[.7,-.7].forEach(a=>G.cortes.push({x:U.foco.x,y:U.foco.y-20,a,l:24}));objetivos().forEach(t=>dañar(t,t.boss?240:130,22));golpeFinal(U.foco.x,U.foco.y-20,'#ffe94a')}}},
-lluvia:{n:'Lluvia de Flechas',c:'#7cff4a',paso(U){if(U.t>=60&&U.t<=110&&U.t%2==0)caerSobre('flecha',13,10);if(U.t==114)G.spears.push({kind:'flecha',x:U.foco.x,y:U.foco.y-340,ty:U.foco.y-6,big:1,dmg:220,rad:55})}},
+lluvia:{n:'Lluvia de Flechas',c:'#7cff4a',paso(U){if(U.t>=60&&U.t<=110&&U.t%2==0)caerSobre('flecha',13,10);if(U.t==114)G.spears.push({own:G.P,kind:'flecha',x:U.foco.x,y:U.foco.y-340,ty:U.foco.y-6,big:1,dmg:220,rad:55})}},
 terremoto:{n:'Terremoto',c:'#ffb04a',paso(U){G.shake=Math.max(G.shake,U.t<114?5:0);if(U.t>=60&&U.t<=110&&U.t%7==0){caerSobre('roca',30,16);const P=G.P,T=objetivos(),tg=T[Math.floor(Math.random()*T.length)];
  if(tg)for(let k=0;k<6;k++)decal(P.x+(tg.x-P.x)*k/6+rnd(-4,4),P.y+(tg.y+10-P.y)*k/6+rnd(-3,3),3,'#1a120a',400)}
  if(U.t==114){objetivos().forEach(t=>dañar(t,t.boss?200:120,24));ring(G.P.x,G.P.y,160,'#ffb04a',30,4);sfx('pisoton');for(let k=0;k<14;k++)decal(rnd(40,440),rnd(60,300),rnd(4,10),'#1a120a',600);golpeFinal(U.foco.x,U.foco.y-10,'#ffb04a')}}},
@@ -74,4 +74,4 @@ torbellino:{n:'Torbellino de Dagas',c:'#c3c8d8',paso(U){if(U.t<56||U.t>114)retur
  U.cuch=U.cuch.map(a=>a+.18);U.cuch.forEach(a=>{const x=P.x+Math.cos(a)*U.rad,y=P.y-12+Math.sin(a)*U.rad*.7;objetivos().forEach(t=>{if(Math.hypot(t.x-x,t.y-y)<t.r+6&&G.t-(t.ref._tb||0)>8){t.ref._tb=G.t;dañar(t,10,1)}});if(G.t%2==0)G.pt.push({x,y,vx:0,vy:0,l:10,m:10,c:'#c3c8d8',s:1,g:0})});
  if(U.t==114){objetivos().forEach(t=>dañar(t,t.boss?200:110,20));golpeFinal(U.foco.x,U.foco.y-20,'#c3c8d8');U.cuch=null}}}};
 function caerSobre(kind,dmg,rad){const U=G.U,B=G.B,T=objetivos(),tg=B&&!B.dead?null:T[Math.floor(Math.random()*T.length)],x=tg?tg.ref.x+rnd(-8,8):U.foco.x+rnd(-34,34),y=tg?tg.ref.y:U.foco.y-rnd(10,40);
-G.spears.push({kind,x,y:y-230,ty:y,big:0,dmg,rad})}
+G.spears.push({own:G.P,kind,x,y:y-230,ty:y,big:0,dmg,rad})}

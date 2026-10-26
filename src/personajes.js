@@ -33,7 +33,7 @@ const AFIJOS=[{id:'brutal',m:'brutal',f:'brutal',mult:1.3,d:'+30 % de daño'},{i
 function nuevaArma(id,afijo){return{id,af:afijo||null}}
 function armaInfo(a){const b=ARMAS[a.id],af=AFIJOS.find(x=>x.id==a.af);return{n:b.n+(af?' '+af[b.g]:''),spr:b.spr,mult:b.mult*(af&&af.mult||1),cdm:(b.cdm||1)*(af&&af.cdm||1),efecto:af&&!af.mult&&!af.cdm?af.id:null,
  d:[Math.round((b.mult*(af&&af.mult||1)-1)*100),(b.cdm||1)*(af&&af.cdm||1)].map((v,i)=>i?(v<1?'más rápida':v>1?'más lenta':''):(v>0?'+'+v+' % daño':v<0?v+' % daño':'')).filter(Boolean).concat(af&&!af.mult&&!af.cdm?[af.d]:[]).join(' · ')||'arma básica',raro:!!af}}
-function armaAlAzar(tipo,raro){const ids=Object.keys(ARMAS).filter(k=>ARMAS[k].tipo==tipo&&k!=PERS().ini),id=ids[Math.floor(Math.random()*ids.length)];return nuevaArma(id,raro||Math.random()<.5?AFIJOS[Math.floor(Math.random()*AFIJOS.length)].id:null)}
+function armaAlAzar(tipo,raro){const ids=Object.keys(ARMAS).filter(k=>ARMAS[k].tipo==tipo&&!PERSONAJES.some(p=>p.ini==k)),id=ids[Math.floor(Math.random()*ids.length)];return nuevaArma(id,raro||Math.random()<.5?AFIJOS[Math.floor(Math.random()*AFIJOS.length)].id:null)}
 const VESTUARIOS=[{id:'normal',n:'Clásico'},{id:'sombra',n:'Sombra',c:[106,76,255],req:'zombi',txt:'Vence al Rey Podrido'},{id:'escarcha',n:'Escarcha',c:[94,231,255],req:'ogro',txt:'Vence a Gruk'},
 {id:'sangre',n:'Sangre',c:[255,42,74],req:'cenizas',txt:'Vence al Señor de las Cenizas'},{id:'oro',n:'Oro',c:[255,210,74],req:'dos',txt:'Gana con dos héroes distintos'},
 {id:'pesadilla',n:'Pesadilla',c:[150,20,60],req:'pesadilla',txt:'Gana en modo Pesadilla'}];
@@ -45,9 +45,9 @@ const tintes={};
 function atlasVestuario(id){if(tintes[id])return tintes[id];const v=VESTUARIOS.find(x=>x.id==id);if(!v||!v.c)return atlas;const [c,x]=mk(512,512);x.drawImage(atlas,0,0);
 const d=x.getImageData(128,0,144,330),a=d.data;for(let i=0;i<a.length;i+=4){if(!a[i+3])continue;const l=(a[i]*.3+a[i+1]*.59+a[i+2]*.11)/255,k=.35+l*1.05;for(let j=0;j<3;j++)a[i+j]=Math.min(255,a[i+j]*.3+v.c[j]*k*.7)}
 x.putImageData(d,128,0);return tintes[id]=c}
-const ELEGIDO={p:0,sexo:'f',vest:'normal',modo:'normal'};try{Object.assign(ELEGIDO,JSON.parse(localStorage.getItem('mazmorra-heroe')||'{}'))}catch(e){}
+const ELEGIDO={p:0,sexo:'f',vest:'normal',modo:'normal',jug:1,p2:1,sexo2:'m'};try{Object.assign(ELEGIDO,JSON.parse(localStorage.getItem('mazmorra-heroe')||'{}'))}catch(e){}
 const PERS=()=>PERSONAJES[ELEGIDO.p]||PERSONAJES[0];
-function mejorasDe(){const p=PERS();return p.tecs.map(t=>({id:t,n:TEC[t].mej[0],d:TEC[t].mej[1],max:2,ico:t})).concat([
+function mejorasDe(p){p=p||PERS();return p.tecs.map(t=>({id:t,n:TEC[t].mej[0],d:TEC[t].mej[1],max:2,ico:t})).concat([
 {id:'corazon',n:'Corazón de dragón',d:'Un corazón más y la vida llena.',max:3,ico:'corazon'},
 {id:'abismo',n:'Furia hambrienta',d:'Tu golpe final se carga un 50 % más rápido.',max:2,ico:p.ult},
 {id:'pies',n:'Pies de viento',d:'Corres más rápido y ruedas más seguido.',max:2,ico:'pies'},
@@ -59,7 +59,10 @@ b.querySelector('.barras').innerHTML=['Vida','Rapidez','Fuerza'].map((n,k)=>'<sp
 const p=PERS();document.getElementById('heroeDesc').textContent=p.d;
 const T=document.getElementById('heroeTecs');T.innerHTML='';p.tecs.concat([p.ult]).forEach((t,k)=>{const d=document.createElement('span');d.className='tec';const c=document.createElement('canvas');c.width=c.height=36;
 const x=c.getContext('2d');x.imageSmoothingEnabled=false;icono(x,t,18,18,3);d.appendChild(c);d.appendChild(document.createTextNode((k<3?(k+1)+' ':'Q ')+(k<3?TEC[t].n:ULT[t].n)));T.appendChild(d)});
-document.querySelectorAll('.sexo').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s==ELEGIDO.sexo));if(!LOGROS.cenizas)ELEGIDO.modo='normal';
+document.querySelectorAll('.sexo').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s==ELEGIDO.sexo));
+if(coarse)ELEGIDO.jug=1;document.querySelectorAll('.njug').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.n==ELEGIDO.jug));document.getElementById('filaJug').hidden=coarse;
+const j2=PERSONAJES[ELEGIDO.p2][ELEGIDO.sexo2];document.getElementById('j2').hidden=ELEGIDO.jug!=2;document.getElementById('j2nombre').textContent=j2.n+', '+j2.clase.toLowerCase();
+document.querySelectorAll('.sexo2').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s==ELEGIDO.sexo2));if(!LOGROS.cenizas)ELEGIDO.modo='normal';
 document.querySelectorAll('.modo').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.m==ELEGIDO.modo);if(b.dataset.m=='pesadilla')b.textContent=LOGROS.cenizas?'Pesadilla':'Pesadilla (bloqueado)'});
 const V=document.getElementById('vestuarios');V.innerHTML='';VESTUARIOS.forEach(v=>{const b=document.createElement('button');b.type='button';b.className='vest';const ok=desbloqueado(v);
 b.innerHTML='<i style="background:'+(v.c?'rgb('+v.c.join(',')+')':'linear-gradient(90deg,#6a4cff,#ff5a3c)')+'"></i><span></span>';b.querySelector('span').textContent=ok?v.n:'Bloqueado';b.title=ok?v.n:v.txt;
@@ -72,5 +75,7 @@ const r=PERSONAJES[i][ELEGIDO.sexo].spr[i==ELEGIDO.p?'run':'idle'][t];x.drawImag
 function abrirElegir(){initAudio();document.getElementById('menu').hidden=true;document.getElementById('endScr').hidden=true;document.getElementById('elegir').hidden=false;pintarElegir();animarElegir();
 document.querySelector('#heroes .heroe[aria-pressed="true"]')?.focus()}
 document.querySelectorAll('.sexo').forEach(b=>b.onclick=()=>{ELEGIDO.sexo=b.dataset.s;pintarElegir()});
+document.querySelectorAll('.njug').forEach(b=>b.onclick=()=>{ELEGIDO.jug=+b.dataset.n;pintarElegir()});document.querySelectorAll('.sexo2').forEach(b=>b.onclick=()=>{ELEGIDO.sexo2=b.dataset.s;pintarElegir()});
+document.getElementById('j2ant').onclick=()=>{ELEGIDO.p2=(ELEGIDO.p2+PERSONAJES.length-1)%PERSONAJES.length;pintarElegir()};document.getElementById('j2sig').onclick=()=>{ELEGIDO.p2=(ELEGIDO.p2+1)%PERSONAJES.length;pintarElegir()};
 document.querySelectorAll('.modo').forEach(b=>b.onclick=()=>{const av=document.getElementById('vestAviso');if(b.dataset.m=='pesadilla'&&!LOGROS.cenizas){av.textContent='Pesadilla se desbloquea al ganar una vez.';return}ELEGIDO.modo=b.dataset.m;
 av.textContent=ELEGIDO.modo=='pesadilla'?'Pesadilla: jefes con el doble de vida y más rápidos, más enemigos, balas veloces y cada golpe quita un corazón entero.':'';pintarElegir()});
