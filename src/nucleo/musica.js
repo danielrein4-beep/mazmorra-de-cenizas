@@ -33,7 +33,7 @@ const FANFARRIA = {
 function bus() {
   if (!musBus) {
     musBus = AC.createGain();
-    musBus.gain.value = musicaOn ? 0.55 : 0;
+    musBus.gain.value = musicaOn ? 0.55 * (OPC ? OPC.musica / 100 : 1) : 0;
     musBus.connect(AC.destination);
   }
   return musBus;
@@ -194,7 +194,7 @@ function alternarMusica() {
   try {
     localStorage.setItem('mazmorra-musica', musicaOn ? 'si' : 'no');
   } catch (e) {}
-  if (musBus) musBus.gain.value = musicaOn ? 0.55 : 0;
+  if (musBus) musBus.gain.value = musicaOn ? 0.55 * (OPC ? OPC.musica / 100 : 1) : 0;
   document.querySelectorAll('.btnMusica').forEach(b => {
     b.textContent = musicaOn ? 'Música: sí' : 'Música: no';
     b.setAttribute('aria-pressed', musicaOn);

@@ -148,6 +148,7 @@ function updateEnemigos() {
       decal(m.x, m.y + 2, 6, '#2a0a14', 500);
       P.meter = Math.min(100, P.meter + 6 * (1 + 0.5 * (P.mej.abismo || 0)));
       G.kills++;
+      hazaña('des', 1);
       sfx('boom');
       soltarMonedas(m.x, m.y - 4, m.def.oro || 1 + Math.floor(Math.random() * 2));
       if (Math.random() < 0.08 * G.dif.poc) G.pick.push({ x: m.x, y: m.y, t: 0 });

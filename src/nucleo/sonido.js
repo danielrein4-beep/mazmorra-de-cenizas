@@ -15,7 +15,7 @@ function prepararSonido() {
   comp.release.value = 0.2;
   comp.connect(AC.destination);
   fxBus = AC.createGain();
-  fxBus.gain.value = 0.85;
+  fxBus.gain.value = 0.85 * (OPC ? OPC.efectos / 100 : 1);
   fxBus.connect(comp);
   const conv = AC.createConvolver(),
     n = Math.floor(AC.sampleRate * 2.4),

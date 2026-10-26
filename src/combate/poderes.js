@@ -1,7 +1,12 @@
 // Motor de poderes: objetivos, daño con el arma, proyectiles, tajos, ondas, veneno, golpes finales y sus efectos.
-function objetivos() {
+function objetivos(dueño) {
   const L = [],
     B = G.B;
+  // En la arena, el rival también es un blanco.
+  if (G.arena)
+    G.jug.forEach(Q => {
+      if (Q !== (dueño || G.P) && !Q.caido) L.push({ x: Q.x, y: Q.y - 12, r: 8, ref: Q, jugador: 1 });
+    });
   if (B && !B.dead && !B.trans && !B.oculto && B.z < 14 && !G.intro)
     // El cuerpo del jefe: unos 64 px en los de la mazmorra, más grande en los guardianes de la Torre.
     L.push({ x: B.x, y: B.y - (B.def.cy || 32), r: B.def.r || 32, ref: B, boss: 1 });
@@ -24,9 +29,10 @@ function objetivoCercano() {
 function dañar(tg, d, heavy, sinArma) {
   const P = G.P,
     A = armaInfo(P.arma);
-  d = Math.round(efectoGrimorio(P, tg, d * (sinArma ? 1 : A.mult)));
+  d = Math.round(dañoConEstado(P, tg, efectoGrimorio(P, tg, d * (sinArma ? 1 : A.mult) * (P.multTec || 1))));
   P.meter = Math.min(100, P.meter + d * 0.11 * (1 + 0.5 * lvl('abismo')));
   const r = tg.ref;
+  if (tg.jugador) return golpearJugador(r, heavy);
   if (A.efecto == 'quema') r.quema = 150;
   if (A.efecto == 'frio') r.frio = 120;
   if (A.efecto == 'vampiro') {
@@ -147,7 +153,8 @@ function cast() {
     a = Math.atan2(P.ay - (P.y - 14), P.ax - P.x),
     ox = P.x + Math.cos(a) * 14,
     oy = P.y - 14 + Math.sin(a) * 14;
-  P.cds[P.spell] = Math.round(T.cd * A.cdm);
+  P.cds[P.spell] = Math.round(T.cd * A.cdm * (P.cdm || 1) * (1 - 0.08 * forjaDe(id)));
+  hazaña('mag', 0.4);
   P.kick = 4;
   P.circ = 12;
   for (let i = 0; i < 6; i++) {
@@ -165,7 +172,7 @@ function cast() {
       g: 0,
     });
   }
-  T.usar(P, a, ox, oy);
+  conForja(P, id, () => T.usar(P, a, ox, oy));
 }
 function rayoPts(x1, y1, x2, y2) {
   const d = Math.hypot(x2 - x1, y2 - y1),
@@ -240,6 +247,7 @@ function rayo(ox, oy, a, dmg, fin) {
   }
 }
 function dash() {
+  hazaña('agi', 0.6);
   const P = G.P;
   if (P.caido || P.dash > 0 || P.dcd > 0 || P.est || G.U || G.intro || G.over) return;
   let dx = P.dx,
@@ -324,11 +332,11 @@ function updatePoderes() {
     T.trail && T.trail(s);
     let muere = s.l <= 0 || (!T.fantasma && solidAt(s.x, s.y, 0));
     if (!muere)
-      objetivos().forEach(tg => {
+      objetivos(dueño).forEach(tg => {
         if (muere || s.hits.includes(tg.ref)) return;
         if (Math.hypot(s.x - tg.x, s.y - tg.y) < tg.r + s.r) {
           s.hits.push(tg.ref);
-          conJugador(dueño, () => dañar(tg, s.dmg, s.k == 'fuego' ? 4 : 0));
+          conJugador(dueño, () => dañar(tg, s.dmg * (s.forja || 1), s.k == 'fuego' ? 4 : 0));
           if (s.pierce > 0) s.pierce--;
           else muere = true;
         }

@@ -79,6 +79,7 @@ function newRun() {
     P.hojas = hojasDe(P.grim, PERSONAJES[P.pid].id);
     P.gcd = 0;
   });
+  aplicarEstado(js);
   G.jug = js;
   G.coop = js.length > 1;
   G.P = js[0];
@@ -170,6 +171,7 @@ function hurtPlayer() {
   const P = G.P;
   if (P.caido || P.inv > 0 || P.dash > 0 || P.est || G.U || G.over || G.intro) return;
   if (corazaAguanta(P)) return;
+  hazaña('res', 5);
   P.hp -= G.dif.golpe;
   P.inv = 70;
   P.hurt = 20;
@@ -180,7 +182,9 @@ function hurtPlayer() {
   burst(P.x, P.y - 12, 18, '#ff4a5a', 2.5);
   ring(P.x, P.y - 10, 18, '#ff4a5a', 14);
   sfx('hurt');
+  vibrar(90);
   if (P.hp <= 0) {
+    if (G.arena) return finRonda(P);
     if (caer(P)) return;
     G.over = 1;
     G.slow = 0.3;
@@ -232,6 +236,8 @@ function step() {
   G.t++;
   if (G.slowT > 0 && --G.slowT == 0) G.slow = 1;
   G.jug.forEach((Q, i) => conJugador(Q, () => pasoJugador(Q, i)));
+  pasoGuia();
+  pasoArena();
   const P = G.P,
     vw = VW / G.zoom,
     vh = VH / G.zoom;
@@ -295,7 +301,7 @@ function step() {
 let last = 0;
 function frame(now) {
   requestAnimationFrame(frame);
-  if (!running || !G) return;
+  if (!running || !G || pausado) return;
   medirCuadro(now - (last || now));
   const el = Math.min(50, now - (last || now));
   last = now;
@@ -316,6 +322,7 @@ function frame(now) {
 function end(win) {
   if (!running) return;
   running = false;
+  document.getElementById('botonPausa').hidden = true;
   cv.style.filter = '';
   musica(win ? 'victoria' : null);
   const s = Math.round((performance.now() - G.start) / 1000),
@@ -345,7 +352,9 @@ function end(win) {
       ZONAS.length +
       '). Rueda a través de las balas: mientras ruedas no te tocan.';
   if (G.torre) finTorre(win);
+  if (G.arena) finArena();
   ganarCenizas();
+  ganarEstado();
   finAlInvitado(
     document.getElementById('endTitle').textContent,
     document.getElementById('endText').textContent,
@@ -362,16 +371,27 @@ function pantallaCompleta() {
   } catch (e) {}
 }
 function start() {
+  // La arena necesita dos: en la misma compu o en línea.
+  if (ELEGIDO.juego == 'arena' && !(ELEGIDO.jug == 2 && (!coarse || enRed))) {
+    irPaso(1);
+    document.getElementById('modoAviso').textContent = coarse
+      ? 'La arena es de dos: en el teléfono se juega en línea. Crea una sala en el paso 4.'
+      : 'La arena es de dos: elige «Dos en esta pantalla» o juega en línea.';
+    return;
+  }
   pantallaCompleta();
   initAudio();
   precargarMusica();
   newRun();
   if (ELEGIDO.juego == 'torre') iniciarTorre();
+  else if (ELEGIDO.juego == 'arena') iniciarArena();
   else entrarZona(0);
+  if (!G.arena) empezarGuia();
   document.getElementById('cartaImg').hidden = true;
   document.getElementById('cartaBtn').hidden = true;
   ['menu', 'endScr', 'mejoras', 'elegir'].forEach(id => (document.getElementById(id).hidden = true));
   document.getElementById('tbtns').hidden = !coarse;
+  document.getElementById('botonPausa').hidden = !!(enRed && enRed.rol == 'invitado');
   running = true;
   last = 0;
 }

@@ -65,7 +65,7 @@ function drawHud() {
   }
   txt(
     (G.torre ? 'Piso ' + G.piso + ' · ' : '') +
-      ZONAS[G.zona].n +
+      (G.arena ? 'Arena' : ZONAS[G.zona].n) +
       (G.dif.id == 'pesadilla' ? ' · Pesadilla' : ''),
     OW - 18,
     118,
@@ -112,9 +112,12 @@ function drawHud() {
     o.lineWidth = sel ? 3 : 2;
     o.strokeRect(x + 1, y + 1, 56, 56);
     icono(o, id, x + 29, y + 23, 3);
-    if (lvl(id)) {
+    const nv = nivelTec(P, id);
+    if (nv > 1) {
+      o.font = '8px ' + CIFRAS;
       o.fillStyle = '#ffe94a';
-      for (let k = 0; k < lvl(id); k++) o.fillRect(x + 6 + k * 6, y + 6, 4, 4);
+      o.textAlign = 'left';
+      o.fillText(ROMANO[nv - 1], x + 5, y + 13);
     }
     const cdT = Math.round(s.cd * armaInfo(P.arma).cdm);
     if (P.cds[i] > 0) {
@@ -156,6 +159,8 @@ function drawHud() {
   });
   drawHudJ2();
   drawNuevoTitulo();
+  drawGuia();
+  drawArena();
   if (G.vendedor) {
     const [vx, vy] = toS(G.vendedor.x, G.vendedor.y - 30);
     txt('Zaro, el mercader', vx, vy - 24, 15, '#ffe94a', 'center', 1);

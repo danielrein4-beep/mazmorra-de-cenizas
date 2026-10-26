@@ -64,14 +64,14 @@ const GUARDIANES = {
 };
 const guardianDe = n => GUARDIANES[n] || 'cenizas';
 
-// Cada piso pega un poco más fuerte: enemigos con más vida, más enemigos, balas más rápidas y jefes más duros.
+// Cada piso pega un poco más fuerte (ajustado para que el Dragón se pueda vencer con lo que juntas en la subida): enemigos con más vida, más enemigos, balas más rápidas y jefes más duros.
 function difDePiso(n) {
   const b = DIFS[ELEGIDO.modo] || DIFS.normal;
   return Object.assign({}, b, {
-    enem: b.enem * (1 + 0.06 * (n - 1)),
+    enem: b.enem * (1 + 0.035 * (n - 1)),
     cant: b.cant * Math.min(2.2, 1 + 0.025 * (n - 1)),
     olas: b.olas + (n > 40 ? 1 : 0) + (n > 80 ? 1 : 0),
-    jefe: b.jefe * (1 + 0.3 * Math.floor((n - 1) / 10)),
+    jefe: b.jefe * (1 + 0.18 * Math.floor((n - 1) / 10)),
     bala: b.bala * Math.min(1.45, 1 + 0.005 * n),
     cdJ: b.cdJ * Math.max(0.6, 1 - 0.006 * n),
   });

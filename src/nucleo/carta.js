@@ -137,6 +137,14 @@ document.querySelectorAll('.juego').forEach(
   b =>
     (b.onclick = () => {
       ELEGIDO.juego = b.dataset.j;
+      if (b.dataset.j == 'arena' && !coarse) ELEGIDO.jug = 2;
+      document.getElementById('modoAviso').textContent =
+        b.dataset.j == 'arena'
+          ? coarse
+            ? 'Arena: tú contra un amigo, al mejor de tres. En el teléfono se juega en línea (paso 4).'
+            : 'Arena: tú contra un amigo, al mejor de tres, en esta compu o en línea.'
+          : '';
+      if (typeof pintarElegir == 'function') pintarElegir();
       pintarRecordTorre();
     }),
 );

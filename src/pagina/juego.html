@@ -66,6 +66,29 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .paso{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2vh,16px);width:100%}
 .paso[hidden]{display:none!important}
 #modoAviso{min-height:1.2em}
+#forjaHeroe{color:#ffe94a}
+#forjaLista{display:grid;gap:8px;width:min(480px,92vw)}
+.forja{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:10px;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:6px 10px}
+.forja b{display:block;color:var(--ink)}
+.forja small{color:var(--muted);font-size:12px}
+#estadoNivel{font-size:clamp(22px,4vw,32px);color:#ffe94a}
+#estadoBarra{width:min(320px,80vw);height:10px;background:#17111f;border:2px solid #4e4070;border-radius:6px;overflow:hidden}
+#estadoExp{height:100%;background:#177e89}
+#estadoLista{display:grid;gap:6px;width:min(460px,92vw)}
+.hab{display:grid;grid-template-columns:7.5em 2em 3em 1fr;align-items:center;gap:8px;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:6px 10px}
+.hab .rango{font:400 16px "Press Start 2P",monospace;color:#ffe94a}
+.hab .val{color:var(--ink)}
+.hab small{color:var(--muted);font-size:12px}
+@media (max-width:420px){.hab{grid-template-columns:6.5em 2em 3em}.hab small{grid-column:1/-1}}
+#botonPausa{position:absolute;top:max(8px,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:3;font:400 14px "Press Start 2P",monospace;color:var(--ink);background:rgba(23,17,31,.7);border:2px solid var(--muted);border-radius:6px;width:40px;height:34px;cursor:pointer}
+#pausa,#opciones{z-index:6}
+.opcion{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--ink)}
+.opcion span{width:5em;text-align:right;color:var(--muted)}
+.opcion input{width:min(220px,50vw);accent-color:var(--ember)}
+.opcion output{width:3em;text-align:left}
+.opVibrar[aria-pressed="true"],.opBotones[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
+body.botonesGrandes .tb{transform:scale(1.2);margin:6px}
+body.botonesGrandes #tbtns{gap:16px}
 #grimorios{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:560px}
 .grim{background:#140e1e;border:2px solid #4e4070;border-radius:6px;padding:3px;cursor:pointer;line-height:0}
 .grim[aria-pressed="true"]{border-color:var(--ember);background:#24182e}
@@ -130,7 +153,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
       <b>Botones</b><span>rodar, cambiar técnica, grimorio, golpe final, tomar armas</span>
     </div>
     <button class="play" id="playBtn">Entrar a la mazmorra</button>
-    <button class="sec btnMusica" aria-pressed="true">Música: sí</button>
+    <div class="fila"><button type="button" class="sec" id="estadoBtn">Tu estado</button><button type="button" class="sec" id="forjaBtn">Forja</button><button class="sec btnMusica" aria-pressed="true">Música: sí</button><button type="button" class="sec abrirOpciones">Opciones</button></div>
   </div>
   <div class="overlay" id="elegir" hidden>
     <nav class="pasos" aria-label="Pasos">
@@ -141,7 +164,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
     </nav>
     <section class="paso" data-paso="1">
       <h1 class="h-chico">¿A qué jugamos?</h1>
-      <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button></div>
+      <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button><button type="button" class="sec juego" data-j="arena">Arena PvP</button></div>
       <div class="fila" id="filaRecord"><canvas id="recordInsignia" width="48" height="52"></canvas><span id="recordTexto"></span></div>
       <div class="fila" id="filaPiso" hidden><span class="etq">Empezar en</span><div id="pisos" class="fila"></div></div>
       <div class="fila"><span class="etq">Modo</span><button type="button" class="sec modo" data-m="normal">Normal</button><button type="button" class="sec modo" data-m="pesadilla">Pesadilla</button></div>
@@ -175,6 +198,38 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
       <div class="fila" id="filaRed"><span class="etq">En línea</span><button type="button" class="sec" id="crearSala">Crear sala</button><span class="etq">o</span><input id="codigoSala" maxlength="4" placeholder="K7Q2" aria-label="Código de sala de tu amigo" autocomplete="off" autocapitalize="characters" spellcheck="false"><button type="button" class="sec" id="unirseSala">Unirse</button></div>
       <p id="redAviso" aria-live="polite"></p>
     </section>
+  </div>
+  <button type="button" id="botonPausa" aria-label="Pausa" hidden>II</button>
+  <div class="overlay" id="estado" hidden>
+    <h1 class="h-chico">Tu estado</h1>
+    <p>Como en DanMachi: cada habilidad crece con lo que haces y va del rango I al S.</p>
+    <strong id="estadoNivel"></strong>
+    <div id="estadoBarra"><div id="estadoExp"></div></div>
+    <span id="estadoExpTxt" class="etq"></span>
+    <div id="estadoLista"></div>
+    <button class="play" id="estadoVolver">Volver</button>
+  </div>
+  <div class="overlay" id="forja" hidden>
+    <h1 class="h-chico">Forja de almas</h1>
+    <p>Gasta cenizas para mejorar para siempre las técnicas de tu héroe. Cambia de héroe en «Elegir».</p>
+    <strong id="forjaHeroe"></strong>
+    <div id="forjaLista"></div>
+    <button class="play" id="forjaVolver">Volver</button>
+  </div>
+  <div class="overlay" id="pausa" hidden>
+    <h1 class="h-chico">Pausa</h1>
+    <p id="pausaTexto"></p>
+    <button class="play" id="seguirBtn">Seguir</button>
+    <div class="fila"><button type="button" class="sec abrirOpciones">Opciones</button><button type="button" class="sec" id="salirBtn">Salir al menú</button></div>
+  </div>
+  <div class="overlay" id="opciones" hidden>
+    <h1 class="h-chico">Opciones</h1>
+    <label class="opcion"><span>Música</span><input type="range" id="opMusica" min="0" max="100" step="5"><output id="opMusicaV"></output></label>
+    <label class="opcion"><span>Efectos</span><input type="range" id="opEfectos" min="0" max="100" step="5"><output id="opEfectosV"></output></label>
+    <div class="fila"><span class="etq">Vibración</span><button type="button" class="sec opVibrar" data-v="1">Sí</button><button type="button" class="sec opVibrar" data-v="0">No</button></div>
+    <div class="fila"><span class="etq">Botones del teléfono</span><button type="button" class="sec opBotones" data-b="normal">Normales</button><button type="button" class="sec opBotones" data-b="grande">Grandes</button></div>
+    <div class="fila"><span class="etq">Guía</span><button type="button" class="sec" id="opGuia">Ver la guía otra vez</button></div>
+    <button class="play" id="opListo">Listo</button>
   </div>
   <div class="overlay" id="mejoras" hidden>
     <h1>Elige un poder</h1>

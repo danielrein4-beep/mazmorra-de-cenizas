@@ -100,6 +100,7 @@ function hechizoGrimorio() {
   burst(x, y, 30, g.c, 3);
   G.shake = Math.max(G.shake, 6);
   HECHIZOS[P.grim](P, a, x, y, f, g.c);
+  hazaña('mag', 3);
 }
 const HECHIZOS = {
   fuego: (P, a, x, y, f) => {

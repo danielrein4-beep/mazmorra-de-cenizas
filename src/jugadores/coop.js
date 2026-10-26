@@ -256,7 +256,14 @@ function drawHudJ2() {
   o.fillRect(x0 - 120, 180, 120, 10);
   o.fillStyle = full ? (t % 20 < 10 ? '#ff8a2a' : '#ffffff') : '#c05a1a';
   o.fillRect(x0 - 118, 182, (116 * P.meter) / 100, 6);
-  txt((vistaPropia() ? 'Tu amigo · ' : 'Jugador 2 · ') + P.nombre + (P.caido ? ' (caído)' : ''), x0, 206, 14, '#ff8a2a', 'right');
+  txt(
+    (vistaPropia() ? 'Tu amigo · ' : 'Jugador 2 · ') + P.nombre + (P.caido ? ' (caído)' : ''),
+    x0,
+    206,
+    14,
+    '#ff8a2a',
+    'right',
+  );
   const AI = armaInfo(P.arma);
   txt(AI.n, x0, 222, 12, AI.raro ? '#5ee7ff' : '#c3b6d9', 'right');
   // En línea cada uno ve sus técnicas en su pantalla: no hace falta repetir las del otro.

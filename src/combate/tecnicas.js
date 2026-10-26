@@ -13,6 +13,7 @@ const disparo = (k, x, y, a, v, o) =>
         r: 3,
         l: 90,
         dmg: 10,
+        forja: G.P.multTec || 1,
         pierce: 0,
         hits: [],
       },

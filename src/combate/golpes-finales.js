@@ -137,6 +137,7 @@ function ult() {
   G.bul = [];
   G.stop = 8;
   sfx('ult');
+  vibrar(160);
 }
 function golpeFinal(x, y, c) {
   G.inv = 7;
