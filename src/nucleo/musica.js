@@ -1,4 +1,5 @@
-// Música: temas grabados de OpenGameArt (CC0) en bucle por tipo de sala, y una fanfarria sintetizada al ganar.
+// Música: temas grabados de OpenGameArt en bucle por tipo de sala, y una fanfarria al ganar (grabada; si no
+// cargó, una sintetizada).
 let musicaOn = true,
   pista = null,
   mStep = 0,
@@ -13,11 +14,14 @@ const TEMAS = {
   sala: { src: 'musica/salas.mp3' },
   jefe_zombi: { src: 'musica/rey.mp3' },
   jefe_ogro: { src: 'musica/gruk.mp3' },
-  final: { src: 'musica/cenizas.mp3', intro: 'musica/cenizas-intro.mp3' },
+  // El último jefe: la entrada de nene y después Blackmoor Colossus de Matthew Pablo (CC-BY 3.0), con coro y tambores.
+  final: { src: 'musica/coloso.mp3', intro: 'musica/cenizas-intro.mp3' },
   // Guardianes de la Torre y el Dragón: Emma_MA, Juhani Junkala y Umplix (CC0, OpenGameArt).
   persecucion: { src: 'musica/persecucion.mp3' },
   batalla: { src: 'musica/batalla.mp3' },
   dragon: { src: 'musica/dragon.mp3' },
+  // Fanfarria de victoria de cynicmusic (CC0): suena una vez.
+  victoria: { src: 'musica/victoria.mp3', unaVez: 1 },
 };
 const FANFARRIA = {
   bpm: 132,
@@ -111,7 +115,7 @@ function tocarTema(n) {
   }
   const l = AC.createBufferSource();
   l.buffer = T.buf;
-  l.loop = true;
+  l.loop = !T.unaVez;
   l.loopStart = T.buf.ini;
   l.loopEnd = T.buf.fin;
   l.connect(g);
@@ -135,7 +139,7 @@ function musica(n) {
   temaAct = n;
   pista = null;
   if (!AC) return;
-  if (n == 'victoria') {
+  if (n == 'victoria' && !TEMAS.victoria.buf) {
     soltar();
     pista = FANFARRIA;
     mStep = 0;

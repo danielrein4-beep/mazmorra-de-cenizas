@@ -183,6 +183,7 @@ function updateJefe() {
     return;
   }
   if (B.dead) {
+    if (pasoMuerteEpica(B)) return;
     B.dt++;
     if (B.dt % 6 == 0 && B.dt < 100) {
       burst(B.x + rnd(-24, 24), B.y - rnd(10, 60), 26, Math.random() < 0.5 ? '#ff8a2a' : '#ffe94a', 3.5);
@@ -248,7 +249,7 @@ function updateJefe() {
 function drawJefe() {
   const B = G.B,
     t = G.t;
-  if (B.dead && B.dt >= 100) return;
+  if (B.dead && B.dt >= (esUltimoJefe() ? 170 : 100)) return;
   if (B.tele) {
     const tl = B.tele;
     w.globalAlpha = 0.25;
