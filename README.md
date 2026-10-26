@@ -6,7 +6,9 @@ modo Pesadilla y cooperativo de dos jugadores en la misma pantalla.
 ## Armar y jugar
 
 ```
-node construir.cjs
+npm install          # una vez: instala Prettier
+npm run construir    # arma el juego
+npm run formatear    # deja el código con formato uniforme
 ```
 
 Crea `mazmorra.html` (la página que se publica) y `publicar/` (para servir en localhost
@@ -24,7 +26,8 @@ o instalar como app). En localhost se sirve desde `publicar/` en el puerto 8505.
 | `src/combate/` | Técnicas y golpes finales, proyectiles y efectos, enemigos y jefes |
 | `src/mundo/` | Planos y terreno, objetos y tienda, generación de zonas y cuarto actual |
 
-`construir.cjs` junta los archivos en el orden de su lista `ORDEN`.
+`construir.cjs` junta los archivos en el orden de su lista `ORDEN`. Ningún archivo pasa de 500 líneas:
+si uno crece, se parte por tema dentro de su carpeta.
 
 ## Créditos
 

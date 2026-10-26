@@ -1,32 +1,150 @@
 // Datos fijos del juego: tamaños, recortes del atlas, hechizos, enemigos, salas y mejoras.
-const OW=960,OH=540,VW=320,VH=180,WW=480,WH=320;
-const f4=(x,y,w,h)=>[0,1,2,3].map(i=>[x+(w||16)*i,y,w||16,h||16]);
-const PLANO=Array(14).fill([16,64]);
-const R={wizIdle:f4(128,132,16,28),wizRun:f4(192,132,16,28),wizHit:[256,132,16,28],
-floors:PLANO.concat([[32,64],[48,64],[16,80],[32,80],[48,80],[16,96],[32,96]]),
-wallTop:[32,0],wallMid:[32,16],bannerRed:[16,32],bannerBlue:[32,32],bannerGreen:[16,48],
-fTop:[64,0],fMidRed:[[64,16],[80,16],[96,16]],fBasinRed:[[64,32],[80,32],[96,32]],fMidBlue:[[64,48],[80,48],[96,48]],fBasinBlue:[[64,64],[80,64],[96,64]],
-staff:[324,129,8,30],hFull:[289,370,13,12],hHalf:[305,370,13,12],hEmpty:[321,370,13,12],skull:[288,432,16,16],
-flask:[288,336,16,16],doorClosed:[32,240,32,32],doorOpen:[80,240,32,32],doorL:[16,240,16,32],doorR:[64,240,16,32]};
+const OW = 960,
+  OH = 540,
+  VW = 320,
+  VH = 180,
+  WW = 480,
+  WH = 320;
+const f4 = (x, y, w, h) => [0, 1, 2, 3].map(i => [x + (w || 16) * i, y, w || 16, h || 16]);
+const PLANO = Array(14).fill([16, 64]);
+const R = {
+  wizIdle: f4(128, 132, 16, 28),
+  wizRun: f4(192, 132, 16, 28),
+  wizHit: [256, 132, 16, 28],
+  floors: PLANO.concat([
+    [32, 64],
+    [48, 64],
+    [16, 80],
+    [32, 80],
+    [48, 80],
+    [16, 96],
+    [32, 96],
+  ]),
+  wallTop: [32, 0],
+  wallMid: [32, 16],
+  bannerRed: [16, 32],
+  bannerBlue: [32, 32],
+  bannerGreen: [16, 48],
+  fTop: [64, 0],
+  fMidRed: [
+    [64, 16],
+    [80, 16],
+    [96, 16],
+  ],
+  fBasinRed: [
+    [64, 32],
+    [80, 32],
+    [96, 32],
+  ],
+  fMidBlue: [
+    [64, 48],
+    [80, 48],
+    [96, 48],
+  ],
+  fBasinBlue: [
+    [64, 64],
+    [80, 64],
+    [96, 64],
+  ],
+  staff: [324, 129, 8, 30],
+  hFull: [289, 370, 13, 12],
+  hHalf: [305, 370, 13, 12],
+  hEmpty: [321, 370, 13, 12],
+  skull: [288, 432, 16, 16],
+  flask: [288, 336, 16, 16],
+  doorClosed: [32, 240, 32, 32],
+  doorOpen: [80, 240, 32, 32],
+  doorL: [16, 240, 16, 32],
+  doorR: [64, 240, 16, 32],
+};
 // ia: perseguir (va a por ti), tirador (guarda distancia y dispara), embestir (corre hacia ti),
 // abanico (tres balas), anillo (círculo de balas desde lejos)
-const ENEMIGOS={
-skelet:{run:f4(432,88),hp:30,sp:.8,ia:'perseguir'},
-imp:{run:f4(432,64),hp:20,sp:1.15,ia:'perseguir'},
-goblin:{run:f4(432,40),hp:36,sp:1,ia:'perseguir'},
-tiny:{run:f4(432,16),hp:16,sp:1.05,ia:'perseguir'},
-chort:{run:f4(432,273,16,23),hp:45,sp:.6,ia:'tirador'},
-orcW:{run:f4(432,177,16,23),hp:85,sp:.65,ia:'embestir'},
-masked:{run:f4(432,153,16,23),hp:90,sp:.55,ia:'abanico'},
-shaman:{run:f4(432,201,16,23),hp:55,sp:.5,ia:'anillo'},
-zhielo:{run:f4(432,136),hp:42,sp:.95,ia:'perseguir'},
-necro:{run:f4(368,225,16,23),hp:70,sp:.45,ia:'anillo'},
-mimico:{run:[[304,432,16,16],[320,432,16,16],[336,432,16,16],[320,432,16,16]],hp:120,sp:1.1,ia:'perseguir',oro:15}};
+const ENEMIGOS = {
+  skelet: { run: f4(432, 88), hp: 30, sp: 0.8, ia: 'perseguir' },
+  imp: { run: f4(432, 64), hp: 20, sp: 1.15, ia: 'perseguir' },
+  goblin: { run: f4(432, 40), hp: 36, sp: 1, ia: 'perseguir' },
+  tiny: { run: f4(432, 16), hp: 16, sp: 1.05, ia: 'perseguir' },
+  chort: { run: f4(432, 273, 16, 23), hp: 45, sp: 0.6, ia: 'tirador' },
+  orcW: { run: f4(432, 177, 16, 23), hp: 85, sp: 0.65, ia: 'embestir' },
+  masked: { run: f4(432, 153, 16, 23), hp: 90, sp: 0.55, ia: 'abanico' },
+  shaman: { run: f4(432, 201, 16, 23), hp: 55, sp: 0.5, ia: 'anillo' },
+  zhielo: { run: f4(432, 136), hp: 42, sp: 0.95, ia: 'perseguir' },
+  necro: { run: f4(368, 225, 16, 23), hp: 70, sp: 0.45, ia: 'anillo' },
+  mimico: {
+    run: [
+      [304, 432, 16, 16],
+      [320, 432, 16, 16],
+      [336, 432, 16, 16],
+      [320, 432, 16, 16],
+    ],
+    hp: 120,
+    sp: 1.1,
+    ia: 'perseguir',
+    oro: 15,
+  },
+};
 // Zonas del mundo: color del suelo, enemigos que aparecen, planos posibles para los cuartos de pelea y el jefe.
-const ZONAS=[
-{n:'Cripta Verde',tinte:'#2aff6a',banner:'bannerGreen',fuente:'Blue',oscuro:.4,jefe:'zombi',planoJefe:'pantano',enem:['skelet','skelet','imp','goblin','goblin','tiny'],planos:['antesala','cripta','pilares','cruz','vacio2']},
-{n:'Cuevas de Hielo',tinte:'#4ab8ff',banner:'bannerBlue',fuente:'Blue',oscuro:.46,jefe:'ogro',planoJefe:'foso',enem:['zhielo','zhielo','orcW','chort','goblin','masked'],planos:['foso2','laberinto','pilares','cruz','antesala']},
-{n:'Volcán de Cenizas',tinte:'#ff4a1a',banner:'bannerRed',fuente:'Red',oscuro:.5,jefe:'cenizas',planoJefe:'trono',enem:['chort','masked','shaman','orcW','imp','necro'],planos:['forja','laberinto','cruz','pilares','forja']}];
+const ZONAS = [
+  {
+    n: 'Cripta Verde',
+    tinte: '#2aff6a',
+    banner: 'bannerGreen',
+    fuente: 'Blue',
+    oscuro: 0.4,
+    jefe: 'zombi',
+    planoJefe: 'pantano',
+    enem: ['skelet', 'skelet', 'imp', 'goblin', 'goblin', 'tiny'],
+    planos: ['antesala', 'cripta', 'pilares', 'cruz', 'vacio2'],
+  },
+  {
+    n: 'Cuevas de Hielo',
+    tinte: '#4ab8ff',
+    banner: 'bannerBlue',
+    fuente: 'Blue',
+    oscuro: 0.46,
+    jefe: 'ogro',
+    planoJefe: 'foso',
+    enem: ['zhielo', 'zhielo', 'orcW', 'chort', 'goblin', 'masked'],
+    planos: ['foso2', 'laberinto', 'pilares', 'cruz', 'antesala'],
+  },
+  {
+    n: 'Volcán de Cenizas',
+    tinte: '#ff4a1a',
+    banner: 'bannerRed',
+    fuente: 'Red',
+    oscuro: 0.5,
+    jefe: 'cenizas',
+    planoJefe: 'trono',
+    enem: ['chort', 'masked', 'shaman', 'orcW', 'imp', 'necro'],
+    planos: ['forja', 'laberinto', 'cruz', 'pilares', 'forja'],
+  },
+];
 // Pesadilla: jefes con el doble de vida y más rápidos, más enemigos, balas veloces, cada golpe quita un corazón entero.
-const DIFS={normal:{id:'normal',n:'Normal',jefe:1,enem:1,bala:1,cdJ:1,cant:1,olas:0,golpe:1,poc:1,oro:1},
-pesadilla:{id:'pesadilla',n:'Pesadilla',jefe:2,enem:1.6,bala:1.25,cdJ:.65,cant:1.5,olas:1,golpe:2,poc:.5,oro:1.5}};
+const DIFS = {
+  normal: {
+    id: 'normal',
+    n: 'Normal',
+    jefe: 1,
+    enem: 1,
+    bala: 1,
+    cdJ: 1,
+    cant: 1,
+    olas: 0,
+    golpe: 1,
+    poc: 1,
+    oro: 1,
+  },
+  pesadilla: {
+    id: 'pesadilla',
+    n: 'Pesadilla',
+    jefe: 2,
+    enem: 1.6,
+    bala: 1.25,
+    cdJ: 0.65,
+    cant: 1.5,
+    olas: 1,
+    golpe: 2,
+    poc: 0.5,
+    oro: 1.5,
+  },
+};

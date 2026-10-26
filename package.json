@@ -1,0 +1,11 @@
+{
+  "name": "mazmorra-de-cenizas",
+  "private": true,
+  "scripts": {
+    "construir": "node construir.cjs",
+    "formatear": "prettier --write \"src/**/*.js\" construir.cjs"
+  },
+  "devDependencies": {
+    "prettier": "3.3.3"
+  }
+}
