@@ -130,8 +130,7 @@ const cenizasDePartida = () =>
   premioPacto();
 // Vencer al Dragón del piso 100 reparte 5.000 cenizas entre quienes lo vencieron (en línea, mitad y mitad).
 const PREMIO_DRAGON = 5000;
-const premioDragon = () =>
-  G.dragonVencido ? Math.floor(PREMIO_DRAGON / (enRed && (G.jugTodos || []).length > 1 ? 2 : 1)) : 0;
+const premioDragon = () => (G.dragonVencido ? Math.floor(PREMIO_DRAGON / jugadoresEnLinea()) : 0);
 
 // Dibuja el libro: tapa de su color, esquinas de metal y el trébol con sus hojas.
 function dibujarGrimorio(x, g, hojas, cx, cy, s, t) {

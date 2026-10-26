@@ -60,7 +60,7 @@ function textoInter(c, tecla) {
 }
 function interactuar() {
   const P = G.P,
-    c = G.coop && P === G.jug[1] ? G.cerca2 : G.cerca;
+    c = G.coop && P !== G.jug[0] ? P.cerca : G.cerca;
   if (!c || G.over || P.caido) return;
   if (c.tipo == 'arma') {
     if (ARMAS[c.arma.id].tipo != P.tipoArma) {
@@ -219,6 +219,7 @@ function updateObjetos() {
           .sort((a, b) => Math.hypot(Q.x - a.x, Q.y - a.y) - Math.hypot(Q.x - b.x, Q.y - b.y))[0] || null;
   G.cerca = cercaDe(G.jug[0]);
   G.cerca2 = G.coop && G.jug[1] ? cercaDe(G.jug[1]) : null;
+  if (G.coop) G.jug.forEach(Q => (Q.cerca = cercaDe(Q)));
   if (G.mimicoSala && !G.enem.length) {
     G.mimicoSala = 0;
     G.cerrado = 0;

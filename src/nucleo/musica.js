@@ -137,7 +137,7 @@ function musicaDeMiCuarto(msg) {
   if (!G || !G.jugTodos || !enRed || enRed.rol != 'anfitrion') return true;
   const aqui = G.jug || G.jugTodos;
   if (msg.tipo == 'musica') G.temaSala = msg.n;
-  if (aqui.includes(G.jugTodos[1]) && enRed.con && enRed.con.open) enRed.con.send(msg);
+  aInvitados(msg, i => aqui.some(Q => Q.invitado === i));
   return aqui.includes(G.jugTodos[0]);
 }
 function musica(n) {

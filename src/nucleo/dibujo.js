@@ -8,7 +8,7 @@ function drawPlayer() {
   }
   if (P.inv > 0 && t % 6 < 3 && !G.over) return;
   if (G.coop) {
-    w.fillStyle = P.num == 1 ? '#5ee7ff' : '#ff8a2a';
+    w.fillStyle = COLOR_JUGADOR[P.num - 1] || '#ff8a2a';
     w.beginPath();
     w.moveTo(P.x - 3, P.y - 36);
     w.lineTo(P.x + 3, P.y - 36);
@@ -127,7 +127,6 @@ function drawWorld() {
   drawLuz();
   drawLuzColor();
   drawClima();
-  drawNombres();
   drawPoderes();
   G.pt.forEach(p => {
     w.globalAlpha = Math.min(1, (p.l / p.m) * 1.6);
@@ -164,7 +163,7 @@ function render() {
   ocultar('tTomar', !(coarse && G.cerca));
   ocultar('tPocion', !(coarse && G.P.poc));
   ponerFiltro(G.inv > 0 ? 'invert(1) grayscale(1) contrast(4)' : '');
-  if (vistaPropia()) renderInvitado();
+  if (vistaPropia()) renderInvitados();
   if (G.inv > 0) G.inv--;
 }
 // Lo que va del mundo a la pantalla: el recorte de la cámara, la viñeta, la interfaz, el destello y el fundido.
@@ -177,6 +176,7 @@ function pintarSalida(sx, sy) {
   o.fillRect(0, 0, OW, OH);
   o.drawImage(wc, G.cam.x - vw / 2 + sx, G.cam.y - vh / 2 + sy, vw, vh, 0, 0, OW, OH);
   if (!calidadBaja) o.drawImage(VINETA, 0, 0);
+  drawNombres(sx, sy, vw, vh);
   drawHud();
   if (G.flash > 0) {
     o.globalAlpha = G.flash / 14;

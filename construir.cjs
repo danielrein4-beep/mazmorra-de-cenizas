@@ -71,6 +71,7 @@ const ORDEN = [
   'jugadores/en-linea.js',
   'jugadores/conexion.js',
   'jugadores/vista-invitado.js',
+  'jugadores/varios.js',
   'jugadores/salas-separadas.js',
   'nucleo/carta.js',
   'nucleo/opciones.js',

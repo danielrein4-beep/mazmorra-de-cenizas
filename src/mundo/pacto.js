@@ -42,6 +42,8 @@ function siguientePisoPacto() {
   G.zona = 3;
   // Dificultad de lo más alto de la Torre, y un poco más en cada piso.
   G.dif = difDePiso(88 + n * 2);
+  // Con más héroes, los demonios aguantan más: la mitad de vida extra por cada compañero.
+  G.dif.jefe *= 1 + 0.5 * ((G.jugTodos || G.jug).length - 1);
   const Z = ZONAS[G.zona],
     c = {
       x: 0,
@@ -75,8 +77,7 @@ function siguientePisoPacto() {
 }
 const ultimoPacto = () => G.piso >= PISOS_PACTO.length;
 // Vencer a Kiplot reparte 8.000 cenizas (en línea, mitad y mitad).
-const premioPacto = () =>
-  G.pactoVencido ? Math.floor(PREMIO_PACTO / (enRed && (G.jugTodos || []).length > 1 ? 2 : 1)) : 0;
+const premioPacto = () => (G.pactoVencido ? Math.floor(PREMIO_PACTO / jugadoresEnLinea()) : 0);
 
 function finPacto(win) {
   document.getElementById('endTitle').textContent = win

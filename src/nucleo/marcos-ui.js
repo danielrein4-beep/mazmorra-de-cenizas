@@ -13,8 +13,8 @@ function pintarMarcos() {
       puesto = (LOGROS.marco || 'sencillo') == M.id;
     b.type = 'button';
     b.className = 'marco' + (puesto ? ' puesto' : '') + (tiene ? '' : ' bloqueado');
-    c.width = 180;
-    c.height = 44;
+    c.width = 220;
+    c.height = 64;
     b.appendChild(c);
     const info = document.createElement('span');
     info.innerHTML = '<b></b><small></small>';

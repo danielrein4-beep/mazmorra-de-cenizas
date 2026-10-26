@@ -63,8 +63,8 @@ function mostrarArmario() {
     b.onclick = () => elegirEnArmario(pi, id, x);
     L.appendChild(b);
   });
-  pintarMarcos();
   irAPanelSiHace('armario');
+  pintarMarcos();
 }
 function elegirEnArmario(pi, id, x) {
   const aviso = document.getElementById('armarioAviso'),

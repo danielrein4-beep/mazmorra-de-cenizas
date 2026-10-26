@@ -22,8 +22,10 @@ function hazaña(k, v) {
 // Al empezar: el estado le da su bono al héroe de esta compu y al del amigo en línea (con su propio estado).
 function aplicarEstado(js) {
   bonoDeEstado(js[0], estado());
-  const amigo = enRed && enRed.rol == 'anfitrion' && enRed.perfil;
-  if (js[1] && amigo) bonoDeEstado(js[1], Object.assign(estado0(), amigo.estado));
+  js.slice(1).forEach(P => {
+    const amigo = P.invitado && P.invitado.perfil;
+    if (amigo) bonoDeEstado(P, Object.assign(estado0(), amigo.estado));
+  });
 }
 const estado0 = () => ({ nivel: 1, exp: 0, fue: 0, res: 0, des: 0, agi: 0, mag: 0 });
 function bonoDeEstado(P, E) {

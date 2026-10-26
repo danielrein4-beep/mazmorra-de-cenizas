@@ -123,7 +123,7 @@ function mostrarMejoras(k) {
     (G.vestNuevo
       ? 'El jefe cayó y desbloqueaste un vestuario nuevo. Toma una mejora para lo que viene.'
       : 'El jefe cayó. Toma una mejora para lo que viene.');
-  if (!G.coop || k == 1) G.vestNuevo = 0;
+  if (!G.coop || k == (G.jugTodos || G.jug).length - 1) G.vestNuevo = 0;
   // En línea, el jugador 2 elige su poder en su propio aparato.
   if (mejorasAlInvitado(ops, k)) {
     L.innerHTML = '';
@@ -146,8 +146,9 @@ function elegirMejoraAqui(m) {
     P.hp = P.max;
   } else if (m.id == 'cura') P.hp = P.max;
   else P.hp = Math.min(P.max, P.hp + 2);
-  if (G.coop && !G.elige) {
-    mostrarMejoras(1);
+  // Cada héroe elige el suyo, uno tras otro.
+  if (G.coop && (G.elige || 0) < (G.jugTodos || G.jug).length - 1) {
+    mostrarMejoras((G.elige || 0) + 1);
     return;
   }
   revivirTodos();

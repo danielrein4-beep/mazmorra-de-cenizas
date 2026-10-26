@@ -71,7 +71,8 @@ const zb = () => (G.B && !G.B.dead ? 0.8 : 1) * (OH > OW ? VW / 250 : coarse ? 1
 function newRun() {
   G = { zona: 0, dif: DIFS[ELEGIDO.modo] || DIFS.normal, start: performance.now(), kills: 0 };
   const js = [crearJugador(ELEGIDO.p, ELEGIDO.sexo, ELEGIDO.vest, 1)];
-  if (ELEGIDO.jug == 2 && (!coarse || enRed))
+  if (enRed && enRed.rol == 'anfitrion') heroesInvitados(js);
+  else if (ELEGIDO.jug == 2 && !coarse)
     js.push(crearJugador(ELEGIDO.p2 || 0, ELEGIDO.sexo2 || 'm', 'normal', 2));
   // Aprendiz (para los más chicos): cada héroe empieza con corazones de más.
   if (G.dif.vidaExtra) js.forEach(P => ((P.max += G.dif.vidaExtra), (P.hp = P.max)));
@@ -85,19 +86,8 @@ function newRun() {
     P.gcd = 0;
     P.rel = {};
   });
-  // En línea, el héroe del amigo usa su propio grimorio y su forja.
-  const amigo = enRed && enRed.rol == 'anfitrion' && enRed.perfil;
-  if (js[1] && amigo) {
-    js[1].grim = amigo.grim;
-    js[1].hojas = amigo.hojas;
-    js[1].forja = amigo.forja || {};
-    if (amigo.vest && VESTUARIOS.some(v => v.id == amigo.vest)) {
-      js[1].traje = amigo.vest;
-      js[1].src = atlasVestuario(amigo.vest);
-    }
-    if (Array.isArray(amigo.tecs) && amigo.tecs.length == 3 && amigo.tecs.every(id => TEC[id]))
-      js[1].tecs = amigo.tecs;
-  }
+  // En línea, el héroe de cada amigo usa su propio grimorio, su forja, su traje y sus técnicas.
+  aplicarPerfiles(js);
   aplicarEstado(js);
   G.jug = js;
   G.coop = js.length > 1;
@@ -334,8 +324,7 @@ function step() {
   G.cam.y += (focus.y - G.cam.y) * 0.1;
   G.zoom += (G.zt - G.zoom) * 0.1;
   if (!G.U && !(B && B.dead) && !G.intro && (!G.coop || vistaPropia())) G.zt += (zb() - G.zt) * 0.05;
-  if (vistaPropia() && G.jug.includes(G.jugTodos[1]))
-    camaraInvitado(G.intro || G.U || (B && B.dead && B.dt < 170) ? focus : null);
+  if (vistaPropia()) camarasInvitados(G.intro || G.U || (B && B.dead && B.dt < 170) ? focus : null);
   G.cam.x = vw >= WW ? WW / 2 : Math.max(vw / 2, Math.min(WW - vw / 2, G.cam.x));
   G.cam.y = vh >= WH ? WH / 2 : Math.max(vh / 2, Math.min(WH - vh / 2, G.cam.y));
   G.shake *= 0.86;
@@ -461,5 +450,5 @@ function start() {
   document.getElementById('botonPausa').hidden = !!(enRed && enRed.rol == 'invitado');
   running = true;
   last = 0;
-  if (enRed && enRed.rol == 'anfitrion' && enRed.con && enRed.con.open) enRed.con.send({ tipo: 'empieza' });
+  avisarEmpieza();
 }

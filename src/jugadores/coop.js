@@ -243,33 +243,51 @@ function drawCaido(P) {
 // Panel del jugador 2, a la derecha bajo el minimapa.
 function drawHudJ2() {
   if (!G.coop) return;
-  // En la vista del invitado, el recuadro pequeño muestra al anfitrión.
+  // Los compañeros a la derecha, uno debajo del otro (en la vista de cada invitado, los demás).
   const T = G.jugTodos || G.jug,
-    P = T[G.P === T[1] ? 0 : 1],
+    otros = T.filter(Q => Q !== G.P),
     t = G.t,
-    x0 = OW - 18;
-  for (let i = 0; i < P.max / 2; i++) {
-    const v = P.hp - i * 2,
-      r = v >= 2 ? R.hFull : v == 1 ? R.hHalf : R.hEmpty;
-    o.drawImage(atlas, r[0], r[1], 13, 12, x0 - (i + 1) * 30, 150, 26, 24);
-  }
-  const full = P.meter >= 100;
-  o.fillStyle = 'rgba(10,6,16,.8)';
-  o.fillRect(x0 - 120, 180, 120, 10);
-  o.fillStyle = full ? (t % 20 < 10 ? '#ff8a2a' : '#ffffff') : '#c05a1a';
-  o.fillRect(x0 - 118, 182, (116 * P.meter) / 100, 6);
-  txt(
-    (vistaPropia() ? 'Tu amigo · ' : 'Jugador 2 · ') + P.nombre + (P.caido ? ' (caído)' : ''),
-    x0,
-    206,
-    14,
-    '#ff8a2a',
-    'right',
-  );
-  const AI = armaInfo(P.arma);
-  txt(AI.n, x0, 222, 12, AI.raro ? '#5ee7ff' : '#c3b6d9', 'right');
+    x0 = OW - 18,
+    alto = otros.length > 1 ? 76 : 92;
+  otros.forEach((P, n) => {
+    const y = 150 + n * alto;
+    for (let i = 0; i < P.max / 2; i++) {
+      const v = P.hp - i * 2,
+        r = v >= 2 ? R.hFull : v == 1 ? R.hHalf : R.hEmpty;
+      o.drawImage(
+        atlas,
+        r[0],
+        r[1],
+        13,
+        12,
+        x0 - (i + 1) * (otros.length > 1 ? 22 : 30),
+        y,
+        otros.length > 1 ? 19 : 26,
+        otros.length > 1 ? 18 : 24,
+      );
+    }
+    const full = P.meter >= 100;
+    o.fillStyle = 'rgba(10,6,16,.8)';
+    o.fillRect(x0 - 120, y + 28, 120, 10);
+    o.fillStyle = full ? (t % 20 < 10 ? '#ff8a2a' : '#ffffff') : '#c05a1a';
+    o.fillRect(x0 - 118, y + 30, (116 * P.meter) / 100, 6);
+    const nombre = P.etiqueta || P.nombre;
+    txt(
+      (vistaPropia() ? '' : 'Jugador ' + P.num + ' · ') + nombre + (P.caido ? ' (caído)' : ''),
+      x0,
+      y + 54,
+      14,
+      COLOR_JUGADOR[P.num - 1] || '#ff8a2a',
+      'right',
+    );
+    if (otros.length == 1) {
+      const AI = armaInfo(P.arma);
+      txt(AI.n, x0, y + 70, 12, AI.raro ? '#5ee7ff' : '#c3b6d9', 'right');
+    }
+  });
   // En línea cada uno ve sus técnicas en su pantalla: no hace falta repetir las del otro.
   if (vistaPropia()) return;
+  const P = otros[0];
   P.tecs.forEach((id, i) => {
     const x = OW - 18 - (3 - i) * 50,
       y = OH - 58,

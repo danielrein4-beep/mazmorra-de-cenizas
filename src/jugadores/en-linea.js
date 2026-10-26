@@ -1,10 +1,10 @@
 // Jugar en línea con código de sala.
-// Quien crea la sala (anfitrión) corre la partida y le transmite al invitado la imagen y el sonido en vivo;
-// el invitado solo manda sus controles. La conexión entre los dos aparatos la hace PeerJS (gratis, sin servidor propio).
+// Quien crea la sala (anfitrión) corre la partida y le transmite a cada invitado la imagen y el sonido en vivo;
+// los invitados solo mandan sus controles (ver jugadores/varios.js). La conexión entre los dos aparatos la hace PeerJS (gratis, sin servidor propio).
 const PEERJS_URL = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
 const PREFIJO_SALA = 'mazmorra-cenizas-';
 const LETRAS_SALA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-// enRed = null | { rol: 'anfitrion' | 'invitado', peer, con, ... }
+// enRed = null | { rol: 'anfitrion', peer, invitados: [...] } | { rol: 'invitado', peer, con, ... }
 let enRed = null;
 
 function avisoRed(txt) {
@@ -63,96 +63,47 @@ async function crearSala() {
     rol: 'anfitrion',
     peer,
     codigo,
-    con: null,
-    entrada: { mx: 0, my: 0, fuego: false },
-    acciones: [],
+    invitados: [],
   };
   avisoRed('Creando la sala…');
   peer.on('open', () => {
     avisoRed(
       'Sala ' +
         codigo +
-        ' lista. Dile a tu amigo que entre con el código ' +
+        (maxInvitados() > 1
+          ? ' lista. Pueden entrar hasta tres amigos con el código '
+          : ' lista. Dile a tu amigo que entre con el código ') +
         codigo +
-        ', o pásale el enlace.',
+        ', o pásales el enlace.',
     );
     mostrarInvitacion(codigo);
   });
   peer.on('error', e => avisoRed(mensajeError(e)));
-  peer.on('connection', con => {
-    if (enRed.con) return con.close();
-    enRed.con = con;
-    con.on('data', d => alRecibirAnfitrion(d));
-    con.on('close', () => amigoSeFue());
-  });
+  peer.on('connection', con => aceptarInvitado(con));
 }
 
-function alRecibirAnfitrion(d) {
+function alRecibirAnfitrion(inv, d) {
   if (!enRed) return;
-  if (d.tipo == 'hola') {
-    ELEGIDO.jug = 2;
-    ELEGIDO.p2 = d.p;
-    ELEGIDO.sexo2 = d.sexo;
-    enRed.amigo = d.nombre;
-    enRed.perfil = d.perfil || null;
-    avisoRed('¡' + d.nombre + ' se unió! Empezando…');
-    start();
-    transmitir();
-  }
+  if (d.tipo == 'hola') invitadoSaluda(inv, d);
   if (d.tipo == 'entrada') {
-    enRed.entrada = d;
-    medidasInvitado(d);
-    if (d.acc && d.acc.length) enRed.acciones.push(...d.acc);
+    inv.entrada = d;
+    medidasInvitado(inv.vista, d);
+    if (d.acc && d.acc.length) inv.acciones.push(...d.acc);
   }
-  if (d.tipo == 'elige' && enRed.opsMejora) {
-    const m = enRed.opsMejora[d.i];
-    enRed.opsMejora = null;
+  if (d.tipo == 'elige' && inv.opsMejora) {
+    const m = inv.opsMejora[d.i];
+    inv.opsMejora = null;
     if (m) elegirMejora(m);
   }
 }
 
-// La imagen del lienzo y todo el sonido del juego salen como una videollamada hacia el invitado.
-function transmitir() {
-  const video = VISTA2.cv.captureStream(30);
-  // Pixel art: mejor nítido que suave, aunque baje un poco la fluidez si la conexión es lenta.
-  video.getVideoTracks().forEach(t => (t.contentHint = 'detail'));
-  if (AC) {
-    prepararSonido();
-    const dest = AC.createMediaStreamDestination();
-    if (fxSalida) fxSalida.connect(dest);
-    enRed.audioDest = dest;
-    dest.stream.getAudioTracks().forEach(t => video.addTrack(t));
-  }
-  enRed.llamada = enRed.peer.call(enRed.con.peer, video);
-  setTimeout(subirCalidad, 1500);
-}
-
-function subirCalidad() {
-  const pc = enRed && enRed.llamada && enRed.llamada.peerConnection;
-  if (!pc) return;
-  pc.getSenders().forEach(s => {
-    if (!s.track || s.track.kind != 'video') return;
-    const p = s.getParameters();
-    p.encodings = p.encodings && p.encodings.length ? p.encodings : [{}];
-    p.encodings[0].maxBitrate = 4000000;
-    p.degradationPreference = 'maintain-resolution';
-    s.setParameters(p).catch(() => {});
-  });
-}
-
-function amigoSeFue() {
-  if (!enRed || enRed.rol != 'anfitrion') return;
-  enRed.con = null;
-  enRed.entrada = { mx: 0, my: 0, fuego: false };
-  if (G && G.aviso !== undefined) G.aviso = { txt: 'Tu amigo se desconectó', l: 150 };
-  avisoRed('Tu amigo se desconectó. La sala ' + enRed.codigo + ' sigue abierta.');
-}
-
-// Controles del jugador 2 cuando juega desde otro aparato (los lee leerControles).
+// Controles de un invitado que juega desde otro aparato (los lee leerControles).
 function controlesRemotos(P, c) {
+  const inv = P.invitado;
+  if (!inv) return;
   // El ratón del invitado apunta sobre su propia vista (jugadores/vista-invitado.js).
-  const e = enRed.entrada,
-    V = VISTA2,
+  const e = inv.entrada,
+    V = inv.vista,
     vw = V.OW / 3 / V.zoom,
     vh = V.OH / 3 / V.zoom;
   c.mx = e.mx || 0;
@@ -169,7 +120,7 @@ function controlesRemotos(P, c) {
     c.ay = tg ? tg.y : P.y - 14;
   }
   c.fuego = !!e.fuego;
-  while (enRed.acciones.length) ACCIONES_RED[enRed.acciones.shift()]?.();
+  while (inv.acciones.length) ACCIONES_RED[inv.acciones.shift()]?.();
 }
 
 const ACCIONES_RED = {
@@ -184,15 +135,21 @@ const ACCIONES_RED = {
   t3: () => (G.P.spell = 2),
 };
 
-// Mejoras: el invitado elige la suya en su pantalla; el anfitrión espera.
+// Mejoras: cada invitado elige la suya en su pantalla; los demás esperan.
 function mejorasAlInvitado(ops, k) {
-  if (!enRed || enRed.rol != 'anfitrion' || !enRed.con) return false;
-  if (k == 1) {
-    enRed.opsMejora = ops;
-    enRed.con.send({ tipo: 'mejoras', ops: ops.map(m => ({ n: m.n, d: m.d, ico: m.ico })) });
+  if (!enRed || enRed.rol != 'anfitrion') return false;
+  const T = G.jugTodos || G.jug,
+    inv = T[k] && T[k].invitado;
+  if (inv && inv.con && inv.con.open) {
+    inv.opsMejora = ops;
+    inv.con.send({ tipo: 'mejoras', ops: ops.map(m => ({ n: m.n, d: m.d, ico: m.ico, rel: m.rel })) });
+    aInvitados(
+      { tipo: 'espera', txt: (T[k].etiqueta || 'Tu amigo') + ' está eligiendo su poder…' },
+      i => i !== inv,
+    );
     return true;
   }
-  enRed.con.send({ tipo: 'espera', txt: 'Tu amigo está eligiendo su poder…' });
+  aInvitados({ tipo: 'espera', txt: ((T[k] && T[k].etiqueta) || 'Tu amigo') + ' está eligiendo su poder…' });
   return false;
 }
 
@@ -211,18 +168,21 @@ function miPerfil() {
     marco: LOGROS.marco || 'sencillo',
   };
 }
-// Al terminar, el amigo recibe sus cenizas y lo que ganó su héroe, y lo guarda en su aparato.
+// Al terminar, cada invitado recibe sus cenizas y lo que ganó su héroe, y lo guarda en su aparato.
 function premiosAlInvitado() {
-  const Q = G.jugTodos && G.jugTodos[1];
-  if (!enRed || enRed.rol != 'anfitrion' || !enRed.con || !Q || !Q.hazañas) return;
-  enRed.con.send({
-    tipo: 'premios',
-    cenizas: cenizasDePartida(),
-    haz: Q.hazañas,
-    exp: expDePartida(),
-    kills: G.kills,
+  if (!enRed || enRed.rol != 'anfitrion' || !G.jugTodos) return;
+  G.jugTodos.forEach(Q => {
+    const inv = Q.invitado;
+    if (!inv || !inv.con || !inv.con.open || !Q.hazañas) return;
+    inv.con.send({
+      tipo: 'premios',
+      cenizas: cenizasDePartida(),
+      haz: Q.hazañas,
+      exp: expDePartida(),
+      kills: G.kills,
+    });
+    Q.hazañas = null;
   });
-  Q.hazañas = null;
 }
 function recibirPremios(d) {
   if (d.cenizas) guardarLogro('polvo', cenizasTengo() + d.cenizas);
@@ -235,7 +195,7 @@ function recibirPremios(d) {
   subirALaNube();
 }
 function finAlInvitado(titulo, texto) {
-  if (enRed && enRed.rol == 'anfitrion' && enRed.con) enRed.con.send({ tipo: 'fin', titulo, texto });
+  if (enRed && enRed.rol == 'anfitrion') aInvitados({ tipo: 'fin', titulo, texto });
 }
 
 // ---------- Invitado ----------
@@ -347,6 +307,7 @@ function botonInvitado(accion) {
 }
 
 function alRecibirInvitado(d) {
+  if (d.tipo == 'llena') return avisoRed(d.txt);
   if (d.tipo == 'premios') return recibirPremios(d);
   // La música de su cuarto suena en su propio aparato; por la llamada solo llegan los efectos.
   if (d.tipo == 'musica') return musica(d.n);
