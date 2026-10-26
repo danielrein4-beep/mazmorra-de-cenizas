@@ -152,6 +152,7 @@ function resetSala() {
     oleadas: null,
     escalera: null,
     rastros: [],
+    rayosPend: [],
     relojUsado: 0,
     fade: 1,
     salir: 0,
@@ -267,6 +268,7 @@ function step() {
   pasoGuia();
   pasoArena();
   relRastros();
+  pasoRayos();
   const P = G.P,
     vw = VW / G.zoom,
     vh = VH / G.zoom;

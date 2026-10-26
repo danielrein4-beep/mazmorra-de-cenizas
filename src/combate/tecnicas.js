@@ -59,6 +59,7 @@ const TEC = {
       const fin = P.combo >= 3;
       // Pega al instante y nunca falla, por eso hace algo menos de daño que el fuego.
       rayo(x, y, a, fin ? 48 : 26 + P.combo * 7, fin);
+      rayoSegunNivel(P, x, y, a, fin);
       if (fin) {
         P.combo = 0;
         P.cds[P.spell] = 55;

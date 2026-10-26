@@ -31,6 +31,7 @@ const ORDEN = [
   'combate/poderes.js',
   'combate/grimorios.js',
   'combate/despertar.js',
+  'combate/rayos.js',
   'combate/reliquias.js',
   'combate/tecnicas-mago.js',
   'combate/dibujo-poderes.js',

@@ -124,8 +124,8 @@ function drawPoderes() {
   });
   w.globalAlpha = 1;
   G.bolts.forEach(b => {
-    const k = b.l / (b.gordo ? 14 : 10),
-      g = b.gordo ? 2.2 : 1;
+    const k = b.l / (b.m || (b.gordo ? 14 : 10)),
+      g = b.gordo ? 2.2 : b.fino ? 0.45 : 1;
     w.lineCap = 'round';
     w.lineJoin = 'round';
     const path = p => {

@@ -70,6 +70,7 @@ function dañar(tg, d, heavy, sinArma) {
 }
 // Quemado y congelado: se llama cada paso para enemigos y jefes; devuelve el multiplicador de velocidad.
 function estados(r, x, y) {
+  if (r.electro > 0) pasoElectro(r, x, y);
   if (r.quema > 0) {
     r.quema--;
     if (r.quema % 12 == 0) {
@@ -225,6 +226,7 @@ function rayo(ox, oy, a, dmg, fin) {
   G.fcol = '#b9f3ff';
   sfx(fin ? 'trueno' : 'rayo');
   burst(x, y, fin ? 40 : 18, '#b9f3ff', fin ? 4.5 : 3.2, 18);
+  chispasRayo(x, y, fin ? 18 : 8);
   ring(x, y, fin ? 34 : 16, '#5ee7ff', fin ? 16 : 10, 2);
   decal(x, y + 6, fin ? 12 : 5, '#1a3a4a', 300);
   if (fin) {
