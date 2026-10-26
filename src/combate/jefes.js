@@ -91,13 +91,14 @@ function hurtBoss(d, heavy, quieto) {
   }
   const f = B.def.fases[B.phase - 1];
   if (f && B.hp > 0 && B.hp < B.max * f[0]) fase(f[1]);
-  // El jefe final no muere la primera vez: se levanta como Furia Eterna.
-  if (B.hp <= 0 && B.id == 'cenizas' && !B.berserk) return iniciarSegundoRound(B);
+  // Ningún jefe muere la primera vez: se levanta en su segundo round (ver combate/segundo-round.js).
+  if (B.hp <= 0 && B.def.segundo && !B.berserk) return iniciarSegundoRound(B);
   if (B.hp <= 0) {
     B.hp = 0;
     B.dead = 1;
     G.tornados = [];
     G.cielo = [];
+    G.gases = [];
     B.dt = 0;
     B.z = 0;
     B.tele = null;
@@ -283,7 +284,7 @@ function drawJefe() {
   }
   if ((B.phase > B.def.fases.length || B.berserk) && !B.dead) {
     w.globalAlpha = (B.berserk ? 0.38 : 0.22) + Math.sin(t * 0.2) * 0.1;
-    spr(w, red, fr, B.x + jx, y, B.face < 0, esc);
+    spr(w, B.berserk ? atlasFuria(B.seg) : red, fr, B.x + jx, y, B.face < 0, esc);
     w.globalAlpha = 1;
   }
   drawTornados();

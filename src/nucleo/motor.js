@@ -108,6 +108,7 @@ function resetSala() {
     pick: [],
     tajos: [],
     tornados: [],
+    gases: [],
     cielo: [],
     cortes: [],
     ondas: [],
