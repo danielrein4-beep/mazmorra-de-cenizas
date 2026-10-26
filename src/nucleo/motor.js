@@ -60,7 +60,8 @@ function tint(col) {
   return c;
 }
 const lvl = id => G.P.mej[id] || 0;
-const zb = () => (G.B && !G.B.dead ? 0.8 : 1);
+// En teléfono la cámara se acerca un poco para que los personajes se vean más grandes.
+const zb = () => (G.B && !G.B.dead ? 0.8 : 1) * (coarse ? 1.12 : 1);
 function newRun() {
   G = { zona: 0, dif: DIFS[ELEGIDO.modo] || DIFS.normal, start: performance.now(), kills: 0 };
   const js = [crearJugador(ELEGIDO.p, ELEGIDO.sexo, ELEGIDO.vest, 1)];
@@ -236,7 +237,7 @@ function step() {
     p.l--;
   });
   G.pt = G.pt.filter(p => p.l > 0);
-  if (G.pt.length > 1500) G.pt.splice(0, G.pt.length - 1500);
+  if (G.pt.length > tope()) G.pt.splice(0, G.pt.length - tope());
   G.ghosts.forEach(g => g.l--);
   G.ghosts = G.ghosts.filter(g => g.l > 0);
   G.rings.forEach(r => r.l--);
@@ -279,6 +280,7 @@ let last = 0;
 function frame(now) {
   requestAnimationFrame(frame);
   if (!running || !G) return;
+  medirCuadro(now - (last || now));
   const el = Math.min(50, now - (last || now));
   last = now;
   if (G.stop > 0) {

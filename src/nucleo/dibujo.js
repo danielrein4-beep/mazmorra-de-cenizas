@@ -128,6 +128,7 @@ function drawWorld() {
 const FUENTE = '"Pixelify Sans",monospace',
   CIFRAS = '"Press Start 2P",monospace';
 function txt(s, x, y, size, col, al, sh) {
+  if (coarse) size = Math.round(size * 1.15);
   o.font = /\d/.test(s)
     ? Math.round(size * 0.62) + 'px ' + CIFRAS
     : (size >= 20 ? '700 ' : '400 ') + size + 'px ' + FUENTE;
@@ -149,13 +150,9 @@ function render() {
   o.fillStyle = '#000';
   o.fillRect(0, 0, OW, OH);
   o.drawImage(wc, G.cam.x - vw / 2 + sx, G.cam.y - vh / 2 + sy, vw, vh, 0, 0, OW, OH);
-  const vg = o.createRadialGradient(OW / 2, OH / 2, OH * 0.35, OW / 2, OH / 2, OH * 0.95);
-  vg.addColorStop(0, 'rgba(0,0,0,0)');
-  vg.addColorStop(1, 'rgba(0,0,0,.55)');
-  o.fillStyle = vg;
-  o.fillRect(0, 0, OW, OH);
-  document.getElementById('tTomar').hidden = !(coarse && G.cerca);
-  document.getElementById('tPocion').hidden = !(coarse && G.P.poc);
+  if (!calidadBaja) o.drawImage(VINETA, 0, 0);
+  ocultar('tTomar', !(coarse && G.cerca));
+  ocultar('tPocion', !(coarse && G.P.poc));
   drawHud();
   if (G.flash > 0) {
     o.globalAlpha = G.flash / 14;
@@ -167,6 +164,6 @@ function render() {
     o.fillStyle = 'rgba(0,0,0,' + Math.min(1, G.fade) + ')';
     o.fillRect(0, 0, OW, OH);
   }
-  cv.style.filter = G.inv > 0 ? 'invert(1) grayscale(1) contrast(4)' : '';
+  ponerFiltro(G.inv > 0 ? 'invert(1) grayscale(1) contrast(4)' : '');
   if (G.inv > 0) G.inv--;
 }

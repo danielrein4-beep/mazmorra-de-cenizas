@@ -224,11 +224,11 @@ function drawHud() {
     o.strokeStyle = 'rgba(' + c + ',.5)';
     o.lineWidth = 3;
     o.beginPath();
-    o.arc(m.ox, m.oy, 60, 0, 7);
+    o.arc(m.ox, m.oy, RADIO_PALANCA, 0, 7);
     o.stroke();
     o.fillStyle = 'rgba(' + c + ',.5)';
     o.beginPath();
-    o.arc(m.ox + m.dx * 60, m.oy + m.dy * 60, 24, 0, 7);
+    o.arc(m.ox + m.dx * RADIO_PALANCA, m.oy + m.dy * RADIO_PALANCA, 22, 0, 7);
     o.fill();
   });
 }

@@ -121,9 +121,10 @@ function updateTerreno() {
     [P.x, P.y] = P.safe;
     ring(P.x, P.y - 10, 14, '#c3b6d9', 12);
   }
-  for (let y2 = 2; y2 < 19; y2++)
-    for (let x2 = 1; x2 < 29; x2++)
-      if (G.mapa[y2][x2] == 'L' && Math.random() < 0.004)
+  // Chispas de la lava: una sola vez por cuadro aunque jueguen dos.
+  if (G.P === G.jug[0])
+    (G.lavas || []).forEach(([x2, y2]) => {
+      if (Math.random() < 0.004)
         G.pt.push({
           x: x2 * 16 + rnd(2, 14),
           y: y2 * 16 + rnd(2, 14),
@@ -135,11 +136,16 @@ function updateTerreno() {
           s: 1,
           g: 0,
         });
+    });
 }
 // Suelo fijo del cuarto (se pinta una vez); lo animado se pinta cada cuadro en drawTerreno.
 function buildFloor(c) {
   const S = ZONAS[G.zona];
   cargarPlano(c);
+  G.lavas = [];
+  for (let ty = 2; ty < 19; ty++)
+    for (let tx = 1; tx < 29; tx++) if (G.mapa[ty][tx] == 'L') G.lavas.push([tx, ty]);
+  G.luzFija = null;
   fx.fillStyle = '#120c18';
   fx.fillRect(0, 0, WW, WH);
   let s = 7 + G.zona * 31 + c.x * 7 + c.y * 13;
@@ -211,16 +217,7 @@ function drawTerreno(ents) {
           f = c < 4 ? 1 : c < 8 ? 2 : c < 41 ? 3 : c < 45 ? 2 : c < 49 ? 1 : 0;
         w.drawImage(atlas, 16 + 16 * f, 192, 16, 16, x, y, 16, 16);
       }
-      if (ch == 'L') {
-        for (let k = 0; k < 6; k++) {
-          const px = (k * 5 + Math.floor(t / 6) + tx * 3) % 16,
-            py = (k * 7 + ty * 5 + Math.floor(t / 9)) % 16;
-          w.fillStyle = k % 3 ? '#ff5a1a' : '#ffb04a';
-          w.fillRect(x + px, y + py, 2, 1);
-        }
-        w.fillStyle = 'rgba(255,90,26,' + (0.55 + Math.sin(t * 0.08 + tx) * 0.1) + ')';
-        w.fillRect(x + 1, y + 1, 14, 14);
-      }
+      if (ch == 'L') dibujarLava(x, y, tx, ty);
       if (ch == 'x')
         ents.push({
           y: y + 16,
@@ -262,26 +259,12 @@ function drawTerreno(ents) {
 // Oscuridad con huecos de luz: la heroína, antorchas, fuentes, lava, fuego y rayos alumbran.
 const [lc, lx] = mk(WW, WH);
 function drawLuz() {
-  const osc = ZONAS[G.zona].oscuro || 0.42;
-  if (osc <= 0) return;
-  lx.globalCompositeOperation = 'source-over';
-  lx.clearRect(0, 0, WW, WH);
-  lx.fillStyle = 'rgba(6,3,14,' + osc + ')';
-  lx.fillRect(0, 0, WW, WH);
+  if (!G.luzFija) prepararLuzFija();
+  lx.globalCompositeOperation = 'copy';
+  lx.drawImage(G.luzFija, 0, 0);
   lx.globalCompositeOperation = 'destination-out';
-  const L = (x, y, r, k) => {
-    const g = lx.createRadialGradient(x, y, 0, x, y, r);
-    g.addColorStop(0, 'rgba(0,0,0,' + k + ')');
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    lx.fillStyle = g;
-    lx.fillRect(x - r, y - r, r * 2, r * 2);
-  };
-  const t = G.t;
+  const L = (x, y, r, k) => hueco(lx, x, y, r, k);
   G.jug.forEach(Q => L(Q.x, Q.y - 12, 95, 1));
-  ANTORCHAS.forEach(tx => L(tx * 16 + 8, 26, 60 + Math.sin(t * 0.2 + tx) * 4, 0.95));
-  [7, 22].forEach(tx => L(tx * 16 + 8, 30, 40, 0.7));
-  for (let ty = 2; ty < 19; ty += 2)
-    for (let tx = 1; tx < 29; tx += 2) if (G.mapa[ty][tx] == 'L') L(tx * 16 + 8, ty * 16 + 8, 38, 0.6);
   G.shots.forEach(s => {
     if (s.k == 'fuego' || s.k == 'reflejo') L(s.x, s.y, 40, 0.8);
   });
@@ -289,11 +272,12 @@ function drawLuz() {
     const e = b.pts[b.pts.length - 1];
     L(e[0], e[1], 70, 0.9);
   });
-  G.rings.forEach(r => {
-    if (r.r > 25) L(r.x, r.y, r.r * 1.2, (0.5 * r.l) / r.m);
-  });
+  if (!calidadBaja)
+    G.rings.forEach(r => {
+      if (r.r > 25) L(r.x, r.y, r.r * 1.2, (0.5 * r.l) / r.m);
+    });
   if (G.B && !G.B.dead) L(G.B.x, G.B.y - 30, 70, 0.6);
-  G.inter.forEach(c => L(c.x, c.y - 8, 30, 0.5));
+  G.inter.slice(0, 4).forEach(c => L(c.x, c.y - 8, 30, 0.5));
   Object.keys(G.room.p).forEach(l => {
     if (puertaAbierta(l)) {
       const [px, py] = PUERTA_POS[l];

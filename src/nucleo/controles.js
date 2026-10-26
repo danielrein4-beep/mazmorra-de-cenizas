@@ -66,13 +66,23 @@ addEventListener(
   },
   { passive: true },
 );
+// Palanca táctil: radio corto para que responda rápido; si el dedo se aleja, la base lo sigue.
+const RADIO_PALANCA = 46;
 function stick(s, x, y) {
-  const dx = x - s.ox,
+  let dx = x - s.ox,
     dy = y - s.oy,
-    m = Math.hypot(dx, dy),
-    c = Math.min(1, m / 60);
-  s.dx = m ? (dx / m) * c : 0;
-  s.dy = m ? (dy / m) * c : 0;
+    m = Math.hypot(dx, dy);
+  const lejos = RADIO_PALANCA * 1.3;
+  if (m > lejos) {
+    s.ox = x - (dx / m) * lejos;
+    s.oy = y - (dy / m) * lejos;
+    dx = x - s.ox;
+    dy = y - s.oy;
+    m = lejos;
+  }
+  const c = Math.min(1, m / RADIO_PALANCA);
+  s.dx = m > 4 ? (dx / m) * c : 0;
+  s.dy = m > 4 ? (dy / m) * c : 0;
 }
 cv.addEventListener(
   'touchstart',

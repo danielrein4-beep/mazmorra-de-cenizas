@@ -12,6 +12,7 @@ const src = (...p) => path.join(raiz, 'src', ...p);
 const ORDEN = [
   'datos/datos.js',
   'nucleo/motor.js',
+  'nucleo/rendimiento.js',
   'nucleo/dibujo.js',
   'nucleo/hud.js',
   'nucleo/sonido.js',
