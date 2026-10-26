@@ -13,6 +13,7 @@ const ORDEN = [
   'datos/datos.js',
   'nucleo/motor.js',
   'nucleo/rendimiento.js',
+  'nucleo/pantalla.js',
   'nucleo/dibujo.js',
   'nucleo/hud.js',
   'nucleo/sonido.js',

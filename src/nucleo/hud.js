@@ -69,22 +69,25 @@ function drawHud() {
   txt(musicaOn ? 'M · música sí' : 'M · música no', OW - 18, 136, 12, '#8f82a6', 'right');
   if (B && (!B.dead || B.dt < 100) && !G.intro) {
     o.fillStyle = 'rgba(10,6,16,.85)';
-    o.fillRect(OW / 2 - 230, 16, 460, 22);
+    const bw = Math.min(460, OW - 40),
+      bx = OW / 2 - bw / 2,
+      by = vertical() ? 186 : 16;
+    o.fillRect(bx, by, bw, 22);
     o.fillStyle = '#3a1020';
-    o.fillRect(OW / 2 - 226, 20, 452, 14);
+    o.fillRect(bx + 4, by + 4, bw - 8, 14);
     o.fillStyle = B.phase > B.def.fases.length ? '#ff3a2a' : '#c8324a';
-    o.fillRect(OW / 2 - 226, 20, (452 * B.hp) / B.max, 14);
+    o.fillRect(bx + 4, by + 4, ((bw - 8) * B.hp) / B.max, 14);
     o.fillStyle = '#ff8a9a';
-    o.fillRect(OW / 2 - 226, 20, (452 * B.hp) / B.max, 3);
+    o.fillRect(bx + 4, by + 4, ((bw - 8) * B.hp) / B.max, 3);
     o.fillStyle = '#0b0812';
-    B.def.fases.forEach(f => o.fillRect(OW / 2 - 226 + 452 * f[0], 20, 2, 14));
-    txt(B.def.n, OW / 2, 58, 16, '#f1e9ff', 'center');
+    B.def.fases.forEach(f => o.fillRect(bx + 4 + (bw - 8) * f[0], by + 4, 2, 14));
+    txt(B.def.n, OW / 2, by + 42, 16, '#f1e9ff', 'center');
   } else if (G.oleadas && G.cerrado) {
     const n = G.enem.length + G.spawns.length;
     txt(
       'Oleada ' + (G.ola + 1) + ' de ' + G.oleadas.length + (n ? ' · quedan ' + n : ''),
       OW / 2,
-      34,
+      vertical() ? 214 : 34,
       18,
       '#f1e9ff',
       'center',
@@ -111,7 +114,7 @@ function drawHud() {
       o.fillStyle = 'rgba(0,0,0,.55)';
       o.fillRect(x + 3, y + 3, 52, Math.min(52, (52 * P.cds[i]) / cdT));
     }
-    txt(s.n, x + 29, y + 52, 13, sel ? '#f1e9ff' : '#c3b6d9', 'center');
+    txt(s.n, x + 29, y + 52, coarse ? 10 : 13, sel ? '#f1e9ff' : '#c3b6d9', 'center');
     if (!coarse) {
       o.font = '9px ' + CIFRAS;
       o.fillStyle = '#8f82a6';

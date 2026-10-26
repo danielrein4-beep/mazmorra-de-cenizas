@@ -30,7 +30,7 @@ function dibujarLava(x, y, tx, ty) {
 }
 
 // Bordes oscuros de la pantalla, pintados una vez.
-const VINETA = (() => {
+function hacerVineta() {
   const [c, x] = mk(OW, OH);
   const g = x.createRadialGradient(OW / 2, OH / 2, OH * 0.35, OW / 2, OH / 2, OH * 0.95);
   g.addColorStop(0, 'rgba(0,0,0,0)');
@@ -38,7 +38,8 @@ const VINETA = (() => {
   x.fillStyle = g;
   x.fillRect(0, 0, OW, OH);
   return c;
-})();
+}
+let VINETA = hacerVineta();
 
 // Hueco de luz suave en una capa de oscuridad.
 function hueco(x2, x, y, r, k) {

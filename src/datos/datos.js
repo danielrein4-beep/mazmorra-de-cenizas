@@ -1,9 +1,11 @@
 // Datos fijos del juego: tamaños, recortes del atlas, hechizos, enemigos, salas y mejoras.
-const OW = 960,
+// Tamaño del lienzo (OW×OH) y de la vista del mundo (VW×VH): cambian con la forma de la pantalla (ver nucleo/pantalla.js).
+let OW = 960,
   OH = 540,
   VW = 320,
-  VH = 180,
-  WW = 480,
+  VH = 180;
+// Tamaño de cada cuarto del mundo.
+const WW = 480,
   WH = 320;
 const f4 = (x, y, w, h) => [0, 1, 2, 3].map(i => [x + (w || 16) * i, y, w || 16, h || 16]);
 const PLANO = Array(14).fill([16, 64]);

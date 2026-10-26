@@ -61,7 +61,8 @@ function tint(col) {
 }
 const lvl = id => G.P.mej[id] || 0;
 // En teléfono la cámara se acerca un poco para que los personajes se vean más grandes.
-const zb = () => (G.B && !G.B.dead ? 0.8 : 1) * (coarse ? 1.12 : 1);
+// En vertical se ven unos 250 px del cuarto a lo ancho; arriba y abajo queda lugar para la interfaz.
+const zb = () => (G.B && !G.B.dead ? 0.8 : 1) * (OH > OW ? VW / 250 : coarse ? 1.12 : 1);
 function newRun() {
   G = { zona: 0, dif: DIFS[ELEGIDO.modo] || DIFS.normal, start: performance.now(), kills: 0 };
   const js = [crearJugador(ELEGIDO.p, ELEGIDO.sexo, ELEGIDO.vest, 1)];
@@ -271,8 +272,8 @@ function step() {
   G.cam.y += (focus.y - G.cam.y) * 0.1;
   G.zoom += (G.zt - G.zoom) * 0.1;
   if (!G.U && !(B && B.dead) && !G.intro && !G.coop) G.zt += (zb() - G.zt) * 0.05;
-  G.cam.x = Math.max(vw / 2, Math.min(WW - vw / 2, G.cam.x));
-  G.cam.y = Math.max(vh / 2, Math.min(WH - vh / 2, G.cam.y));
+  G.cam.x = vw >= WW ? WW / 2 : Math.max(vw / 2, Math.min(WW - vw / 2, G.cam.x));
+  G.cam.y = vh >= WH ? WH / 2 : Math.max(vh / 2, Math.min(WH - vh / 2, G.cam.y));
   G.shake *= 0.86;
   if (G.flash > 0) G.flash--;
 }
@@ -340,7 +341,7 @@ function pantallaCompleta() {
   try {
     const e = document.documentElement,
       p = e.requestFullscreen ? e.requestFullscreen() : null;
-    if (p && p.then) p.then(() => screen.orientation?.lock?.('landscape').catch(() => {})).catch(() => {});
+    if (p && p.catch) p.catch(() => {});
   } catch (e) {}
 }
 function start() {

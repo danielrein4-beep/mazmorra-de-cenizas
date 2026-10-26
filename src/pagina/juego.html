@@ -13,8 +13,9 @@ html,body{height:100%}
 *{font-variant-ligatures:none}
 [hidden]{display:none!important}
 body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-family:var(--font);display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
-#wrap{position:relative;width:min(100%,calc((100vh - 24px) * 16 / 9));aspect-ratio:16/9;max-width:100%}
-#cv{width:100%;height:100%;display:block;image-rendering:pixelated;border-radius:6px;background:#000;cursor:crosshair}
+#wrap{position:fixed;top:max(12px,env(safe-area-inset-top,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px))}
+@media (pointer:coarse){#wrap{top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px)}}
+#cv{width:100%;height:100%;display:block;object-fit:contain;image-rendering:pixelated;border-radius:6px;background:#000;cursor:crosshair}
 .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,2vh,16px);background:rgba(8,5,14,.84);text-align:center;padding:16px;border-radius:6px}
 .overlay h1{font-size:clamp(26px,6vw,60px);line-height:1;margin:0;letter-spacing:.04em;text-wrap:balance;text-shadow:0 4px 0 var(--abyss)}
 .overlay p{margin:0;color:var(--muted);font-size:clamp(12px,1.7vw,18px);max-width:52ch;text-wrap:balance}
@@ -26,8 +27,6 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .play:focus-visible,.tb:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
 #tbtns{position:absolute;right:max(8px,env(safe-area-inset-right,0px));bottom:8px;display:grid;grid-template-columns:repeat(2,auto);gap:8px;align-items:end;justify-items:center}
 .tb{font:400 12px var(--font);color:var(--ink);background:rgba(23,17,31,.7);border:2px solid var(--muted);border-radius:50%;width:52px;height:52px;touch-action:none;padding:0}
-#girar{display:none;position:absolute;left:0;right:0;top:calc(100% + 12px);margin:0;text-align:center;color:var(--muted);font-size:15px}
-@media (orientation:portrait) and (pointer:coarse){#girar{display:block}}
 @media (pointer:coarse){.overlay{position:fixed;border-radius:0;background:rgba(8,5,14,.97);padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:5}}
 .tb.ult{border-color:var(--ember);width:62px;height:62px;font-weight:700}
 @media (pointer:coarse){#tbtns{gap:10px}.tb{width:60px;height:60px;font-size:13px}.tb.ult{width:72px;height:72px}.tb:active{background:rgba(255,90,60,.35);transform:scale(.94)}}
@@ -78,7 +77,6 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 
 <div id="wrap">
   <canvas id="cv" width="960" height="540" aria-label="Mazmorra de Cenizas"></canvas>
-  <p id="girar">Gira el teléfono para jugar en grande.</p>
   <video id="videoRed" playsinline hidden></video>
   <div id="tbtns" hidden>
     <button class="tb extra" id="tTomar" hidden>Tomar</button>
