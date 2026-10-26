@@ -81,30 +81,3 @@ function sumarEstado(H, exp) {
     (subidas.length ? ' Estado: ' + subidas.join(', ') + '.' : '')
   );
 }
-
-// Pantalla «Tu estado» del menú, como la hoja de estado que lee la diosa.
-function mostrarEstado() {
-  const E = estado(),
-    L = document.getElementById('estadoLista');
-  document.getElementById('estadoNivel').textContent = 'Nivel ' + E.nivel;
-  document.getElementById('estadoExp').style.width = (100 * E.exp) / expParaNivel(E.nivel) + '%';
-  document.getElementById('estadoExpTxt').textContent =
-    'Experiencia ' + E.exp + ' de ' + expParaNivel(E.nivel);
-  L.innerHTML = '';
-  HABILIDADES.forEach(h => {
-    const fila = document.createElement('div');
-    fila.className = 'hab';
-    fila.innerHTML = '<b></b><span class="rango"></span><span class="val"></span><small></small>';
-    fila.querySelector('b').textContent = h.n;
-    fila.querySelector('.rango').textContent = rangoDe(E[h.id]);
-    fila.querySelector('.val').textContent = E[h.id];
-    fila.querySelector('small').textContent = h.d;
-    L.appendChild(fila);
-  });
-  irAPanel('estado');
-  document.getElementById('estadoVolver').focus();
-}
-document.getElementById('estadoBtn').onclick = mostrarEstado;
-document.getElementById('estadoVolver').onclick = () => {
-  volverDePanel('estado');
-};

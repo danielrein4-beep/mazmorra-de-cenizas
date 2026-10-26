@@ -66,6 +66,63 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .paso{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2vh,16px);width:100%}
 .paso[hidden]{display:none!important}
 #modoAviso{min-height:1.2em}
+#fondoMenu{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;z-index:0;border-radius:6px}
+@media (pointer:coarse){#fondoMenu{position:fixed;z-index:4;border-radius:0}}
+.overlay:not(#menu){background:rgba(8,5,14,.8);border:14px solid transparent;border-image:var(--marco-panel) 6 / 14px}
+.overlay:not([hidden]){animation:entrar .28s ease-out}
+@keyframes entrar{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+#menu{background:transparent;justify-content:space-between;padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
+.escenario{flex:1;min-height:12vh}
+.logo{display:flex;flex-direction:column;align-items:center;line-height:.95;margin-top:clamp(4px,3vh,28px);pointer-events:none}
+.logo-a{font:700 clamp(36px,8.5vw,92px) "Pixelify Sans",monospace;color:#ffe9c0;letter-spacing:.05em;text-transform:uppercase;text-shadow:0 3px 0 #c0401a,0 6px 0 #6a1408,0 10px 18px rgba(0,0,0,.85);animation:brasa 3.2s ease-in-out infinite}
+.logo-b{font:700 clamp(16px,3.4vw,34px) "Pixelify Sans",monospace;color:#ff8a2a;letter-spacing:.32em;text-transform:uppercase;text-shadow:0 2px 0 #4a0e06,0 0 12px rgba(255,90,40,.45);margin-top:4px}
+.logo small{font-size:clamp(11px,1.4vw,14px);color:#c3b6d9;letter-spacing:.24em;text-transform:uppercase;margin-top:8px}
+@keyframes brasa{0%,100%{text-shadow:0 3px 0 #c0401a,0 6px 0 #6a1408,0 10px 18px rgba(0,0,0,.85)}50%{text-shadow:0 3px 0 #e0602a,0 6px 0 #7a1a08,0 0 26px rgba(255,120,40,.55)}}
+.sec{border:10px solid transparent;border-image:var(--marco-sec) 6 fill / 10px;border-radius:0;background:none;padding:0 8px;line-height:1.6}
+.sec:hover:not(:disabled){filter:brightness(1.25)}
+.sec:active:not(:disabled){transform:translateY(1px)}
+.sec[aria-pressed="true"]{border-image-source:var(--marco-sel)!important;color:#ffe94a}
+.play{border:12px solid transparent;border-image:var(--marco-play) 6 fill / 12px;border-radius:0;background:none;box-shadow:none;padding:0 22px;line-height:1.5;color:#2a0a04;text-shadow:0 1px 0 #ffb08a}
+.play:hover{filter:brightness(1.12)}
+.play:active{transform:translateY(2px);box-shadow:none}
+.play.grande{font-size:clamp(20px,3vw,30px);padding:2px 56px;letter-spacing:.12em;text-transform:uppercase;animation:latido 2.4s ease-in-out infinite}
+@keyframes latido{0%,100%{filter:drop-shadow(0 0 0 rgba(255,90,60,0))}50%{filter:drop-shadow(0 0 10px rgba(255,90,60,.7))}}
+.placa{display:flex;align-items:center;gap:10px;border:10px solid transparent;border-image:var(--marco-tile) 6 fill / 10px;padding:0 10px 0 4px;text-align:left}
+.placa canvas{width:36px;height:39px}
+.placa b{display:block;color:var(--ink);font-size:15px}
+.placa span{display:block;color:#ffe94a;font-size:12px}
+.placa-exp{display:block;width:140px;height:5px;background:#0b0812;margin-top:4px}
+.placa-exp i{display:block;height:100%;background:#177e89}
+.dock{display:grid;grid-template-columns:repeat(8,minmax(0,78px));gap:6px;justify-content:center;width:100%}
+.tile{display:flex;flex-direction:column;align-items:center;gap:2px;border:10px solid transparent;border-image:var(--marco-tile) 6 fill / 10px;background:none;color:var(--muted);font:400 12px var(--font);padding:0;cursor:pointer;transition:transform .12s}
+.tile canvas{width:36px;height:36px;image-rendering:pixelated}
+.tile:hover{transform:translateY(-3px);color:var(--ink);filter:brightness(1.2)}
+.tile:active{transform:translateY(1px)}
+@media (max-width:640px){.dock{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-height:440px){.logo small,.placa{display:none}.logo-a{font-size:34px}.dock{grid-template-columns:repeat(8,minmax(0,64px))}.tile canvas{width:26px;height:26px}.play.grande{font-size:18px}}
+#bolsa{border:8px solid transparent;border-image:var(--marco-tile) 6 fill / 8px;background:none;padding:0 6px}
+.ficha{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;width:min(780px,94vw);align-items:start}
+.ficha-izq{display:flex;flex-direction:column;align-items:center;gap:4px;border:10px solid transparent;border-image:var(--marco-tile) 6 fill / 10px;padding:4px 8px}
+#fichaHeroe{width:120px;height:150px;image-rendering:pixelated}
+#fichaNombre{color:var(--ink)}
+#fichaTitulo{color:#ffe94a;font-size:13px;max-width:16ch;text-align:center}
+#fichaRecord{color:var(--muted);font-size:11px}
+.ficha-der{display:flex;flex-direction:column;gap:8px;text-align:left}
+.ficha-nivel{display:flex;align-items:baseline;gap:10px}
+.ficha-nivel span{color:var(--muted);font-size:12px}
+.ficha #estadoBarra{width:100%}
+.ficha #estadoLista{width:100%}
+.ficha .hab{grid-template-columns:7.5em 1.8em minmax(0,1fr) 2.6em;padding:4px 10px}
+.barra-hab{display:block;height:8px;background:#0b0812;border:1px solid #4e4070}
+.barra-hab i{display:block;height:100%;background:#ff8a2a}
+.ficha-equipo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:13px;color:var(--muted)}
+#fichaTecs{display:flex;gap:6px}
+.tec-ficha{display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--ink)}
+.tec-ficha canvas,.ficha-grim canvas{image-rendering:pixelated}
+.ficha-grim{display:flex;align-items:center;gap:6px;color:var(--ink)}
+@media (max-height:440px){#fichaInsignia,#fichaRecord,.overlay#estado h1{display:none}#fichaHeroe{width:80px;height:100px}.ficha .hab{padding:1px 8px}.ficha-der{gap:4px}}
+@media (max-width:600px){.ficha{grid-template-columns:1fr}.ficha-izq{flex-direction:row;flex-wrap:wrap;justify-content:center}#fichaHeroe{width:80px;height:100px}#fichaInsignia{width:44px;height:48px}.ficha .hab{grid-template-columns:6.5em 1.6em minmax(0,1fr) 2.4em}}
+
 #forjaHeroe{color:#ffe94a}
 #armarioEspacios{display:flex;gap:8px;justify-content:center}
 #armarioEspacios .espacio{display:flex;flex-direction:column;align-items:center;gap:2px;font:400 12px var(--font);color:var(--ink);background:#140e1e;border:2px dashed #4e4070;border-radius:6px;padding:6px 8px;cursor:pointer}
@@ -159,6 +216,7 @@ body.botonesGrandes #tbtns{gap:16px}
 <div id="wrap">
   <canvas id="cv" width="960" height="540" aria-label="Mazmorra de Cenizas"></canvas>
   <video id="videoRed" playsinline hidden></video>
+  <canvas id="fondoMenu" aria-hidden="true"></canvas>
   <div id="tbtns" hidden>
     <button class="tb extra" id="tTomar" hidden>Tomar</button>
     <button class="tb extra" id="tPocion" hidden>Pócima</button>
@@ -168,7 +226,23 @@ body.botonesGrandes #tbtns{gap:16px}
     <button class="tb" id="tDash">Rodar</button>
   </div>
   <div class="overlay" id="menu">
-    <h1>Mazmorra de Cenizas</h1>
+    <header class="logo"><span class="logo-a">Mazmorra</span><span class="logo-b">de Cenizas</span><small>Cien pisos · un Rey Mago</small></header>
+    <div class="escenario" aria-hidden="true"></div>
+    <div class="placa" id="placa"><canvas id="placaInsignia" width="48" height="52"></canvas><div><b id="placaNombre"></b><span id="placaTitulo"></span><i class="placa-exp"><i id="placaExp"></i></i></div></div>
+    <button class="play grande" id="playBtn">Jugar</button>
+    <nav class="dock" aria-label="Menú">
+      <button type="button" class="tile" id="estadoBtn"><canvas data-ico="uiFicha" width="36" height="36"></canvas><span>Ficha</span></button>
+      <button type="button" class="tile" id="forjaBtn"><canvas data-ico="uiForja" width="36" height="36"></canvas><span>Forja</span></button>
+      <button type="button" class="tile" id="armarioMenuBtn"><canvas data-ico="uiArmario" width="36" height="36"></canvas><span>Armario</span></button>
+      <button type="button" class="tile" id="grimMenuBtn"><canvas data-ico="uiGrimorio" width="36" height="36"></canvas><span>Grimorios</span></button>
+      <button type="button" class="tile" id="logrosBtn"><canvas data-ico="uiLogros" width="36" height="36"></canvas><span>Logros</span></button>
+      <button type="button" class="tile" id="recordsBtn"><canvas data-ico="uiRecords" width="36" height="36"></canvas><span>Récords</span></button>
+      <button type="button" class="tile" id="ayudaBtn"><canvas data-ico="uiAyuda" width="36" height="36"></canvas><span>Cómo jugar</span></button>
+      <button type="button" class="tile abrirOpciones"><canvas data-ico="uiOpciones" width="36" height="36"></canvas><span>Opciones</span></button>
+    </nav>
+  </div>
+  <div class="overlay" id="ayuda" hidden>
+    <h1 class="h-chico">Cómo jugar</h1>
     <p>Elige entre cinco héroes y explora tres zonas: la Cripta Verde, las Cuevas de Hielo y el Volcán de Cenizas. Busca la llave de cada zona para abrir la puerta del jefe, rompe paredes agrietadas para hallar salas secretas y elige un poder tras cada jefe.</p>
     <div class="keys" id="keysPc">
       <b>WASD / flechas</b><span>moverte</span>
@@ -187,8 +261,7 @@ body.botonesGrandes #tbtns{gap:16px}
       <b>Lado derecho</b><span>arrastra para apuntar y lanzar</span>
       <b>Botones</b><span>rodar, cambiar técnica, grimorio, golpe final, tomar armas</span>
     </div>
-    <button class="play" id="playBtn">Entrar a la mazmorra</button>
-    <div class="fila"><button type="button" class="sec" id="estadoBtn">Tu estado</button><button type="button" class="sec" id="forjaBtn">Forja</button><button type="button" class="sec" id="logrosBtn">Logros</button><button type="button" class="sec" id="recordsBtn">Récords</button><button class="sec btnMusica" aria-pressed="true">Música: sí</button><button type="button" class="sec abrirOpciones">Opciones</button></div>
+    <button class="play" id="ayudaVolver">Volver</button>
   </div>
   <div class="overlay" id="elegir" hidden>
     <nav class="pasos" aria-label="Pasos">
@@ -239,12 +312,27 @@ body.botonesGrandes #tbtns{gap:16px}
   <button type="button" id="botonPausa" aria-label="Pausa" hidden>II</button>
   <button type="button" id="bolsa" aria-label="Tu nivel y tus cenizas" hidden><canvas id="bolsaGema" width="20" height="20"></canvas><b id="bolsaNivel"></b><span id="bolsaCenizas"></span></button>
   <div class="overlay" id="estado" hidden>
-    <h1 class="h-chico">Tu estado</h1>
-    <p>Como en DanMachi: cada habilidad crece con lo que haces y va del rango I al S.</p>
-    <strong id="estadoNivel"></strong>
-    <div id="estadoBarra"><div id="estadoExp"></div></div>
-    <span id="estadoExpTxt" class="etq"></span>
-    <div id="estadoLista"></div>
+    <h1 class="h-chico">Ficha del aventurero</h1>
+    <div class="ficha">
+      <div class="ficha-izq">
+        <canvas id="fichaHeroe" width="120" height="150" aria-label="Tu héroe con su traje"></canvas>
+        <b id="fichaNombre"></b>
+        <canvas id="fichaInsignia" width="64" height="70" aria-hidden="true"></canvas>
+        <span id="fichaTitulo"></span>
+        <small id="fichaRecord"></small>
+      </div>
+      <div class="ficha-der">
+        <div class="ficha-nivel"><strong id="estadoNivel"></strong><span id="estadoExpTxt"></span></div>
+        <div id="estadoBarra"><div id="estadoExp"></div></div>
+        <div id="estadoLista"></div>
+        <div class="ficha-equipo">
+          <div id="fichaTecs"></div>
+          <div class="ficha-grim"><canvas id="fichaGrimorio" width="40" height="48" aria-hidden="true"></canvas><span id="fichaGrimTxt"></span></div>
+          <span id="fichaTraje"></span>
+        </div>
+        <div class="fila"><button type="button" class="sec" id="fichaForja">Ir a la forja</button><button type="button" class="sec" id="fichaArmario">Cambiar técnicas</button></div>
+      </div>
+    </div>
     <button class="play" id="estadoVolver">Volver</button>
   </div>
   <div class="overlay" id="forja" hidden>
@@ -285,6 +373,7 @@ body.botonesGrandes #tbtns{gap:16px}
     <h1 class="h-chico">Opciones</h1>
     <label class="opcion"><span>Música</span><input type="range" id="opMusica" min="0" max="100" step="5"><output id="opMusicaV"></output></label>
     <label class="opcion"><span>Efectos</span><input type="range" id="opEfectos" min="0" max="100" step="5"><output id="opEfectosV"></output></label>
+    <div class="fila"><span class="etq">Música</span><button class="sec btnMusica" aria-pressed="true">Música: sí</button></div>
     <div class="fila"><span class="etq">Vibración</span><button type="button" class="sec opVibrar" data-v="1">Sí</button><button type="button" class="sec opVibrar" data-v="0">No</button></div>
     <div class="fila"><span class="etq">Botones del teléfono</span><button type="button" class="sec opBotones" data-b="normal">Normales</button><button type="button" class="sec opBotones" data-b="grande">Grandes</button></div>
     <div class="fila"><span class="etq">Guía</span><button type="button" class="sec" id="opGuia">Ver la guía otra vez</button></div>

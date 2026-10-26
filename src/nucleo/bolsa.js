@@ -52,7 +52,7 @@ setInterval(pintarBolsa, 400);
 document.getElementById('bolsa').onclick = () => {
   if (running && !pausado) return;
   if (
-    ['estado', 'forja', 'logros', 'records', 'opciones', 'armario'].some(
+    ['estado', 'forja', 'logros', 'records', 'opciones', 'armario', 'ayuda'].some(
       p => !document.getElementById(p).hidden,
     )
   )
