@@ -134,6 +134,7 @@ function tocarTrajeEnVenta(v) {
 
 function mostrarLogros() {
   revisarLogros();
+  pintarMisiones();
   const L = document.getElementById('logrosLista'),
     hechos = LOGROS.logros || {};
   L.innerHTML = '';

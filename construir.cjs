@@ -19,6 +19,8 @@ const ORDEN = [
   'nucleo/rendimiento.js',
   'nucleo/pantalla.js',
   'nucleo/dibujo.js',
+  'nucleo/clima.js',
+  'nucleo/misiones.js',
   'nucleo/hud.js',
   'nucleo/sonido.js',
   'nucleo/musica.js',

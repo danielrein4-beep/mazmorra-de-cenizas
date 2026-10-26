@@ -125,6 +125,8 @@ function drawWorld() {
   );
   ents.sort((a, b) => a.y - b.y).forEach(e => e.d());
   drawLuz();
+  drawLuzColor();
+  drawClima();
   drawPoderes();
   G.pt.forEach(p => {
     w.globalAlpha = Math.min(1, (p.l / p.m) * 1.6);

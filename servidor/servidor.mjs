@@ -19,6 +19,8 @@ try {
   db = JSON.parse(fs.readFileSync(ARCHIVO, 'utf8'));
 } catch (e) {}
 db.retos = db.retos || {};
+db.periodos = db.periodos || {};
+db.porHeroe = db.porHeroe || {};
 // La clave del servidor de enlace se genera en el VPS y se deja en el volumen de datos (nunca en el repo).
 let claveTurnCache = null;
 function claveTurn() {
@@ -53,6 +55,45 @@ function demasiados(ip) {
   return v.n > 60;
 }
 setInterval(() => visitas.clear(), 10 * 60000).unref();
+// Para subir récords el tope es más bajo: 8 por minuto por dirección.
+const subidas = new Map();
+function muchasSubidas(ip) {
+  const ahora = Date.now(),
+    v = subidas.get(ip) || { n: 0, desde: ahora };
+  if (ahora - v.desde > 60000) Object.assign(v, { n: 0, desde: ahora });
+  v.n++;
+  subidas.set(ip, v);
+  return v.n > 8;
+}
+setInterval(() => subidas.clear(), 10 * 60000).unref();
+
+// Claves de la temporada (el mes) y de la semana (que empieza el lunes), en hora UTC.
+const claveMes = () => 'mes:' + new Date().toISOString().slice(0, 7);
+function claveSemana() {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
+  return 'semana:' + d.toISOString().slice(0, 10);
+}
+// Guarda el récord en una tabla si lo mejora; las tablas viejas de mes y semana se borran solas.
+function mejorar(tabla, clave, r) {
+  const viejo = tabla[clave];
+  if (!viejo || r.piso > viejo.piso || (r.piso == viejo.piso && r.seg < viejo.seg)) tabla[clave] = r;
+  else if (viejo.apodo != r.apodo) viejo.apodo = r.apodo;
+}
+function podarPeriodos() {
+  ['mes:', 'semana:'].forEach(p =>
+    Object.keys(db.periodos)
+      .filter(k => k.startsWith(p))
+      .sort()
+      .slice(0, -3)
+      .forEach(k => delete db.periodos[k]),
+  );
+}
+const tablaPublica = filas =>
+  Object.values(filas)
+    .sort((a, b) => b.piso - a.piso || (a.seg || 0) - (b.seg || 0) || a.fecha - b.fecha)
+    .slice(0, 50)
+    .map(({ apodo, piso, heroe, nivel, fecha }) => ({ apodo, piso, heroe, nivel, fecha }));
 
 const apodoValido = s => typeof s == 'string' && /^[\p{L}\p{N} _.-]{2,18}$/u.test(s.trim());
 const idValido = s => typeof s == 'string' && /^[a-f0-9]{32}$/.test(s);
@@ -86,28 +127,46 @@ function leerCuerpo(req) {
 
 const RUTAS = {
   // Los 50 mejores de la Torre.
-  'GET /api/records': () => {
-    const lista = Object.values(db.records)
-      .sort((a, b) => b.piso - a.piso || a.fecha - b.fecha)
-      .slice(0, 50)
-      .map(({ apodo, piso, heroe, nivel, fecha }) => ({ apodo, piso, heroe, nivel, fecha }));
-    return [200, { lista }];
+  'GET /api/records': (b, q) => {
+    const periodo = q.get('periodo'),
+      heroe = (q.get('heroe') || '').slice(0, 20);
+    if (heroe)
+      return [200, { lista: tablaPublica(Object.values(db.porHeroe).filter(r => r.heroe == heroe)) }];
+    if (periodo == 'mes' || periodo == 'semana')
+      return [200, { lista: tablaPublica(db.periodos[periodo == 'mes' ? claveMes() : claveSemana()] || {}) }];
+    return [200, { lista: tablaPublica(db.records) }];
   },
-  // Sube tu récord: cada aparato tiene un id al azar; solo cuenta si mejora el anterior.
-  'POST /api/records': b => {
-    if (!idValido(b.id) || !apodoValido(b.apodo) || !entero(b.piso, 100) || !entero(b.nivel || 1, 99))
+  // Sube una partida de la Torre: desde qué piso salió, hasta cuál llegó y cuánto tardó. Cada aparato tiene
+  // un id al azar. Contra trampas: solo se puede salir de un piso ya alcanzado antes y cada piso subido
+  // pide al menos 8 segundos de juego; si no cuadra, no entra a ninguna tabla.
+  'POST /api/records': (b, q, ip) => {
+    if (muchasSubidas(ip)) return [429, { error: 'espera' }];
+    if (
+      !idValido(b.id) ||
+      !apodoValido(b.apodo) ||
+      !entero(b.piso, 100) ||
+      !entero(b.desde, 100) ||
+      !entero(b.seg, 36000) ||
+      !entero(b.nivel || 1, 99)
+    )
       return [400, { error: 'datos' }];
-    const r = db.records[b.id];
-    if (!r || b.piso > r.piso || r.apodo != b.apodo.trim()) {
-      db.records[b.id] = {
-        apodo: b.apodo.trim(),
-        piso: Math.max(b.piso, r ? r.piso : 0),
-        heroe: String(b.heroe || '').slice(0, 20),
-        nivel: b.nivel || 1,
-        fecha: Date.now(),
-      };
-      guardarDisco();
-    }
+    const r = db.records[b.id],
+      techo = r ? r.piso : 1;
+    if (b.desde < 1 || b.desde > Math.max(techo, 1) || b.piso <= b.desde || b.seg < (b.piso - b.desde) * 8)
+      return [400, { error: 'partida' }];
+    const fila = {
+      apodo: b.apodo.trim(),
+      piso: b.piso,
+      seg: b.seg,
+      heroe: String(b.heroe || '').slice(0, 20),
+      nivel: b.nivel || 1,
+      fecha: Date.now(),
+    };
+    mejorar(db.records, b.id, fila);
+    mejorar(db.porHeroe, b.id + '|' + fila.heroe, fila);
+    [claveMes(), claveSemana()].forEach(k => mejorar((db.periodos[k] = db.periodos[k] || {}), b.id, fila));
+    podarPeriodos();
+    guardarDisco();
     return [200, { ok: 1 }];
   },
   // Guardado en la nube: el aparato pide un código secreto nuevo.
@@ -189,7 +248,7 @@ http
     if (!ruta) return responder(res, 404, { error: 'ruta' }, origen);
     try {
       const cuerpo = req.method == 'POST' ? await leerCuerpo(req) : {};
-      const [codigo, datos] = ruta(cuerpo, new URLSearchParams(req.url.split('?')[1] || ''));
+      const [codigo, datos] = ruta(cuerpo, new URLSearchParams(req.url.split('?')[1] || ''), ip);
       responder(res, codigo, datos, origen);
     } catch (e) {
       responder(res, 400, { error: 'pedido' }, origen);

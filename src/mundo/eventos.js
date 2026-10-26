@@ -23,7 +23,7 @@ function textoEvento(c, E) {
 }
 function usarEvento(P, c) {
   const V = EVENTOS[c.ev],
-    fin = () => ((c.usos -= 1), c.usos <= 0 && (c.d = 1));
+    fin = () => ((G.eventosUsados = (G.eventosUsados || 0) + 1), (c.usos -= 1), c.usos <= 0 && (c.d = 1));
   if (c.ev == 'altar') {
     if (P.max <= 2) return (G.aviso = { txt: 'No te queda vida para ofrecer', l: 70 });
     P.max -= 2;

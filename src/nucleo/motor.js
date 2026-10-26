@@ -401,7 +401,7 @@ function end(win) {
   ganarEstado();
   guardarLogro('maxKills', Math.max(LOGROS.maxKills || 0, G.kills || 0));
   if (enRed) guardarLogro('jugoEnLinea');
-  document.getElementById('endText').textContent += revisarLogros();
+  document.getElementById('endText').textContent += avanzarMisiones(win) + revisarLogros();
   subirALaNube();
   finAlInvitado(document.getElementById('endTitle').textContent, textoBase);
   premiosAlInvitado();

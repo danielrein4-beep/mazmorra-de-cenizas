@@ -25,11 +25,13 @@ const SIN_SERVIDOR = 'No se pudo hablar con el servidor de récords. Revisa tu i
 
 // Al terminar una partida: sube tu récord de la Torre (si pusiste apodo) y respalda tu progreso.
 function subirALaNube() {
-  if (LOGROS.apodo && LOGROS.torre)
+  if (LOGROS.apodo && G && G.torre && G.piso > (G.pisoInicio || 1))
     pedir('/api/records', {
       id: idAparato(),
       apodo: LOGROS.apodo,
-      piso: Math.min(100, LOGROS.torre),
+      piso: Math.min(100, G.piso),
+      desde: G.pisoInicio || 1,
+      seg: Math.min(36000, Math.round((performance.now() - G.start) / 1000)),
       heroe: PERSONAJES[ELEGIDO.p][ELEGIDO.sexo].n,
       nivel: estado().nivel,
     }).catch(() => {});
@@ -41,15 +43,24 @@ let tablaRecords = 'torre';
 async function mostrarRecords() {
   const L = document.getElementById('recordsLista'),
     nota = document.getElementById('recordsNota'),
-    reto = tablaRecords == 'reto';
+    reto = tablaRecords == 'reto',
+    heroe = PERSONAJES[ELEGIDO.p][ELEGIDO.sexo].n;
   document.getElementById('apodo').value = LOGROS.apodo || '';
-  document.getElementById('tabTorre').setAttribute('aria-pressed', !reto);
-  document.getElementById('tabReto').setAttribute('aria-pressed', reto);
+  TABLAS.forEach(([t, b]) => document.getElementById(b).setAttribute('aria-pressed', tablaRecords == t));
   irAPanelSiHace('records');
   L.innerHTML = '';
   nota.textContent = 'Cargando…';
   try {
-    const { lista } = await pedir(reto ? '/api/reto?fecha=' + fechaHoy() : '/api/records'),
+    const { lista } = await pedir(
+        reto
+          ? '/api/reto?fecha=' + fechaHoy()
+          : '/api/records' +
+              (tablaRecords == 'heroe'
+                ? '?heroe=' + encodeURIComponent(heroe)
+                : tablaRecords != 'torre'
+                  ? '?periodo=' + tablaRecords
+                  : ''),
+      ),
       R = retoDeHoy();
     nota.textContent = reto
       ? 'Reto de hoy: pisos ' +
@@ -61,7 +72,7 @@ async function mostrarRecords() {
         '.' +
         (lista.length ? '' : ' Nadie lo jugó todavía.')
       : lista.length
-        ? 'Los mejores de la Torre. Tu récord sube solo al terminar cada partida.'
+        ? NOTA_TABLA[tablaRecords] + (tablaRecords == 'heroe' ? heroe + '.' : '')
         : 'Todavía nadie subió su récord. ¡Sé el primero!';
     lista.forEach((r, i) => {
       const f = document.createElement('div');
@@ -79,14 +90,27 @@ async function mostrarRecords() {
     nota.textContent = SIN_SERVIDOR;
   }
 }
-document.getElementById('tabTorre').onclick = () => {
-  tablaRecords = 'torre';
-  mostrarRecords();
+// Pestañas: de siempre, la temporada (el mes), la semana, solo tu héroe y el reto del día.
+const TABLAS = [
+  ['torre', 'tabTorre'],
+  ['mes', 'tabMes'],
+  ['semana', 'tabSemana'],
+  ['heroe', 'tabHeroe'],
+  ['reto', 'tabReto'],
+];
+const NOTA_TABLA = {
+  torre: 'Los mejores de la Torre. Tu récord sube solo al terminar cada partida.',
+  mes: 'Temporada de este mes: se empieza de cero el día 1.',
+  semana: 'Los mejores de esta semana: se empieza de cero cada lunes.',
+  heroe: 'Los mejores jugando con ',
 };
-document.getElementById('tabReto').onclick = () => {
-  tablaRecords = 'reto';
-  mostrarRecords();
-};
+TABLAS.forEach(
+  ([t, b]) =>
+    (document.getElementById(b).onclick = () => {
+      tablaRecords = t;
+      mostrarRecords();
+    }),
+);
 // Al terminar un reto, tu intento entra al ranking del día (si pusiste apodo).
 function subirReto(ok) {
   if (!LOGROS.apodo || !G.reto) return false;
