@@ -1,0 +1,83 @@
+<meta charset="utf-8">
+<title>Mazmorra de Cenizas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Press+Start+2P&display=swap">
+<style>
+/* Una sola pantalla de juego: lienzo 16:9 centrado; menús y controles táctiles encima */
+:root{--bg:#0b0812;--ink:#f1e9ff;--muted:#c3b6d9;--ember:#ff5a3c;--ember-deep:#7a1f10;--ice:#5ee7ff;--abyss:#7a1f3d;--font:'Pixelify Sans',ui-monospace,monospace;color-scheme:dark}
+html,body{height:100%}
+*{font-variant-ligatures:none}
+[hidden]{display:none!important}
+body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-family:var(--font);display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+#wrap{position:relative;width:min(100%,calc((100vh - 24px) * 16 / 9));aspect-ratio:16/9;max-width:100%}
+#cv{width:100%;height:100%;display:block;image-rendering:pixelated;border-radius:6px;background:#000;cursor:crosshair}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,2vh,16px);background:rgba(8,5,14,.84);text-align:center;padding:16px;border-radius:6px}
+.overlay h1{font-size:clamp(26px,6vw,60px);line-height:1;margin:0;letter-spacing:.04em;text-wrap:balance;text-shadow:0 4px 0 var(--abyss)}
+.overlay p{margin:0;color:var(--muted);font-size:clamp(12px,1.7vw,18px);max-width:52ch;text-wrap:balance}
+.keys{display:grid;grid-template-columns:auto auto;gap:3px 18px;font-size:clamp(11px,1.5vw,16px);text-align:left}
+.creditos{font-size:clamp(11px,1.3vw,14px)!important;opacity:.85}
+.keys b{color:var(--ice);font-weight:700}
+.play{font:700 clamp(16px,2.4vw,24px) var(--font);color:#1a0a08;background:var(--ember);border:0;border-radius:6px;padding:10px 30px;cursor:pointer;box-shadow:0 4px 0 var(--ember-deep)}
+.play:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ember-deep)}
+.play:focus-visible,.tb:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+#tbtns{position:absolute;right:max(10px,env(safe-area-inset-right,0px));bottom:12%;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.tb{font:700 14px var(--font);color:var(--ink);background:rgba(23,17,31,.7);border:2px solid var(--muted);border-radius:50%;width:64px;height:64px;touch-action:none}
+#girar{display:none;position:absolute;left:0;right:0;top:calc(100% + 12px);margin:0;text-align:center;color:var(--muted);font-size:15px}
+@media (orientation:portrait) and (pointer:coarse){#girar{display:block}}
+.tb.ult{border-color:var(--ember);width:76px;height:76px}
+.sec{font:700 clamp(13px,1.6vw,16px) var(--font);color:var(--ink);background:transparent;border:2px solid var(--muted);border-radius:6px;padding:6px 16px;cursor:pointer}
+.sec:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+#mejorasLista{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
+.carta{font-family:var(--font);color:var(--ink);background:#17111f;border:2px solid #6a4cff;border-radius:6px;padding:12px 14px;width:clamp(150px,24vw,220px);display:flex;flex-direction:column;gap:6px;text-align:left;cursor:pointer}
+.carta:hover,.carta:focus-visible{border-color:var(--ember);outline:none;transform:translateY(-2px)}
+.carta strong{font-size:clamp(14px,1.9vw,19px);color:#ffe94a}
+.carta .desc{font-size:clamp(12px,1.5vw,15px);color:var(--muted)}
+.carta .tecla{font-size:12px;color:var(--ice)}
+</style>
+
+<div id="wrap">
+  <canvas id="cv" width="960" height="540" aria-label="Mazmorra de Cenizas"></canvas>
+  <p id="girar">Gira el teléfono para jugar en grande.</p>
+  <div id="tbtns" hidden>
+    <button class="tb ult" id="tUlt">Abismo</button>
+    <button class="tb" id="tSpell">Hechizo</button>
+    <button class="tb" id="tDash">Rodar</button>
+    <button class="tb btnMusica" aria-pressed="true">Música: sí</button>
+  </div>
+  <div class="overlay" id="menu">
+    <h1>Mazmorra de Cenizas</h1>
+    <p>Lyra baja por seis salas de la mazmorra. Tres jefes la esperan: el Rey Podrido, Gruk el Machacador y el Señor de las Cenizas. Tras cada jefe eliges un poder nuevo.</p>
+    <div class="keys" id="keysPc">
+      <b>WASD / flechas</b><span>moverte</span>
+      <b>Ratón + clic</b><span>apuntar y lanzar</span>
+      <b>1 · 2 · 3</b><span>hielo · fuego · rayo</span>
+      <b>Espacio</b><span>rodar (eres intocable)</span>
+      <b>Q / clic derecho</b><span>Lanzas del Abismo cuando la barra brilla</span>
+      <b>M</b><span>música sí o no</span>
+    </div>
+    <div class="keys" id="keysTouch" hidden>
+      <b>Lado izquierdo</b><span>arrastra para moverte</span>
+      <b>Lado derecho</b><span>arrastra para apuntar y lanzar</span>
+      <b>Botones</b><span>rodar, cambiar hechizo, final</span>
+    </div>
+    <button class="play" id="playBtn">Entrar a la mazmorra</button>
+    <button class="sec btnMusica" aria-pressed="true">Música: sí</button>
+  </div>
+  <div class="overlay" id="mejoras" hidden>
+    <h1>Elige un poder</h1>
+    <p>El jefe cayó. Toma una mejora para lo que viene.</p>
+    <div id="mejorasLista"></div>
+  </div>
+  <div class="overlay" id="endScr" hidden>
+    <h1 id="endTitle">Caíste</h1>
+    <p id="endText"></p>
+    <button class="play" id="againBtn">Otra vez</button>
+    <p class="creditos">Música de MintoDog, Alex McCulloch, HydroGene y Emma_MA. Dibujos de 0x72. Todo de uso libre (CC0), vía OpenGameArt e itch.io.</p>
+  </div>
+</div>
+
+<script>
+const ATLAS_SRC='__ATLAS__';
+/*__JS__*/
+</script>
