@@ -217,6 +217,7 @@ Object.assign(JEFES.dragonF, {
 });
 // Aura del dragón: brasas a su alrededor, negras y moradas cuando renace.
 function auraDragon(B) {
+  truenosAmbiente(B);
   if (B.id != 'dragon' || B.dead || G.t % 3) return;
   const C = fuegoDe(B);
   G.pt.push({

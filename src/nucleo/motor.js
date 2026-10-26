@@ -155,6 +155,7 @@ function resetSala() {
     rayosPend: [],
     diferidos: [],
     zonasEn: [],
+    efectosEn: [],
     miniSala: 0,
     relojUsado: 0,
     fade: 1,
@@ -289,8 +290,9 @@ function step() {
   G.pt.forEach(p => {
     p.x += p.vx;
     p.y += p.vy;
-    p.vx *= 0.93;
-    p.vy = p.vy * 0.93 + p.g;
+    // fr: cuánto frena cada partícula (las del chorro del dragón casi no frenan, para llegar lejos).
+    p.vx *= p.fr || 0.93;
+    p.vy = p.vy * (p.fr || 0.93) + p.g;
     p.l--;
   });
   G.pt = G.pt.filter(p => p.l > 0);

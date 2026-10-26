@@ -196,6 +196,8 @@ function updateEnemigos() {
       });
       return;
     }
+    // El hueso da la vuelta a mitad de camino, como un bumerán.
+    if (b.vuelve && --b.vuelve == 0) (b.vx *= -1.1), (b.vy *= -1.1);
     b.x += b.vx * G.dif.bala;
     b.y += b.vy * G.dif.bala;
     if (solidAt(b.x, b.y, -2)) {
@@ -249,6 +251,7 @@ function drawBalas() {
       return;
     }
     if (b.llama) return drawLlama(b, t);
+    if (b.forma) return drawFormaBala(b, t);
     const r = b.big ? 4 : b.r;
     w.fillStyle = b.c;
     w.beginPath();

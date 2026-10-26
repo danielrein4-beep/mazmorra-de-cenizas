@@ -19,7 +19,8 @@ const TEMAS = {
   // Guardianes de la Torre y el Dragón: Emma_MA, Juhani Junkala y Umplix (CC0, OpenGameArt).
   persecucion: { src: 'musica/persecucion.mp3' },
   batalla: { src: 'musica/batalla.mp3' },
-  dragon: { src: 'musica/dragon.mp3' },
+  // El Dragón del piso 100 pelea con el tema más épico (coro y tambores), como el último jefe de la Aventura.
+  dragon: { src: 'musica/coloso.mp3' },
   // Fanfarria de victoria de cynicmusic (CC0): suena una vez.
   victoria: { src: 'musica/victoria.mp3', unaVez: 1 },
 };

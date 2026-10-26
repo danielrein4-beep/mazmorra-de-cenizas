@@ -137,7 +137,7 @@ function drawPoderes() {
       w.stroke();
     };
     w.globalAlpha = 0.35 * k;
-    w.strokeStyle = b.negro ? '#8a2aff' : '#5ee7ff';
+    w.strokeStyle = b.negro ? '#8a2aff' : b.col || '#5ee7ff';
     w.lineWidth = 7 * k * g;
     path(b.pts);
     w.globalAlpha = 1;
@@ -146,7 +146,7 @@ function drawPoderes() {
     w.strokeStyle = b.negro ? '#12051e' : '#ffffff';
     w.lineWidth = 1.4 * g;
     path(b.pts);
-    w.strokeStyle = b.negro ? '#d9b0ff' : '#b9f3ff';
+    w.strokeStyle = b.negro ? '#d9b0ff' : b.col || '#b9f3ff';
     w.lineWidth = 1;
     b.br.forEach(path);
   });

@@ -29,19 +29,23 @@ function alientoDragon(B, cx, cy, f) {
       dif = Math.atan2(Math.sin(objetivo - B.ang0), Math.cos(objetivo - B.ang0));
     B.ang0 += dif * (B.berserk ? 0.03 : 0.022);
     B.cono = { x: mx, y: my, a: B.ang0, largo, ancho, C };
-    for (let k = 0; k < 4; k++) {
-      const a = B.ang0 + rnd(-ancho, ancho) * 0.8,
-        v = rnd(3, 5.5);
+    // El chorro es pura chispa: muchos pixelitos de su color que salen de la boca y se abren.
+    const P = pixelesFuego(B);
+    for (let k = 0; k < 16; k++) {
+      const a = B.ang0 + rnd(-ancho, ancho) * 0.75,
+        v = rnd(3.2, 6),
+        l = Math.round(largo / v) + Math.floor(rnd(-3, 4));
       G.pt.push({
-        x: mx,
-        y: my,
+        x: mx + rnd(-2, 2),
+        y: my + rnd(-2, 2),
         vx: Math.cos(a) * v,
-        vy: Math.sin(a) * v,
-        l: 30,
-        m: 30,
-        c: C[k % 3],
-        s: 3,
+        vy: Math.sin(a) * v - rnd(0, 0.3),
+        l,
+        m: l,
+        c: P[Math.floor(Math.random() * P.length)],
+        s: Math.random() < 0.3 ? 4 : Math.random() < 0.6 ? 3 : 2,
         g: 0,
+        fr: 0.995,
       });
     }
     vivos().forEach(Q => {
@@ -57,32 +61,18 @@ function alientoDragon(B, cx, cy, f) {
   return B.t > 120;
 }
 
-// El chorro de fuego: capas de su color, más claras al centro, que titilan.
+// Colores de los pixelitos de fuego: naranja y amarillo, o morado, fucsia y negro al renacer.
+const pixelesFuego = B =>
+  B.berserk
+    ? ['#b06bff', '#8a2aff', '#8a2aff', '#ff3fd2', '#2a0a4a', '#12051e', '#e0c0ff']
+    : ['#ff8a2a', '#ff5a1a', '#ffb04a', '#ffe94a', '#ffe94a', '#fff3c0', '#c0301a'];
+// El chorro ya no tiene forma dibujada: son solo los pixelitos (deja apenas un resplandor en la boca).
 function drawConoDragon(B) {
   const K = B.cono;
   if (!K) return;
-  [
-    [1, 0.35, K.C[0]],
-    [0.7, 0.45, K.C[1]],
-    [0.35, 0.6, B.berserk ? '#12051e' : '#fff3c0'],
-  ].forEach(([ab, al, c]) => {
-    const t = Math.sin(G.t * 0.7) * 0.04,
-      a1 = K.a - K.ancho * ab - t,
-      a2 = K.a + K.ancho * ab + t,
-      L = K.largo * (0.92 + Math.random() * 0.08);
-    w.globalAlpha = al;
-    w.fillStyle = c;
-    w.beginPath();
-    w.moveTo(K.x, K.y);
-    w.lineTo(K.x + Math.cos(a1) * L, K.y + Math.sin(a1) * L);
-    w.quadraticCurveTo(
-      K.x + Math.cos(K.a) * L * 1.12,
-      K.y + Math.sin(K.a) * L * 1.12,
-      K.x + Math.cos(a2) * L,
-      K.y + Math.sin(a2) * L,
-    );
-    w.fill();
-  });
+  w.globalAlpha = 0.35 + Math.random() * 0.2;
+  w.fillStyle = pixelesFuego(B)[0];
+  w.fillRect(Math.round(K.x - 4), Math.round(K.y - 4), 8, 8);
   w.globalAlpha = 1;
 }
 
@@ -123,39 +113,35 @@ function latigoDragon(B, cx, cy, f) {
     vivos().forEach(
       Q => pts.some(p => Math.hypot(Q.x - p[0], Q.y - 10 - p[1]) < 11) && conJugador(Q, hurtPlayer),
     );
-    const fin = pts[pts.length - 1];
-    G.pt.push({
-      x: fin[0],
-      y: fin[1],
-      vx: rnd(-1, 1),
-      vy: rnd(-1, 1),
-      l: 16,
-      m: 16,
-      c: fuegoDe(B)[2],
-      s: 2,
-      g: 0,
+    // La cola de fuego suelta pixelitos por todo su largo.
+    const Pf = pixelesFuego(B);
+    pts.forEach((p, i) => {
+      if (i % 2) return;
+      G.pt.push({
+        x: p[0],
+        y: p[1],
+        vx: rnd(-0.6, 0.6),
+        vy: rnd(-1, 0.2),
+        l: 12,
+        m: 12,
+        c: Pf[i % Pf.length],
+        s: 2,
+        g: 0,
+      });
     });
   });
   return B.t > 76;
 }
+// El látigo es una hilera de pixelitos de fuego que titilan (nada de línea lisa).
 function drawLatigoDragon(B) {
   const L = B.latigo;
   if (!L) return;
-  w.lineCap = 'round';
-  w.lineJoin = 'round';
-  [
-    [10, 0.35, L.C[0]],
-    [5, 1, L.C[1]],
-    [2, 1, B.berserk ? '#12051e' : '#fff3c0'],
-  ].forEach(([g, al, c]) => {
-    w.globalAlpha = al;
-    w.strokeStyle = c;
-    w.lineWidth = g;
-    w.beginPath();
-    L.pts.forEach((p, i) => (i ? w.lineTo(p[0], p[1]) : w.moveTo(p[0], p[1])));
-    w.stroke();
+  const Pf = pixelesFuego(B);
+  L.pts.forEach((p, i) => {
+    const s = i > 10 ? 3 : 4;
+    w.fillStyle = Pf[(i + G.t) % Pf.length];
+    w.fillRect(Math.round(p[0] - s / 2 + rnd(-1, 1)), Math.round(p[1] - s / 2 + rnd(-1, 1)), s, s);
   });
-  w.globalAlpha = 1;
 }
 
 // Aletazo: empuja a todos hacia atrás y suelta tornados que se van abriendo (sin lluvia de balas).
@@ -259,14 +245,21 @@ Object.assign(ATAQUES, {
   rayosNegros: rayosNegrosDragon,
 });
 JEFES.dragon.ataques = {
-  1: ['aliento', 'vuelo', 'aletazo', 'latigo', 'aliento'],
-  2: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'lluviaFuego', 'garra'],
-  3: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'infierno', 'muroFuego'],
+  1: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rayosNegros', 'aliento'],
+  2: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'garra'],
+  3: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'rugido', 'infierno', 'muroFuego'],
 };
 JEFES.dragonF.ataques = {
-  1: ['aliento', 'rugido', 'aletazo', 'latigo', 'rayosNegros', 'llamaNegra', 'vuelo'],
-  2: ['aliento', 'rugido', 'rayosNegros', 'latigo', 'aletazo', 'infierno', 'vuelo', 'llamaNegra'],
+  1: ['aliento', 'rugido', 'aletazo', 'latigo', 'rayosNegros', 'rayosNegros', 'llamaNegra', 'vuelo'],
+  2: ['aliento', 'rugido', 'rayosNegros', 'latigo', 'rugido', 'rayosNegros', 'aletazo', 'infierno', 'vuelo'],
 };
+// En fuego negro, además, cada tanto cae un trueno negro cerca de la heroína (avisa con su marca).
+function truenosAmbiente(B) {
+  if (B.id != 'dragon' || !B.berserk || B.dead || B.trans || G.t % 150) return;
+  const P = G.P;
+  for (let i = 0; i < 2; i++)
+    zonaEn(B, P.x + rnd(-50, 50), P.y + rnd(-36, 36), 22, 40 + i * 12, RAYO_NEGRO, 'rayoNegro', 1);
+}
 
 // Trueno negro: un rayo gordo que baja zigzagueando desde arriba de la pantalla, con ramas largas,
 // un destello morado en toda la pantalla, temblor y estruendo.

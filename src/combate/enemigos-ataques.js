@@ -286,6 +286,7 @@ function zonaEn(m, x, y, r, t, c, tipo, sinArco) {
   if (!sinArco) sfx('lanzar');
 }
 function pasoZonasEn() {
+  pasoEfectosEn();
   G.zonasEn.forEach(z => {
     if (--z.t > 0) return;
     z.d = 1;
@@ -350,6 +351,7 @@ function pasoZonasEn() {
   G.zonasEn = G.zonasEn.filter(z => !z.d);
 }
 function drawZonasEn() {
+  drawEfectosEn();
   G.zonasEn.forEach(z => {
     const k = 1 - z.t / z.m;
     w.globalAlpha = 0.18 + 0.2 * k;

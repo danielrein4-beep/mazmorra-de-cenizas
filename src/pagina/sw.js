@@ -1,5 +1,5 @@
 // Guarda el juego y la música en el teléfono para que abra sin internet.
-const CACHE = 'mazmorra-v31',
+const CACHE = 'mazmorra-v32',
   ARCHIVOS = [
     './',
     'index.html',
@@ -14,7 +14,6 @@ const CACHE = 'mazmorra-v31',
     'musica/victoria.mp3',
     'musica/persecucion.mp3',
     'musica/batalla.mp3',
-    'musica/dragon.mp3',
   ];
 self.addEventListener('install', e => {
   // 'reload': baja cada archivo del servidor, no la copia vieja que el navegador guarda unos minutos.
