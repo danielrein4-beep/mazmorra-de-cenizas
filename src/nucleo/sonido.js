@@ -271,3 +271,46 @@ function sfx(k) {
     f(1 + (Math.random() - 0.5) * 0.08);
   } catch (e) {}
 }
+
+// iPhone: el sonido de las páginas va por el canal de "ambiente", que se apaga con el interruptor de silencio
+// y se pausa al salir de la app. Se pide el canal de reproducción (como una app de música), se mantiene
+// sonando un audio en silencio para conservarlo y, en cada toque, se reanuda el sonido si estaba pausado.
+let audioDesbloqueado = false;
+function silencioURL() {
+  const n = 4000,
+    b = new DataView(new ArrayBuffer(44 + n * 2)),
+    s = (o, t) => [...t].forEach((c, i) => b.setUint8(o + i, c.charCodeAt(0)));
+  s(0, 'RIFF');
+  b.setUint32(4, 36 + n * 2, true);
+  s(8, 'WAVEfmt ');
+  b.setUint32(16, 16, true);
+  b.setUint16(20, 1, true);
+  b.setUint16(22, 1, true);
+  b.setUint32(24, 8000, true);
+  b.setUint32(28, 16000, true);
+  b.setUint16(32, 2, true);
+  b.setUint16(34, 16, true);
+  s(36, 'data');
+  b.setUint32(40, n * 2, true);
+  return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+}
+function desbloquearAudio() {
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = 'playback';
+  } catch (e) {}
+  if (!AC) return;
+  if (AC.state != 'running') AC.resume().catch(() => {});
+  if (!audioDesbloqueado) {
+    audioDesbloqueado = true;
+    const a = new Audio(silencioURL());
+    a.loop = true;
+    a.setAttribute('playsinline', '');
+    a.play().catch(() => (audioDesbloqueado = false));
+  }
+}
+['touchend', 'pointerdown', 'click', 'keydown'].forEach(ev =>
+  addEventListener(ev, desbloquearAudio, { capture: true, passive: true }),
+);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && AC && AC.state != 'running') AC.resume().catch(() => {});
+});

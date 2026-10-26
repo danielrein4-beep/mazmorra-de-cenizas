@@ -24,6 +24,8 @@ const coarse = matchMedia('(pointer: coarse)').matches;
 let AC, noise, sfxBus;
 function initAudio() {
   try {
+    // En iPhone el canal de reproducción se pide antes de crear el sonido (ver desbloquearAudio).
+    if (navigator.audioSession) navigator.audioSession.type = 'playback';
     if (!AC) {
       AC = new (window.AudioContext || window.webkitAudioContext)();
       const n = AC.sampleRate;
@@ -35,6 +37,7 @@ function initAudio() {
       sfxBus.connect(AC.destination);
     }
     AC.resume?.();
+    desbloquearAudio();
   } catch (e) {
     AC = null;
   }
