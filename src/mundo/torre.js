@@ -93,7 +93,9 @@ function iniciarTorre(desde) {
   const saltados = Math.floor((ini - 1) / 10);
   G.jug.forEach(P => {
     for (let i = 0; i < saltados; i++) {
-      const pool = mejorasDe(PERSONAJES[P.pid]).filter(m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max);
+      const pool = mejorasDe(Object.assign({}, PERSONAJES[P.pid], { tecs: P.tecs })).filter(
+        m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max,
+      );
       if (!pool.length) break;
       const m = pool[Math.floor(Math.random() * pool.length)];
       P.mej[m.id] = (P.mej[m.id] || 0) + 1;

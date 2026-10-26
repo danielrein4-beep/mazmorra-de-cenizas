@@ -51,7 +51,11 @@ setInterval(pintarBolsa, 400);
 // Tocar la bolsa abre Tu estado, salvo en plena partida o con otro panel ya abierto.
 document.getElementById('bolsa').onclick = () => {
   if (running && !pausado) return;
-  if (['estado', 'forja', 'logros', 'records', 'opciones'].some(p => !document.getElementById(p).hidden))
+  if (
+    ['estado', 'forja', 'logros', 'records', 'opciones', 'armario'].some(
+      p => !document.getElementById(p).hidden,
+    )
+  )
     return;
   mostrarEstado();
 };

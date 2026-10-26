@@ -14,7 +14,7 @@ function crearJugador(pi, sexo, vest, num) {
     spr: s.spr,
     nombre: s.n,
     src: atlasVestuario(vest),
-    tecs: p.tecs,
+    tecs: tecsEquipadas(pi in PERSONAJES ? pi : 0),
     ult: p.ult,
     tipoArma: p.arma,
     arma: nuevaArma(p.ini),

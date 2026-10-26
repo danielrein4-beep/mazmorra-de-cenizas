@@ -70,7 +70,7 @@ function mostrarMejoras(k) {
   mouse.down = false;
   keys = {};
   touch.move = touch.aim = null;
-  const MJ = mejorasDe(PERSONAJES[P.pid]),
+  const MJ = mejorasDe(Object.assign({}, PERSONAJES[P.pid], { tecs: P.tecs })),
     pool = MJ.filter(m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max).sort(() => Math.random() - 0.5);
   const ops = pool.slice(0, P.hp < P.max ? 2 : 3);
   if (P.hp < P.max) ops.push(MJ.find(m => m.id == 'cura'));

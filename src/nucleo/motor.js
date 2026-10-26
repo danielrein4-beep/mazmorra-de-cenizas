@@ -86,6 +86,8 @@ function newRun() {
     js[1].grim = amigo.grim;
     js[1].hojas = amigo.hojas;
     js[1].forja = amigo.forja || {};
+    if (Array.isArray(amigo.tecs) && amigo.tecs.length == 3 && amigo.tecs.every(id => TEC[id]))
+      js[1].tecs = amigo.tecs;
   }
   aplicarEstado(js);
   G.jug = js;

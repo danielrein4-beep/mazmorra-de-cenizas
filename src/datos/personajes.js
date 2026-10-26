@@ -248,18 +248,20 @@ function pintarElegir() {
   document.getElementById('heroeDesc').textContent = p.d;
   const T = document.getElementById('heroeTecs');
   T.innerHTML = '';
-  p.tecs.concat([p.ult]).forEach((t, k) => {
-    const d = document.createElement('span');
-    d.className = 'tec';
-    const c = document.createElement('canvas');
-    c.width = c.height = 36;
-    const x = c.getContext('2d');
-    x.imageSmoothingEnabled = false;
-    icono(x, t, 18, 18, 3);
-    d.appendChild(c);
-    d.appendChild(document.createTextNode((k < 3 ? k + 1 + ' ' : 'Q ') + (k < 3 ? TEC[t].n : ULT[t].n)));
-    T.appendChild(d);
-  });
+  tecsEquipadas(ELEGIDO.p)
+    .concat([p.ult])
+    .forEach((t, k) => {
+      const d = document.createElement('span');
+      d.className = 'tec';
+      const c = document.createElement('canvas');
+      c.width = c.height = 36;
+      const x = c.getContext('2d');
+      x.imageSmoothingEnabled = false;
+      icono(x, t, 18, 18, 3);
+      d.appendChild(c);
+      d.appendChild(document.createTextNode((k < 3 ? k + 1 + ' ' : 'Q ') + (k < 3 ? TEC[t].n : ULT[t].n)));
+      T.appendChild(d);
+    });
   document
     .querySelectorAll('.sexo')
     .forEach(b => b.setAttribute('aria-pressed', b.dataset.s == ELEGIDO.sexo));

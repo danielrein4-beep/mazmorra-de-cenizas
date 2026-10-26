@@ -67,6 +67,18 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .paso[hidden]{display:none!important}
 #modoAviso{min-height:1.2em}
 #forjaHeroe{color:#ffe94a}
+#armarioEspacios{display:flex;gap:8px;justify-content:center}
+#armarioEspacios .espacio{display:flex;flex-direction:column;align-items:center;gap:2px;font:400 12px var(--font);color:var(--ink);background:#140e1e;border:2px dashed #4e4070;border-radius:6px;padding:6px 8px;cursor:pointer}
+#armarioEspacios .espacio[aria-pressed="true"]{border:2px solid var(--ember);background:#24182e}
+#armarioLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;width:min(720px,94vw)}
+.tecArm{display:grid;grid-template-columns:40px 1fr;gap:0 8px;align-items:center;text-align:left;font:400 14px var(--font);color:var(--ink);background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:4px 8px;cursor:pointer}
+.tecArm canvas{grid-row:1/3}
+.tecArm small{color:var(--muted);font-size:11px}
+.tecArm.puesta{border-color:var(--ember)}
+.tecArm.bloqueada canvas{opacity:.5}
+.tecArm.bloqueada small{color:#5ee7ff}
+#armarioAviso{min-height:1.2em;color:#ffe94a}
+@media (max-width:420px){#armarioLista{grid-template-columns:1fr 1fr}.tecArm{grid-template-columns:1fr;justify-items:center;text-align:center}.tecArm canvas{grid-row:auto}}
 #bolsa{position:absolute;top:max(8px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));z-index:7;display:flex;align-items:center;gap:6px;font:400 13px var(--font);color:var(--ink);background:rgba(23,17,31,.9);border:2px solid #177e89;border-radius:6px;padding:4px 10px;cursor:pointer}
 #bolsa b{color:#ffe94a;font-weight:400}
 #bolsa span{color:#5ee7ff}
@@ -201,6 +213,7 @@ body.botonesGrandes #tbtns{gap:16px}
       <div id="heroes"></div>
       <p id="heroeDesc"></p>
       <div id="heroeTecs"></div>
+      <button type="button" class="sec" id="armarioBtn">Armario de técnicas</button>
       <div class="fila"><span class="etq">Versión</span><button type="button" class="sec sexo" data-s="f">Chica</button><button type="button" class="sec sexo" data-s="m">Chico</button></div>
       <div class="fila" id="j2" hidden><span class="etq">Jugador 2</span><button type="button" class="sec" id="j2ant" aria-label="Héroe anterior">‹</button><strong id="j2nombre"></strong><button type="button" class="sec" id="j2sig" aria-label="Héroe siguiente">›</button><button type="button" class="sec sexo2" data-s="f">Chica</button><button type="button" class="sec sexo2" data-s="m">Chico</button><span class="etq">Flechas · L lanza · K rueda · J cambia · O final · U toma · Y pócima, o un mando</span></div>
       <div class="fila"><button type="button" class="sec" data-ir="1">Atrás</button><button class="play" data-ir="3">Siguiente</button></div>
@@ -253,6 +266,14 @@ body.botonesGrandes #tbtns{gap:16px}
     <p id="recordsNota" aria-live="polite"></p>
     <div id="recordsLista"></div>
     <button class="play" id="recordsVolver">Volver</button>
+  </div>
+  <div class="overlay" id="armario" hidden>
+    <h1 class="h-chico" id="armarioTitulo">Armario</h1>
+    <p>Llevas tres técnicas. Toca un espacio y luego la técnica que quieres ahí. Las nuevas se compran con cenizas.</p>
+    <div id="armarioEspacios"></div>
+    <div id="armarioLista"></div>
+    <p id="armarioAviso" aria-live="polite"></p>
+    <button class="play" id="armarioVolver">Listo</button>
   </div>
   <div class="overlay" id="pausa" hidden>
     <h1 class="h-chico">Pausa</h1>

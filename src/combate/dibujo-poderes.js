@@ -108,9 +108,11 @@ function drawPoderes() {
   });
   w.globalAlpha = 1;
   G.ondas.forEach(o2 => {
+    // Las ondas del eclipse esperan su turno con radio negativo.
+    if (o2.r <= 0) return;
     const k = 1 - o2.r / o2.max;
     w.globalAlpha = k;
-    w.strokeStyle = '#ffb04a';
+    w.strokeStyle = o2.c || '#ffb04a';
     w.lineWidth = 3;
     w.beginPath();
     w.ellipse(o2.x, o2.y, o2.r, o2.r * 0.6, 0, 0, 7);
