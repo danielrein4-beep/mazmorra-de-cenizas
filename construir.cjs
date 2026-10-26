@@ -60,6 +60,8 @@ const app = [
   '<link rel="manifest" href="manifest.webmanifest">',
   '<link rel="apple-touch-icon" href="icono-192.png">',
   '<meta name="apple-mobile-web-app-capable" content="yes">',
+  '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">',
+  '<meta name="apple-mobile-web-app-title" content="Mazmorra">',
   '<meta name="mobile-web-app-capable" content="yes">',
   "<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>",
 ].join('\n');
