@@ -23,8 +23,8 @@ pts.push([x2,y2]);return{pts,br,l:10}}
 // El tercer rayo de la seguidilla cae del cielo sobre donde pegó y salta a más enemigos.
 function rayo(ox,oy,a,dmg,fin){let x=ox,y=oy,hit=null;const T=objetivos();
 for(let d=0;d<230;d+=6){x=ox+Math.cos(a)*d;y=oy+Math.sin(a)*d;if(solidAt(x,y,0))break;hit=T.find(t2=>Math.hypot(t2.x-x,t2.y-y)<t2.r+3);if(hit)break}
-G.bolts.push(rayoPts(ox,oy,x,y));G.flash=fin?6:3;G.fcol='#b9f3ff';sfx('bolt');burst(x,y,fin?40:18,'#b9f3ff',fin?4.5:3.2,18);ring(x,y,fin?34:16,'#5ee7ff',fin?16:10,2);decal(x,y+6,fin?12:5,'#1a3a4a',300);
-if(fin){const b=rayoPts(x+rnd(-10,10),y-220,x,y);b.l=14;b.gordo=1;G.bolts.push(b);G.shake=12;G.stop=5;sfx('boom');objetivos().forEach(t=>{if(Math.hypot(t.x-x,t.y-y)<30+t.r&&t!==hit)dañar(t,40,4)})}
+G.bolts.push(rayoPts(ox,oy,x,y));G.flash=fin?6:3;G.fcol='#b9f3ff';sfx(fin?'trueno':'rayo');burst(x,y,fin?40:18,'#b9f3ff',fin?4.5:3.2,18);ring(x,y,fin?34:16,'#5ee7ff',fin?16:10,2);decal(x,y+6,fin?12:5,'#1a3a4a',300);
+if(fin){const b=rayoPts(x+rnd(-10,10),y-220,x,y);b.l=14;b.gordo=1;G.bolts.push(b);G.shake=12;G.stop=5;objetivos().forEach(t=>{if(Math.hypot(t.x-x,t.y-y)<30+t.r&&t!==hit)dañar(t,40,4)})}
 if(!hit)return;dañar(hit,dmg,fin?8:5);let from=hit,n=(fin?3:0)+(lvl('rayo')?2:0)+(lvl('rayo')>1?2:0);const usados=[hit.ref];
 while(n-->0){const nx=objetivos().filter(t2=>!usados.includes(t2.ref)).sort((p,q)=>Math.hypot(p.x-from.x,p.y-from.y)-Math.hypot(q.x-from.x,q.y-from.y))[0];
 if(!nx||Math.hypot(nx.x-from.x,nx.y-from.y)>110)break;usados.push(nx.ref);G.bolts.push(rayoPts(from.x,from.y,nx.x,nx.y));dañar(nx,fin?35:25,2);burst(nx.x,nx.y,10,'#b9f3ff',2.5);from=nx}}
@@ -33,7 +33,7 @@ P.dashV=[dx/m*3.6,dy/m*3.6];P.dash=13;P.dcd=Math.round(40*(1-.3*lvl('pies')));bu
 function ult(){const P=G.P,B=G.B;if(P.meter<100||G.U||G.over||G.intro||(B&&B.dead))return;const T=objetivos();if(!T.length)return;
 P.meter=0;const f=B&&!B.dead?{x:B.x,y:B.y}:{x:T[0].ref.x,y:T[0].ref.y};G.U={t:0,id:P.ult,foco:f,cr:0};G.banner={txt:ULT[P.ult].n.toUpperCase(),t:0,c:ULT[P.ult].c};
 G.bul.forEach(b=>burst(b.x,b.y,4,'#ffffff',1.5));G.bul=[];G.stop=8;sfx('ult')}
-function golpeFinal(x,y,c){G.inv=7;G.slow=.3;G.slowT=22;G.zt=1.5;G.flash=8;G.fcol='#ffffff';burst(x,y,160,c,7,50,2);burst(x,y,60,'#ffffff',5,50,2);ring(x,y,70,c,24,4);ring(x,y,40,'#ffffff',14,2);decal(x,y+14,30,'#1a0a14',600);sfx('boom')}
+function golpeFinal(x,y,c){G.inv=7;G.slow=.3;G.slowT=22;G.zt=1.5;G.flash=8;G.fcol='#ffffff';burst(x,y,160,c,7,50,2);burst(x,y,60,'#ffffff',5,50,2);ring(x,y,70,c,24,4);ring(x,y,40,'#ffffff',14,2);decal(x,y+14,30,'#1a0a14',600);sfx('ultFinal')}
 function ultStep(){const U=G.U,B=G.B,C=ULT[U.id].c;U.t++;if(B&&!B.dead){U.foco.x=B.x;U.foco.y=B.y}
 if(U.t<55){G.zt=1.4;G.dark=Math.min(.65,G.dark+.04);U.cr=Math.min(44,U.cr+1.2);if(U.t%2==0)G.pt.push({x:G.P.x+rnd(-20,20),y:G.P.y,vx:0,vy:-rnd(1,2.5),l:30,m:30,c:Math.random()<.5?C:'#ffffff',s:2,g:0})}
 if(U.t==55){G.banner=null;G.zt=1.15}if(U.t>=55)ULT[U.id].paso(U);if(U.t>178){G.U=null;G.zt=zb();G.dark=0}}
@@ -50,7 +50,7 @@ let muere=s.l<=0||(!T.fantasma&&solidAt(s.x,s.y,0));if(!muere)objetivos().forEac
 if(muere){s.d=1;if(s.l>0)golpeEnMuro(s.x,s.y,s.dmg);T.fin&&T.fin(s)}});G.shots=G.shots.filter(s=>!s.d);
 G.ondas.forEach(o2=>{o2.r+=3.2;objetivos().forEach(t=>{if(!o2.hits.includes(t.ref)&&Math.abs(Math.hypot(t.x-o2.x,t.y-o2.y+6)-o2.r)<10){o2.hits.push(t.ref);dañar(t,o2.dmg,3)}});
 G.bul=G.bul.filter(b=>{if(Math.abs(Math.hypot(b.x-o2.x,b.y-o2.y)-o2.r)<6){burst(b.x,b.y,3,'#ffb04a',1);return false}return true});if(G.t%2==0)burst(o2.x+Math.cos(G.t)*o2.r,o2.y+Math.sin(G.t)*o2.r*.6,3,'#8a7a6a',1,14)});G.ondas=G.ondas.filter(o2=>o2.r<o2.max);
-G.frascos.forEach(f=>{f.t++;const k=f.t/f.T;f.x=f.x0+(f.tx-f.x0)*k;f.y=f.y0+(f.ty-f.y0)*k-Math.sin(Math.PI*k)*30;if(f.t>=f.T){f.d=1;const lv=lvl('veneno');G.nubes.push({x:f.tx,y:f.ty+8,r:28*(1+.35*lv),l:180+90*lv,m:180+90*lv});burst(f.tx,f.ty,20,'#7cff4a',2.5);sfx('hit')}});G.frascos=G.frascos.filter(f=>!f.d);
+G.frascos.forEach(f=>{f.t++;const k=f.t/f.T;f.x=f.x0+(f.tx-f.x0)*k;f.y=f.y0+(f.ty-f.y0)*k-Math.sin(Math.PI*k)*30;if(f.t>=f.T){f.d=1;const lv=lvl('veneno');G.nubes.push({x:f.tx,y:f.ty+8,r:28*(1+.35*lv),l:180+90*lv,m:180+90*lv});burst(f.tx,f.ty,20,'#7cff4a',2.5);sfx('veneno')}});G.frascos=G.frascos.filter(f=>!f.d);
 G.nubes.forEach(n=>{n.l--;if(G.t%10==0)objetivos().forEach(t=>{if(Math.hypot(t.x-n.x,(t.y-n.y)*1.4)<n.r)dañar(t,4,0)});if(G.t%3==0)G.pt.push({x:n.x+rnd(-n.r,n.r)*.8,y:n.y+rnd(-n.r,n.r)*.4,vx:0,vy:-.3,l:24,m:24,c:Math.random()<.5?'#7cff4a':'#3a8a1a',s:2,g:0})});G.nubes=G.nubes.filter(n=>n.l>0);
 G.bolts.forEach(b=>b.l--);G.bolts=G.bolts.filter(b=>b.l>0);G.tajos.forEach(t=>t.l--);G.tajos=G.tajos.filter(t=>t.l>0);G.cortes.forEach(c=>c.l--);G.cortes=G.cortes.filter(c=>c.l>0);
 G.spears.forEach(s=>{s.y+=s.big?16:(s.kind=='flecha'?15:13);G.pt.push({x:s.x+rnd(-2,2)*(s.big?3:1),y:s.y-rnd(0,20),vx:0,vy:-1,l:14,m:14,c:s.kind=='lanza'?(Math.random()<.6?'#ff2a4a':'#2a0010'):s.kind=='flecha'?'#b4ff8a':'#8a7a6a',s:s.big?3:1,g:0});

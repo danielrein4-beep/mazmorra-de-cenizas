@@ -7,12 +7,6 @@ let G,keys={},mouse={x:OW/2,y:OH/2,down:false},touch={move:null,aim:null},runnin
 const coarse=matchMedia('(pointer: coarse)').matches;
 let AC,noise,sfxBus;
 function initAudio(){try{if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();const n=AC.sampleRate;noise=AC.createBuffer(1,n,n);const d=noise.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;sfxBus=AC.createGain();sfxBus.gain.value=1;sfxBus.connect(AC.destination)}AC.resume?.()}catch(e){AC=null}}
-function sfx(k){if(!AC)return;const t=AC.currentTime,g=AC.createGain();g.connect(sfxBus);
-const tone=(type,f1,f2,dur,vol)=>{const os=AC.createOscillator();os.type=type;os.frequency.setValueAtTime(f1,t);os.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);os.connect(g);os.start(t);os.stop(t+dur)};
-const hiss=(dur,vol,freq)=>{const s=AC.createBufferSource(),f=AC.createBiquadFilter();s.buffer=noise;f.type='lowpass';f.frequency.value=freq;s.connect(f);f.connect(g);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);s.start(t);s.stop(t+dur)};
-({ice:()=>tone('square',1200,500,.07,.03),fire:()=>tone('sawtooth',260,70,.18,.05),bolt:()=>hiss(.18,.12,5000),hit:()=>tone('triangle',180,60,.08,.07),
-boom:()=>hiss(.5,.18,700),hurt:()=>tone('square',320,90,.25,.07),ult:()=>tone('sawtooth',70,420,.7,.06),roar:()=>tone('sawtooth',90,40,.7,.09),dash:()=>hiss(.1,.05,2500),
-door:()=>tone('triangle',220,440,.4,.06),pick:()=>tone('square',600,1400,.15,.04),coin:()=>tone('square',1300,1900,.06,.025),spawn:()=>tone('sine',300,900,.3,.04),land:()=>hiss(.6,.22,400),throw:()=>tone('triangle',200,120,.2,.06)})[k]?.()}
 const rnd=(a,b)=>a+Math.random()*(b-a);
 function spr(x,src,r,dx,dy,flip,sc){sc=sc||1;x.save();x.translate(Math.round(dx),Math.round(dy));if(flip)x.scale(-1,1);x.drawImage(src,r[0],r[1],r[2],r[3],-r[2]*sc/2,-r[3]*sc,r[2]*sc,r[3]*sc);x.restore()}
 function tile(x,r,tx,ty){x.drawImage(atlas,r[0],r[1],16,16,tx*16,ty*16,16,16)}
@@ -113,7 +107,8 @@ if(win){guardarLogro('cenizas');const g=LOGROS.ganadores||[];if(!g.includes(PERS
 document.getElementById('endTitle').textContent=win?'¡La mazmorra es tuya!':'Caíste';
 document.getElementById('endText').textContent=win?'Venciste a los tres jefes en '+Math.floor(s/60)+' min '+(s%60)+' s y derrotaste a '+G.kills+' enemigos.'+(nuevos?' Desbloqueaste un vestuario nuevo.':''):'Llegaste a la sala '+(G.sala+1)+' de '+SALAS.length+': '+SALAS[G.sala].n+'. Rueda a través de las balas: mientras ruedas no te tocan.';
 document.getElementById('endScr').hidden=false;document.getElementById('againBtn').focus()}
-function start(){initAudio();precargarMusica();newRun();entrarSala(0);['menu','endScr','mejoras','elegir'].forEach(id=>document.getElementById(id).hidden=true);document.getElementById('tbtns').hidden=!coarse;running=true;last=0}
+function pantallaCompleta(){if(!coarse)return;try{const e=document.documentElement,p=e.requestFullscreen?e.requestFullscreen():null;if(p&&p.then)p.then(()=>screen.orientation?.lock?.('landscape').catch(()=>{})).catch(()=>{})}catch(e){}}
+function start(){pantallaCompleta();initAudio();precargarMusica();newRun();entrarSala(0);['menu','endScr','mejoras','elegir'].forEach(id=>document.getElementById(id).hidden=true);document.getElementById('tbtns').hidden=!coarse;running=true;last=0}
 document.getElementById('playBtn').onclick=abrirElegir;document.getElementById('againBtn').onclick=abrirElegir;document.getElementById('empezarBtn').onclick=start;
 if(coarse){document.getElementById('keysPc').hidden=true;document.getElementById('keysTouch').hidden=false}
 addEventListener('keydown',e=>{keys[e.code]=true;if(e.code=='KeyM'){alternarMusica();return}

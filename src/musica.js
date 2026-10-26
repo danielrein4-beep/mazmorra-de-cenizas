@@ -15,6 +15,8 @@ function soltar(){if(!fuenteM)return;const {g,ss}=fuenteM,t=AC.currentTime;g.gai
 function tocarTema(n){const T=TEMAS[n];if(!T.buf||temaAct!==n)return;soltar();const g=AC.createGain(),t=AC.currentTime+.05;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+.8);g.connect(bus());
 const ss=[];let t0=t;if(T.ibuf){const s=AC.createBufferSource();s.buffer=T.ibuf;s.connect(g);s.start(t,T.ibuf.ini,T.ibuf.fin-T.ibuf.ini);ss.push(s);t0=t+T.ibuf.fin-T.ibuf.ini}
 const l=AC.createBufferSource();l.buffer=T.buf;l.loop=true;l.loopStart=T.buf.ini;l.loopEnd=T.buf.fin;l.connect(g);l.start(t0,T.buf.ini);ss.push(l);fuenteM={g,ss}}
+// En la última fase del jefe la música se acelera (y sube un poco de tono), como cuando la pelea se pone seria.
+function acelerarMusica(r){if(!fuenteM||!AC)return;fuenteM.ss.forEach(s=>{s.playbackRate.cancelScheduledValues(AC.currentTime);s.playbackRate.setValueAtTime(s.playbackRate.value,AC.currentTime);s.playbackRate.linearRampToValueAtTime(r,AC.currentTime+1.5)})}
 function musica(n){if(temaAct===n&&fuenteM)return;temaAct=n;pista=null;if(!AC)return;
 if(n=='victoria'){soltar();pista=FANFARRIA;mStep=0;mNext=AC.currentTime+.08;return}
 if(!TEMAS[n]){soltar();return}cargarTema(n).then(()=>tocarTema(n))}

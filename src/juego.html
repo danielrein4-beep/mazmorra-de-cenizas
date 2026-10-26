@@ -1,4 +1,7 @@
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0812">
+<!--__APP__-->
 <title>Mazmorra de Cenizas</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,11 +24,13 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .play{font:700 clamp(16px,2.4vw,24px) var(--font);color:#1a0a08;background:var(--ember);border:0;border-radius:6px;padding:10px 30px;cursor:pointer;box-shadow:0 4px 0 var(--ember-deep)}
 .play:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ember-deep)}
 .play:focus-visible,.tb:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
-#tbtns{position:absolute;right:max(10px,env(safe-area-inset-right,0px));bottom:12%;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-.tb{font:700 14px var(--font);color:var(--ink);background:rgba(23,17,31,.7);border:2px solid var(--muted);border-radius:50%;width:64px;height:64px;touch-action:none}
+#tbtns{position:absolute;right:max(8px,env(safe-area-inset-right,0px));bottom:8px;display:grid;grid-template-columns:repeat(2,auto);gap:8px;align-items:end;justify-items:center}
+.tb{font:400 12px var(--font);color:var(--ink);background:rgba(23,17,31,.7);border:2px solid var(--muted);border-radius:50%;width:52px;height:52px;touch-action:none;padding:0}
 #girar{display:none;position:absolute;left:0;right:0;top:calc(100% + 12px);margin:0;text-align:center;color:var(--muted);font-size:15px}
 @media (orientation:portrait) and (pointer:coarse){#girar{display:block}}
-.tb.ult{border-color:var(--ember);width:76px;height:76px}
+@media (pointer:coarse){.overlay{position:fixed;border-radius:0;background:rgba(8,5,14,.97);padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:5}}
+.tb.ult{border-color:var(--ember);width:62px;height:62px;font-weight:700}
+.tb.extra{border-color:#ffe94a}
 .sec{font:700 clamp(13px,1.6vw,16px) var(--font);color:var(--ink);background:transparent;border:2px solid var(--muted);border-radius:6px;padding:6px 16px;cursor:pointer}
 .sec:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
 #mejorasLista{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
@@ -61,6 +66,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .vest i{width:14px;height:14px;border-radius:3px;display:block}
 .vest[aria-pressed="true"]{border-color:var(--ember)}
 #vestAviso{min-height:1.2em;color:#ffe94a!important}
+@media (max-height:520px){.barras,#heroeDesc{display:none}.heroe{padding:4px 6px}.heroe canvas{width:26px}.overlay{gap:6px}.h-chico{font-size:22px!important}.play{padding:6px 22px}}
 .sec,.vest,.heroe .clase,.barra,.carta .desc,.tec,.keys span,.overlay p{font-weight:400!important}
 </style>
 
@@ -68,12 +74,11 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
   <canvas id="cv" width="960" height="540" aria-label="Mazmorra de Cenizas"></canvas>
   <p id="girar">Gira el teléfono para jugar en grande.</p>
   <div id="tbtns" hidden>
-    <button class="tb ult" id="tUlt">Abismo</button>
+    <button class="tb extra" id="tTomar" hidden>Tomar</button>
+    <button class="tb extra" id="tPocion" hidden>Pócima</button>
     <button class="tb" id="tSpell">Técnica</button>
+    <button class="tb ult" id="tUlt">Final</button>
     <button class="tb" id="tDash">Rodar</button>
-    <button class="tb" id="tTomar" hidden>Tomar</button>
-    <button class="tb" id="tPocion" hidden>Pócima</button>
-    <button class="tb btnMusica" aria-pressed="true">Música: sí</button>
   </div>
   <div class="overlay" id="menu">
     <h1>Mazmorra de Cenizas</h1>
