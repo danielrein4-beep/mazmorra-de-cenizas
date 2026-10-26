@@ -3,7 +3,12 @@
 Juego de mazmorras en pixel art: cinco héroes, tres zonas con llaves y salas secretas, tres jefes,
 modo Pesadilla y cooperativo de dos jugadores en la misma pantalla.
 
-## Armar y jugar
+## Jugar
+
+En línea: https://danielrein4-beep.github.io/mazmorra-de-cenizas/ (también se instala como app).
+Para jugar con un amigo, uno toca **Crear sala** y el otro escribe el código y toca **Unirse**.
+
+## Armar
 
 ```
 npm install          # una vez: instala Prettier
@@ -31,5 +36,6 @@ si uno crece, se parte por tema dentro de su carpeta.
 
 ## Créditos
 
-- Dibujos: 16x16 DungeonTileset II de 0x72 (CC0).
-- Música: MintoDog y nene en OpenGameArt (CC0).
+- Dibujos: [16x16 DungeonTileset II](https://0x72.itch.io/dungeontileset-ii) de 0x72 (CC0).
+- Música: MintoDog ([Heavy Dungeon](https://opengameart.org/node/181405), [Heavy Boss Battle 1](https://opengameart.org/content/heavy-boss-battle-1), [Hard Boss Battle 2](https://opengameart.org/content/hard-boss-battle-2)) y nene ([Boss Battle #2](https://opengameart.org/content/boss-battle-2-symphonic-metal)), en OpenGameArt (CC0).
+- Conexión en línea: [PeerJS](https://peerjs.com/) (MIT).
