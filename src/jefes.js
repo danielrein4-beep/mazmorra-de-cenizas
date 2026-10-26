@@ -6,7 +6,7 @@ ogro:{n:'Gruk el Machacador',sub:'Guardián del foso',idle:f4(16,380,32,36),run:
  ataques:{1:['salto','roca','giro','salto'],2:['salto2','roca','giro','salto2','roca']}},
 cenizas:{n:'Señor de las Cenizas',sub:'Dueño de la mazmorra',idle:f4(16,428,32,36),run:f4(144,428,32,36),hp:1600,sp:.6,fases:[[.66,'¡Insolente!'],[.33,'¡ARDE CONMIGO!']],
  ataques:{1:['ring','fan','ring','spiral'],2:['spiral','charge','fan','ring2','charge'],3:['charge','spiral2','imps','ring2','fan','charge']}}};
-function crearJefe(id){const d=JEFES[id];return{id,def:d,x:240,y:150,z:0,hp:d.hp,max:d.hp,phase:1,st:'move',t:0,cd:90,tx:240,ty:120,face:1,hit:0,moving:false,ang:0,dir:[0,0],dead:0,dt:0,say:'',sayT:0,tele:null,n:0}}
+function crearJefe(id){const d=JEFES[id];const hp=Math.round(d.hp*G.dif.jefe);return{id,def:d,x:240,y:150,z:0,hp,max:hp,phase:1,st:'move',t:0,cd:90,tx:240,ty:120,face:1,hit:0,moving:false,ang:0,dir:[0,0],dead:0,dt:0,say:'',sayT:0,tele:null,n:0}}
 function limpiarBalas(){G.bul.forEach(b=>burst(b.x,b.y,3,b.c,1.5));G.bul=[];G.marcas=[]}
 function hurtBoss(d,heavy,quieto){const B=G.B;if(!B||B.dead)return;B.hp-=d;if(!quieto){B.hit=4;sfx('golpeJefe')}num(B.x,B.y-B.z-70,d,d>=100);
 if(heavy){G.shake=Math.max(G.shake,heavy);G.stop=Math.max(G.stop,Math.round(heavy/2))}
@@ -44,7 +44,7 @@ if(B.t==18)tira();if(f>1&&B.t==40)tira();return B.t>(f>1?60:36)},
 giro:(B,cx,cy,f)=>{const P=G.P,d=Math.max(1,Math.hypot(P.x-B.x,P.y-B.y));B.moving=true;const nx=B.x+(P.x-B.x)/d*1.25*f,ny=B.y+(P.y-B.y)/d*1.25*f;[B.x,B.y]=enSala(nx,ny);B.face=Math.floor(B.t/4)%2?1:-1;
 if(B.t%5==0){B.ang+=.5;for(let k=0;k<3;k++){const a=B.ang+k*2.094;G.bul.push({x:cx,y:cy,vx:Math.cos(a)*1.5*f,vy:Math.sin(a)*1.5*f,c:'#ffb04a',r:3})}}if(B.t%3==0)burst(B.x,B.y,2,'#8a7a6a',1.2,14);return B.t>90}};
 ATAQUES.salto2=ATAQUES.salto;
-function toMove(){const B=G.B,ul=B.phase>B.def.fases.length;B.st='move';B.t=0;B.z=0;B.tele=null;B.cd=ul?rnd(35,60):rnd(55,90)}
+function toMove(){const B=G.B,ul=B.phase>B.def.fases.length;B.st='move';B.t=0;B.z=0;B.tele=null;B.cd=(ul?rnd(35,60):rnd(55,90))*G.dif.cdJ}
 function updateJefe(){const B=G.B,P=G.P;if(B.hit>0)B.hit--;if(B.sayT>0)B.sayT--;
 if(G.intro){G.intro.t++;G.zt=1.35;if(G.intro.t==40){G.shake=12;sfx('roar');ring(B.x,B.y-30,70,'#ff3a2a',24,3)}if(G.intro.t>=120){G.intro=null;G.zt=zb()}return}
 if(B.dead){B.dt++;if(B.dt%6==0&&B.dt<100){burst(B.x+rnd(-24,24),B.y-rnd(10,60),26,Math.random()<.5?'#ff8a2a':'#ffe94a',3.5);ring(B.x+rnd(-20,20),B.y-rnd(10,50),18,'#ffe94a',10);G.shake=8;sfx('boom')}

@@ -60,7 +60,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .tec canvas{width:27px;height:27px;image-rendering:pixelated}
 .fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
 .etq{font-size:13px;color:var(--muted)}
-.sexo[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
+.modo[aria-pressed="true"],.sexo[aria-pressed="true"]{border-color:var(--ember);color:#ffe94a}
 #vestuarios{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .vest{font:700 13px var(--font);color:var(--ink);background:#17111f;border:2px solid #4e4070;border-radius:6px;padding:4px 10px;display:flex;align-items:center;gap:6px;cursor:pointer}
 .vest i{width:14px;height:14px;border-radius:3px;display:block}
@@ -82,7 +82,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
   </div>
   <div class="overlay" id="menu">
     <h1>Mazmorra de Cenizas</h1>
-    <p>Elige entre cinco héroes y baja por seis salas. Tres jefes te esperan: el Rey Podrido, Gruk el Machacador y el Señor de las Cenizas. Tras cada sala encuentras un arma nueva y tras cada jefe eliges un poder.</p>
+    <p>Elige entre cinco héroes y explora tres zonas: la Cripta Verde, las Cuevas de Hielo y el Volcán de Cenizas. Busca la llave de cada zona para abrir la puerta del jefe, rompe paredes agrietadas para hallar salas secretas y elige un poder tras cada jefe.</p>
     <div class="keys" id="keysPc">
       <b>WASD / flechas</b><span>moverte</span>
       <b>Ratón + clic</b><span>apuntar y lanzar</span>
@@ -107,6 +107,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
     <p id="heroeDesc"></p>
     <div id="heroeTecs"></div>
     <div class="fila"><span class="etq">Versión</span><button type="button" class="sec sexo" data-s="f">Chica</button><button type="button" class="sec sexo" data-s="m">Chico</button></div>
+    <div class="fila"><span class="etq">Modo</span><button type="button" class="sec modo" data-m="normal">Normal</button><button type="button" class="sec modo" data-m="pesadilla">Pesadilla</button></div>
     <div class="fila"><span class="etq">Vestuario</span><div id="vestuarios"></div></div>
     <p id="vestAviso" aria-live="polite"></p>
     <button class="play" id="empezarBtn">Empezar</button>

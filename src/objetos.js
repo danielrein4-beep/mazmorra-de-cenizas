@@ -1,11 +1,10 @@
 // Objetos para agarrar: monedas, pócimas (se guardan y se toman con F), cofres, armas en pedestal y la tienda de Zaro.
-function soltarMonedas(x,y,n){for(let i=0;i<n;i++){const a=Math.random()*6.283,v=rnd(.8,2.4);G.monedas.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:0})}}
-function ponerCofre(x,y,mimico){G.inter.push({tipo:'cofre',x,y,t:0,abre:0,mimico})}
+function soltarMonedas(x,y,n){n=Math.round(n*(G.dif?G.dif.oro:1));for(let i=0;i<n;i++){const a=Math.random()*6.283,v=rnd(.8,2.4);G.monedas.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:0})}}
+function ponerCofre(x,y,mimico,cont){G.inter.push({tipo:'cofre',x,y,t:0,abre:0,mimico,cont})}
 function ponerArma(x,y,arma){G.inter.push({tipo:'arma',x,y,t:0,arma})}
 const TIENDA=[{id:'arma',n:'Arma rara',precio:40,d:'Un arma con un efecto especial.'},{id:'pocima',n:'Pócima',precio:15,d:'Se guarda; tómala con F cuando la necesites.'},
 {id:'corazon',n:'Corazón extra',precio:60,d:'Un corazón más de vida.'},{id:'furia',n:'Furia llena',precio:30,d:'Tu golpe final queda listo.'}];
 function ponerTienda(){G.vendedor={x:240,y:186};[150,210,270,330].forEach((x,i)=>{const it=TIENDA[i];G.inter.push({tipo:'venta',x,y:236,t:0,it,arma:it.id=='arma'?armaAlAzar(PERS().arma,1):null})})}
-function premioSala(){const S=SALAS[G.sala];if(S.tipo=='pelea')ponerCofre(240,170,Math.random()<.15);else if(S.tipo=='jefe')ponerCofre(240,190,false)}
 function textoInter(c){const I=c.arma?armaInfo(c.arma):null,E=coarse?'':'E · ';
 if(c.tipo=='arma')return[(coarse?'Tomar: ':E+'Tomar ')+I.n,I.d,I.raro];if(c.tipo=='cofre')return[E+'Abrir cofre','¿Qué habrá dentro?',false];
 const n=c.it.id=='arma'?I.n:c.it.n,falta=c.it.precio-G.P.oro;return[E+'Comprar '+n+' · '+c.it.precio+' monedas',falta>0?'Te faltan '+falta+' monedas':(c.it.id=='arma'?I.d:c.it.d),c.it.id=='arma'];}
@@ -22,11 +21,11 @@ G.monedas.forEach(m=>{m.t++;const d=Math.hypot(P.x-m.x,P.y-6-m.y);if(m.t>25&&d<4
 if(m.t>15&&d<8){m.d=1;P.oro++;sfx('coin');G.pt.push({x:m.x,y:m.y,vx:0,vy:-1,l:12,m:12,c:'#ffe94a',s:1,g:0})}});G.monedas=G.monedas.filter(m=>!m.d);
 G.pick.forEach(p=>{p.t++;if(Math.hypot(P.x-p.x,P.y-p.y)<10){if(P.poc<3){P.poc++;G.aviso={txt:'Pócima guardada'+(coarse?'':' · F para tomarla'),l:60}}else if(P.hp<P.max)P.hp=Math.min(P.max,P.hp+2);else return;
 p.d=1;burst(p.x,p.y-6,16,'#ff4a5a',2);ring(p.x,p.y-6,12,'#ff8a9a',12);sfx('pick')}});G.pick=G.pick.filter(p=>!p.d);
-G.inter.forEach(c=>{c.t++;if(c.tipo=='cofre'&&c.abre&&++c.abre==20){if(c.mimico){c.d=1;G.enem.push({k:'mimico',def:ENEMIGOS.mimico,x:c.x,y:c.y,h:16,hp:120,max:120,hit:0,face:1,t:0,cd:30,kx:0,ky:0,st:'',stT:0});G.aviso={txt:'¡Era un mímico!',l:70};G.clear=0;G.door=0;G.mimicoSala=1;sfx('roar');G.shake=8}
-else{c.tipo='abierto';soltarMonedas(c.x,c.y-6,6+Math.floor(Math.random()*7));ponerArma(c.x,c.y+22,armaAlAzar(PERS().arma));if(Math.random()<.4)G.pick.push({x:c.x+22,y:c.y+10,t:0});burst(c.x,c.y-8,30,'#ffe94a',3);ring(c.x,c.y-8,20,'#ffe94a',14);sfx('cofre')}}});
+G.inter.forEach(c=>{c.t++;if(c.tipo=='cofre'&&c.abre&&++c.abre==20){if(c.mimico){c.d=1;G.enem.push({k:'mimico',def:ENEMIGOS.mimico,x:c.x,y:c.y,h:16,hp:120,max:120,hit:0,face:1,t:0,cd:30,kx:0,ky:0,st:'',stT:0});G.aviso={txt:'¡Era un mímico!',l:70};G.cerrado=1;G.mimicoSala=1;sfx('roar');G.shake=8}
+else{c.tipo='abierto';soltarMonedas(c.x,c.y-6,6+Math.floor(Math.random()*7));ponerArma(c.x,c.y+22,armaAlAzar(PERS().arma,c.cont=='raro'));if(c.cont=='llave'){G.P.llaves=(G.P.llaves||0)+1;G.aviso={txt:'¡Llave del jefe!',l:100};ring(c.x,c.y-8,30,'#ffe94a',20,3)}if(Math.random()<.4)G.pick.push({x:c.x+22,y:c.y+10,t:0});burst(c.x,c.y-8,30,'#ffe94a',3);ring(c.x,c.y-8,20,'#ffe94a',14);sfx('cofre')}}});
 G.inter=G.inter.filter(c=>!c.d);
 G.cerca=G.inter.filter(c=>c.tipo!='abierto'&&!(c.tipo=='cofre'&&c.abre)&&Math.hypot(P.x-c.x,P.y-c.y)<18).sort((a,b)=>Math.hypot(P.x-a.x,P.y-a.y)-Math.hypot(P.x-b.x,P.y-b.y))[0]||null;
-if(G.mimicoSala&&!G.enem.length){G.mimicoSala=0;G.clear=1;G.door=1;G.aviso={txt:'Mímico vencido',l:70};soltarMonedas(G.P.x,G.P.y-30,15);sfx('door')}}
+if(G.mimicoSala&&!G.enem.length){G.mimicoSala=0;G.cerrado=0;G.aviso={txt:'Mímico vencido',l:70};soltarMonedas(G.P.x,G.P.y-30,15);sfx('door')}}
 function drawObjetos(ents){const t=G.t;
 G.monedas.forEach(m=>{const f=Math.floor((t+m.x)/6)%4;w.drawImage(atlas,289+8*f,385,6,7,Math.round(m.x-3),Math.round(m.y-4-Math.abs(Math.sin((t+m.x)*.15))*(m.t<30?0:1.5)),6,7)});
 if(G.vendedor){const V=G.vendedor;ents.push({y:V.y,d:()=>{w.fillStyle='rgba(0,0,0,.3)';w.beginPath();w.ellipse(V.x,V.y,6,2,0,0,7);w.fill();spr(w,atlas,[368+16*(Math.floor(t/10)%4),345,16,23],V.x,V.y,G.P.x<V.x)}})}

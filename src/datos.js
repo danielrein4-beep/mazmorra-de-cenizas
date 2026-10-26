@@ -19,16 +19,14 @@ chort:{run:f4(432,273,16,23),hp:45,sp:.6,ia:'tirador'},
 orcW:{run:f4(432,177,16,23),hp:85,sp:.65,ia:'embestir'},
 masked:{run:f4(432,153,16,23),hp:90,sp:.55,ia:'abanico'},
 shaman:{run:f4(432,201,16,23),hp:55,sp:.5,ia:'anillo'},
+zhielo:{run:f4(432,136),hp:42,sp:.95,ia:'perseguir'},
+necro:{run:f4(368,225,16,23),hp:70,sp:.45,ia:'anillo'},
 mimico:{run:[[304,432,16,16],[320,432,16,16],[336,432,16,16],[320,432,16,16]],hp:120,sp:1.1,ia:'perseguir',oro:15}};
-const SALAS=[
-{n:'Antesala',tipo:'pelea',banner:'bannerBlue',fuente:'Blue',oscuro:.38,
- oleadas:[['skelet','skelet','skelet','imp','imp'],['goblin','goblin','goblin','skelet','skelet','imp']]},
-{n:'Pantano del Rey',tipo:'jefe',jefe:'zombi',banner:'bannerGreen',fuente:'Blue',oscuro:.45},
-{n:'Tienda de Zaro',tipo:'tienda',banner:'bannerBlue',fuente:'Blue',oscuro:.3},
-{n:'Cripta de los orcos',tipo:'pelea',banner:'bannerGreen',fuente:'Blue',oscuro:.5,
- oleadas:[['orcW','orcW','chort','chort'],['masked','masked','shaman','imp','imp','imp']]},
-{n:'Foso de Gruk',tipo:'jefe',jefe:'ogro',banner:'bannerBlue',fuente:'Red',oscuro:.45},
-{n:'Tienda de Zaro',tipo:'tienda',banner:'bannerRed',fuente:'Red',oscuro:.3},
-{n:'Forja infernal',tipo:'pelea',banner:'bannerRed',fuente:'Red',oscuro:.48,
- oleadas:[['chort','chort','chort','masked','skelet','skelet'],['orcW','orcW','shaman','shaman','imp','imp','imp','imp']]},
-{n:'Trono de Cenizas',tipo:'jefe',jefe:'cenizas',banner:'bannerRed',fuente:'Red',oscuro:.5}];
+// Zonas del mundo: color del suelo, enemigos que aparecen, planos posibles para los cuartos de pelea y el jefe.
+const ZONAS=[
+{n:'Cripta Verde',tinte:'#2aff6a',banner:'bannerGreen',fuente:'Blue',oscuro:.4,jefe:'zombi',planoJefe:'pantano',enem:['skelet','skelet','imp','goblin','goblin','tiny'],planos:['antesala','cripta','pilares','cruz','vacio2']},
+{n:'Cuevas de Hielo',tinte:'#4ab8ff',banner:'bannerBlue',fuente:'Blue',oscuro:.46,jefe:'ogro',planoJefe:'foso',enem:['zhielo','zhielo','orcW','chort','goblin','masked'],planos:['foso2','laberinto','pilares','cruz','antesala']},
+{n:'Volcán de Cenizas',tinte:'#ff4a1a',banner:'bannerRed',fuente:'Red',oscuro:.5,jefe:'cenizas',planoJefe:'trono',enem:['chort','masked','shaman','orcW','imp','necro'],planos:['forja','laberinto','cruz','pilares','forja']}];
+// Pesadilla: jefes con el doble de vida y más rápidos, más enemigos, balas veloces, cada golpe quita un corazón entero.
+const DIFS={normal:{id:'normal',n:'Normal',jefe:1,enem:1,bala:1,cdJ:1,cant:1,olas:0,golpe:1,poc:1,oro:1},
+pesadilla:{id:'pesadilla',n:'Pesadilla',jefe:2,enem:1.6,bala:1.25,cdJ:.65,cant:1.5,olas:1,golpe:2,poc:.5,oro:1.5}};
