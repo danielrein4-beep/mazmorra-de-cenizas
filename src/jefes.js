@@ -12,7 +12,7 @@ function hurtBoss(d,heavy,quieto){const B=G.B;if(!B||B.dead)return;B.hp-=d;if(!q
 if(heavy){G.shake=Math.max(G.shake,heavy);G.stop=Math.max(G.stop,Math.round(heavy/2))}
 const f=B.def.fases[B.phase-1];if(f&&B.hp>0&&B.hp<B.max*f[0])fase(f[1]);
 if(B.hp<=0){B.hp=0;B.dead=1;B.dt=0;B.z=0;B.tele=null;limpiarBalas();G.enem.forEach(m=>{m.hp=0});G.spawns=[];G.slow=.35;G.slowT=9999;G.zt=1.3;sfx('roar');musica(null)}}
-function fase(txt){const B=G.B;B.phase++;B.st='move';B.t=0;B.cd=70;B.z=0;B.tele=null;B.say=txt;B.sayT=110;G.stop=20;G.shake=14;G.flash=6;G.fcol='#ff3a2a';limpiarBalas();ring(B.x,B.y-30,60,'#ff3a2a',20,3);sfx('roar');if(B.phase>B.def.fases.length)acelerarMusica(1.12)}
+function fase(txt){const B=G.B;B.phase++;B.st='move';B.t=0;B.cd=70;B.z=0;B.tele=null;B.say=txt;B.sayT=110;G.stop=20;G.shake=14;G.flash=6;G.fcol='#ff3a2a';limpiarBalas();ring(B.x,B.y-30,60,'#ff3a2a',20,3);sfx('roar')}
 function bossFire(n,spd,off,col,cx,cy){for(let i=0;i<n;i++){const a=off+i*6.283/n;G.bul.push({x:cx,y:cy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,c:col,r:3})}}
 function aimFan(n,spd,spread,col,cx,cy){const P=G.P,a0=Math.atan2(P.y-10-cy,P.x-cx);for(let i=0;i<n;i++){const a=a0+(i-(n-1)/2)*spread;G.bul.push({x:cx,y:cy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,c:col,r:3,big:1})}}
 const enSala=(x,y)=>[Math.max(50,Math.min(430,x)),Math.max(60,Math.min(290,y))];
