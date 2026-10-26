@@ -71,6 +71,8 @@ function pasoTransformacion(B) {
     ring(B.x, B.y - 30, 110, C, 28, 4);
     bossFire(36, 1.6, 0, C, B.x, B.y - 34);
     sfx('ultFinal');
+    // Algunos jefes cambian de tema al revivir (uno con más tambores); encima suena la capa de furia.
+    if (D.musica2) musica(D.musica2);
     musicaFuria(D.bpm);
   }
 }

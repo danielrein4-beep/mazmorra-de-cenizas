@@ -8,7 +8,7 @@ function alientoDragon(B, cx, cy, f) {
   B.moving = false;
   const [mx, my] = bocaDragon(B, cy),
     C = fuegoDe(B),
-    largo = B.berserk ? 190 : 165,
+    largo = B.berserk ? 280 : 240,
     ancho = 0.3;
   if (B.t == 1) {
     B.ang0 = Math.atan2(G.P.y - 10 - my, G.P.x - mx);
@@ -45,7 +45,7 @@ function alientoDragon(B, cx, cy, f) {
         c: P[Math.floor(Math.random() * P.length)],
         s: Math.random() < 0.3 ? 4 : Math.random() < 0.6 ? 3 : 2,
         g: 0,
-        fr: 0.995,
+        fr: 1,
       });
     }
     vivos().forEach(Q => {
@@ -249,6 +249,9 @@ JEFES.dragon.ataques = {
   2: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'garra'],
   3: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'rugido', 'infierno', 'muroFuego'],
 };
+// Al revivir suena Epic Boss Battle, el tema con más tambores y adrenalina.
+JEFES.dragonF.musica2 = 'batalla';
+if (JEFES.furia) JEFES.furia.musica2 = 'batalla';
 JEFES.dragonF.ataques = {
   1: ['aliento', 'rugido', 'aletazo', 'latigo', 'rayosNegros', 'rayosNegros', 'llamaNegra', 'vuelo'],
   2: ['aliento', 'rugido', 'rayosNegros', 'latigo', 'rugido', 'rayosNegros', 'aletazo', 'infierno', 'vuelo'],
