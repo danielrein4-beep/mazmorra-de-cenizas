@@ -32,6 +32,7 @@ const ORDEN = [
   'combate/enemigos.js',
   'combate/ataques-jefes.js',
   'combate/jefes.js',
+  'combate/jefe-final.js',
   'mundo/mundo.js',
   'mundo/salas.js',
   'jugadores/en-linea.js',

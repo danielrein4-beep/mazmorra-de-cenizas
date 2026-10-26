@@ -107,6 +107,8 @@ function resetSala() {
     marcas: [],
     pick: [],
     tajos: [],
+    tornados: [],
+    cielo: [],
     cortes: [],
     ondas: [],
     frascos: [],

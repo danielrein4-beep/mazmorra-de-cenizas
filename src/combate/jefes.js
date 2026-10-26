@@ -78,7 +78,7 @@ function limpiarBalas() {
 }
 function hurtBoss(d, heavy, quieto) {
   const B = G.B;
-  if (!B || B.dead) return;
+  if (!B || B.dead || B.trans) return;
   B.hp -= d;
   if (!quieto) {
     B.hit = 4;
@@ -91,9 +91,13 @@ function hurtBoss(d, heavy, quieto) {
   }
   const f = B.def.fases[B.phase - 1];
   if (f && B.hp > 0 && B.hp < B.max * f[0]) fase(f[1]);
+  // El jefe final no muere la primera vez: se levanta como Furia Eterna.
+  if (B.hp <= 0 && B.id == 'cenizas' && !B.berserk) return iniciarSegundoRound(B);
   if (B.hp <= 0) {
     B.hp = 0;
     B.dead = 1;
+    G.tornados = [];
+    G.cielo = [];
     B.dt = 0;
     B.z = 0;
     B.tele = null;
@@ -148,13 +152,18 @@ function toMove() {
   B.t = 0;
   B.z = 0;
   B.tele = null;
-  B.cd = (ul ? rnd(35, 60) : rnd(55, 90)) * G.dif.cdJ;
+  B.cd = (ul ? rnd(35, 60) : rnd(55, 90)) * G.dif.cdJ * (B.berserk ? 0.55 : 1);
 }
 function updateJefe() {
   const B = G.B,
     P = G.P;
   if (B.hit > 0) B.hit--;
   if (B.sayT > 0) B.sayT--;
+  updateFinal();
+  if (B.trans) {
+    pasoTransformacion(B);
+    return;
+  }
   if (G.intro) {
     G.intro.t++;
     G.zt = 1.35;
@@ -207,7 +216,7 @@ function updateJefe() {
   if (G.U || G.over) return;
   B.t++;
   const ul = B.phase > B.def.fases.length,
-    f = ul ? 1.3 : 1,
+    f = (ul ? 1.3 : 1) * (B.berserk ? 1.25 : 1),
     cx = B.x,
     cy = B.y - B.z - 34;
   if (B.st == 'move') {
@@ -229,7 +238,7 @@ function updateJefe() {
     }
   } else if (ATAQUES[B.st](B, cx, cy, f)) toMove();
   if (B.st != 'charge' && B.st != 'giro') B.face = P.x < B.x ? -1 : 1;
-  if (B.z < 10 && Math.hypot(P.x - B.x, P.y - B.y + 14) < 22) hurtPlayer();
+  if (B.z < 10 && !B.oculto && Math.hypot(P.x - B.x, P.y - B.y + 14) < 22) hurtPlayer();
 }
 function drawJefe() {
   const B = G.B,
@@ -249,6 +258,9 @@ function drawJefe() {
     w.ellipse(tl.x, tl.y, tl.r, tl.r * 0.4, 0, 0, 7);
     w.stroke();
   }
+  drawFinalSuelo(B);
+  if (B.oculto) return drawTornados();
+  const esc = B.esc || 2;
   const sh = Math.max(0.3, 1 - B.z / 120);
   w.fillStyle = 'rgba(0,0,0,.35)';
   w.beginPath();
@@ -262,19 +274,20 @@ function drawJefe() {
         ? rnd(-1.5, 1.5)
         : 0,
     y = B.y - B.z;
-  spr(w, B.dead && t % 4 < 2 ? white : atlas, fr, B.x + jx, y, B.face < 0, 2);
-  if (B.hit > 2) spr(w, white, fr, B.x + jx, y, B.face < 0, 2);
+  spr(w, B.dead && t % 4 < 2 ? white : atlas, fr, B.x + jx, y, B.face < 0, esc);
+  if (B.hit > 2) spr(w, white, fr, B.x + jx, y, B.face < 0, esc);
   if (B.frio > 0) {
     w.globalAlpha = 0.45;
-    spr(w, cyan, fr, B.x + jx, y, B.face < 0, 2);
+    spr(w, cyan, fr, B.x + jx, y, B.face < 0, esc);
     w.globalAlpha = 1;
   }
-  if (B.phase > B.def.fases.length && !B.dead) {
-    w.globalAlpha = 0.22 + Math.sin(t * 0.2) * 0.1;
-    spr(w, red, fr, B.x + jx, y, B.face < 0, 2);
+  if ((B.phase > B.def.fases.length || B.berserk) && !B.dead) {
+    w.globalAlpha = (B.berserk ? 0.38 : 0.22) + Math.sin(t * 0.2) * 0.1;
+    spr(w, red, fr, B.x + jx, y, B.face < 0, esc);
     w.globalAlpha = 1;
   }
-  if (B.st == 'charge' && B.t < 42 && !B.dead) {
+  drawTornados();
+  if (((B.st == 'charge' && B.t < 42) || (B.st == 'furia' && B.ft < 18)) && !B.dead) {
     w.strokeStyle = B.t % 6 < 3 ? 'rgba(255,58,42,.8)' : 'rgba(255,233,74,.5)';
     w.lineWidth = 2;
     w.setLineDash([4, 3]);
