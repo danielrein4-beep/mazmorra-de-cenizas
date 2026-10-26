@@ -33,7 +33,7 @@ const AFIJOS=[{id:'brutal',m:'brutal',f:'brutal',mult:1.3,d:'+30 % de daño'},{i
 function nuevaArma(id,afijo){return{id,af:afijo||null}}
 function armaInfo(a){const b=ARMAS[a.id],af=AFIJOS.find(x=>x.id==a.af);return{n:b.n+(af?' '+af[b.g]:''),spr:b.spr,mult:b.mult*(af&&af.mult||1),cdm:(b.cdm||1)*(af&&af.cdm||1),efecto:af&&!af.mult&&!af.cdm?af.id:null,
  d:[Math.round((b.mult*(af&&af.mult||1)-1)*100),(b.cdm||1)*(af&&af.cdm||1)].map((v,i)=>i?(v<1?'más rápida':v>1?'más lenta':''):(v>0?'+'+v+' % daño':v<0?v+' % daño':'')).filter(Boolean).concat(af&&!af.mult&&!af.cdm?[af.d]:[]).join(' · ')||'arma básica',raro:!!af}}
-function armaAlAzar(tipo){const ids=Object.keys(ARMAS).filter(k=>ARMAS[k].tipo==tipo&&k!=PERS().ini),id=ids[Math.floor(Math.random()*ids.length)];return nuevaArma(id,Math.random()<.5?AFIJOS[Math.floor(Math.random()*AFIJOS.length)].id:null)}
+function armaAlAzar(tipo,raro){const ids=Object.keys(ARMAS).filter(k=>ARMAS[k].tipo==tipo&&k!=PERS().ini),id=ids[Math.floor(Math.random()*ids.length)];return nuevaArma(id,raro||Math.random()<.5?AFIJOS[Math.floor(Math.random()*AFIJOS.length)].id:null)}
 const VESTUARIOS=[{id:'normal',n:'Clásico'},{id:'sombra',n:'Sombra',c:[106,76,255],req:'zombi',txt:'Vence al Rey Podrido'},{id:'escarcha',n:'Escarcha',c:[94,231,255],req:'ogro',txt:'Vence a Gruk'},
 {id:'sangre',n:'Sangre',c:[255,42,74],req:'cenizas',txt:'Vence al Señor de las Cenizas'},{id:'oro',n:'Oro',c:[255,210,74],req:'dos',txt:'Gana con dos héroes distintos'}];
 let LOGROS={};try{LOGROS=JSON.parse(localStorage.getItem('mazmorra-logros')||'{}')}catch(e){}

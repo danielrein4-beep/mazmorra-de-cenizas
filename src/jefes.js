@@ -48,7 +48,7 @@ function toMove(){const B=G.B,ul=B.phase>B.def.fases.length;B.st='move';B.t=0;B.
 function updateJefe(){const B=G.B,P=G.P;if(B.hit>0)B.hit--;if(B.sayT>0)B.sayT--;
 if(G.intro){G.intro.t++;G.zt=1.35;if(G.intro.t==40){G.shake=12;sfx('roar');ring(B.x,B.y-30,70,'#ff3a2a',24,3)}if(G.intro.t>=120){G.intro=null;G.zt=zb()}return}
 if(B.dead){B.dt++;if(B.dt%6==0&&B.dt<100){burst(B.x+rnd(-24,24),B.y-rnd(10,60),26,Math.random()<.5?'#ff8a2a':'#ffe94a',3.5);ring(B.x+rnd(-20,20),B.y-rnd(10,50),18,'#ffe94a',10);G.shake=8;sfx('boom')}
-if(B.dt==100){burst(B.x,B.y-34,220,'#ff5a3c',7,60,2);burst(B.x,B.y-34,90,'#ffffff',5,60);ring(B.x,B.y-30,90,'#ffffff',26,4);decal(B.x,B.y+2,34,'#140806',2000);G.flash=10;G.fcol='#ffffff';G.inv=6;G.shake=24;sfx('boom')}
+if(B.dt==100){soltarMonedas(B.x,B.y-20,25);burst(B.x,B.y-34,220,'#ff5a3c',7,60,2);burst(B.x,B.y-34,90,'#ffffff',5,60);ring(B.x,B.y-30,90,'#ffffff',26,4);decal(B.x,B.y+2,34,'#140806',2000);G.flash=10;G.fcol='#ffffff';G.inv=6;G.shake=24;sfx('boom')}
 if(B.dt==170)jefeDerrotado();return}
 G.marcas.forEach(m=>{if(--m.t<=0){m.d=1;bossFire(8,1.3,rnd(0,1),'#7cff4a',m.x,m.y-4);burst(m.x,m.y,16,'#7cff4a',2.5);ring(m.x,m.y,16,'#7cff4a',10);decal(m.x,m.y+2,8,'#14240a',300);sfx('hit')}});G.marcas=G.marcas.filter(m=>!m.d);
 const vel=estados(B,B.x,B.y-B.z-34);if(G.U||G.over)return;B.t++;const ul=B.phase>B.def.fases.length,f=ul?1.3:1,cx=B.x,cy=B.y-B.z-34;

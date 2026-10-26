@@ -18,14 +18,17 @@ tiny:{run:f4(432,16),hp:16,sp:1.05,ia:'perseguir'},
 chort:{run:f4(432,273,16,23),hp:45,sp:.6,ia:'tirador'},
 orcW:{run:f4(432,177,16,23),hp:85,sp:.65,ia:'embestir'},
 masked:{run:f4(432,153,16,23),hp:90,sp:.55,ia:'abanico'},
-shaman:{run:f4(432,201,16,23),hp:55,sp:.5,ia:'anillo'}};
+shaman:{run:f4(432,201,16,23),hp:55,sp:.5,ia:'anillo'},
+mimico:{run:[[304,432,16,16],[320,432,16,16],[336,432,16,16],[320,432,16,16]],hp:120,sp:1.1,ia:'perseguir',oro:15}};
 const SALAS=[
-{n:'Antesala',tipo:'pelea',cols:[[7,7],[22,7],[7,14],[22,14]],banner:'bannerBlue',fuente:'Blue',
+{n:'Antesala',tipo:'pelea',banner:'bannerBlue',fuente:'Blue',oscuro:.38,
  oleadas:[['skelet','skelet','skelet','imp','imp'],['goblin','goblin','goblin','skelet','skelet','imp']]},
-{n:'Pantano del Rey',tipo:'jefe',jefe:'zombi',cols:[[6,6],[23,6],[6,15],[23,15]],banner:'bannerGreen',fuente:'Blue'},
-{n:'Cripta de los orcos',tipo:'pelea',cols:[[10,8],[19,8],[10,13],[19,13]],banner:'bannerGreen',fuente:'Blue',
+{n:'Pantano del Rey',tipo:'jefe',jefe:'zombi',banner:'bannerGreen',fuente:'Blue',oscuro:.45},
+{n:'Tienda de Zaro',tipo:'tienda',banner:'bannerBlue',fuente:'Blue',oscuro:.3},
+{n:'Cripta de los orcos',tipo:'pelea',banner:'bannerGreen',fuente:'Blue',oscuro:.5,
  oleadas:[['orcW','orcW','chort','chort'],['masked','masked','shaman','imp','imp','imp']]},
-{n:'Foso de Gruk',tipo:'jefe',jefe:'ogro',cols:[],banner:'bannerBlue',fuente:'Red'},
-{n:'Forja infernal',tipo:'pelea',cols:[[5,10],[24,10],[11,6],[18,6]],banner:'bannerRed',fuente:'Red',
+{n:'Foso de Gruk',tipo:'jefe',jefe:'ogro',banner:'bannerBlue',fuente:'Red',oscuro:.45},
+{n:'Tienda de Zaro',tipo:'tienda',banner:'bannerRed',fuente:'Red',oscuro:.3},
+{n:'Forja infernal',tipo:'pelea',banner:'bannerRed',fuente:'Red',oscuro:.48,
  oleadas:[['chort','chort','chort','masked','skelet','skelet'],['orcW','orcW','shaman','shaman','imp','imp','imp','imp']]},
-{n:'Trono de Cenizas',tipo:'jefe',jefe:'cenizas',cols:[[7,7],[22,7],[7,14],[22,14]],banner:'bannerRed',fuente:'Red'}];
+{n:'Trono de Cenizas',tipo:'jefe',jefe:'cenizas',banner:'bannerRed',fuente:'Red',oscuro:.5}];

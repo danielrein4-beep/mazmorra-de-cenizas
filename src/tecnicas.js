@@ -23,12 +23,12 @@ espinas:{n:'Espinas',cd:50,c:'#3a8a1a',mej:['Zarza','La flecha estalla en el dob
  usar(P,a,x,y){disparo('espinas',x,y,a,4,{dmg:30,l:70,r:4});sfx('throw')}},
 martillazo:{n:'Martillazo',cd:28,c:'#ffb04a',mej:['Golpe de montaña','Más alcance y más daño.'],
  usar(P,a){const lv=lvl('martillazo'),x=P.x+Math.cos(a)*20,y=P.y-6+Math.sin(a)*14,r=26*(1+.3*lv);P.swing=12;
- objetivos().forEach(t=>{if(Math.hypot(t.x-x,t.y-y)<r+t.r)dañar(t,Math.round(45*(1+.3*lv)),4,true)});cortarBalas(x,y,r);
+ objetivos().forEach(t=>{if(Math.hypot(t.x-x,t.y-y)<r+t.r)dañar(t,Math.round(45*(1+.3*lv)),4,true)});cortarBalas(x,y,r);dañarCajas(x,y,r,45);
  G.shake=Math.max(G.shake,5);G.stop=Math.max(G.stop,3);ring(x,y,r,'#ffb04a',14,3);decal(x,y+4,r*.5,'#1a120a',500);burst(x,y,26,'#8a7a6a',3,26,2,.12);sfx('land')}},
 hacha:{n:'Hacha',cd:40,c:'#c3c8d8',mej:['Hachas gemelas','Lanzas dos hachas que vuelven a tu mano.'],
  usar(P,a,x,y){const n=lvl('hacha')?2:1;for(let i=0;i<n;i++)disparo('hacha',x,y,a+(i-(n-1)/2)*.35,4.2,{r:6,l:200,dmg:25,pierce:99,ida:30});sfx('throw')}},
 pisoton:{n:'Pisotón',cd:90,c:'#ff8a2a',mej:['Pisada de gigante','La onda llega más lejos y pega más.'],
- usar(P){G.ondas.push({x:P.x,y:P.y,r:6,max:80*(1+.35*lvl('pisoton')),dmg:Math.round(35*(1+.3*lvl('pisoton'))),hits:[]});G.shake=10;G.stop=4;sfx('land');burst(P.x,P.y,30,'#8a7a6a',3,30,2,.1);decal(P.x,P.y+2,20,'#1a120a',500)}},
+ usar(P){dañarCajas(P.x,P.y,80*(1+.35*lvl('pisoton')),35);G.ondas.push({x:P.x,y:P.y,r:6,max:80*(1+.35*lvl('pisoton')),dmg:Math.round(35*(1+.3*lvl('pisoton'))),hits:[]});G.shake=10;G.stop=4;sfx('land');burst(P.x,P.y,30,'#8a7a6a',3,30,2,.1);decal(P.x,P.y+2,20,'#1a120a',500)}},
 dagas:{n:'Dagas',cd:6,c:'#c3c8d8',mej:['Mil cortes','Lanzas dos dagas a la vez.'],
  usar(P,a,x,y){const n=lvl('dagas')?2:1;for(let i=0;i<n;i++)disparo('daga',x,y,a+rnd(-.06,.06)+(i-(n-1)/2)*.12,6.2,{dmg:Math.round(9*(lvl('dagas')>1?1.3:1))});sfx('ice')}},
 veneno:{n:'Veneno',cd:70,c:'#7cff4a',mej:['Peste','La nube es más grande y dura más.'],
