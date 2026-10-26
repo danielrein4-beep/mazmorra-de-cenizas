@@ -22,6 +22,19 @@ con su propio volumen `/datos`, en https://mazmorra.auroracontigo.com. El DNS ya
 apunta al VPS. Coolify la construye desde el repo público, así que un push no la vuelve a desplegar sola:
 si cambias `servidor.mjs`, toca «Redeploy» en Coolify.
 
+## Servidor de enlace para jugar en línea (TURN)
+
+Dos aparatos en redes distintas (datos móviles, routers estrictos) casi nunca se conectan directo; el
+tráfico pasa por un servidor de enlace. Los gratuitos de PeerJS ya no existen, así que hay uno propio:
+
+- Contenedor `mazmorra-turn` (imagen `coturn/coturn`) en el mismo VPS, fuera de Coolify porque necesita
+  la red del host. Escucha en `2.25.251.103:3478` (UDP y TCP) y reenvía por los puertos UDP 49160-49260.
+- Se arranca (o rearranca) con `/root/mazmorra-turn/arrancar.sh`; se levanta solo si el VPS se reinicia.
+- No reenvía hacia redes internas ni a `127.0.0.1`: nadie puede usarlo para llegar a los servicios de Aurora.
+- La clave maestra está en `/root/mazmorra-turn/secreto` (solo root) y una copia en el volumen de datos
+  (`turn.secreto`). Nunca va al repo. `GET /api/turn` entrega claves que vencen en 6 horas.
+- Para comprobarlo: en el juego en línea, el invitado debería ver la imagen aunque esté con datos móviles.
+
 ## Montarlo de nuevo en Coolify (si hiciera falta)
 
 1. En Hostinger (hPanel → DNS) agregar un registro `A` con nombre `mazmorra`, apuntando a `2.25.251.103`.
