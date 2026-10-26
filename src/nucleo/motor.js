@@ -411,6 +411,11 @@ function pantallaCompleta() {
   } catch (e) {}
 }
 function start() {
+  // En línea, la partida es la del anfitrión: el invitado no arranca una propia (si no, cada uno queda en su juego).
+  if (enRed && enRed.rol == 'invitado') {
+    avisoRed('Estás en la sala de tu amigo: él empieza la partida.');
+    return;
+  }
   // La arena necesita dos: en la misma compu o en línea.
   if (ELEGIDO.juego == 'arena' && !(ELEGIDO.jug == 2 && (!coarse || enRed))) {
     irPaso(1);
@@ -435,4 +440,5 @@ function start() {
   document.getElementById('botonPausa').hidden = !!(enRed && enRed.rol == 'invitado');
   running = true;
   last = 0;
+  if (enRed && enRed.rol == 'anfitrion' && enRed.con && enRed.con.open) enRed.con.send({ tipo: 'empieza' });
 }

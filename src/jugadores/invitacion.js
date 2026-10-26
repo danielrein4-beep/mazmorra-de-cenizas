@@ -17,6 +17,17 @@ function mostrarInvitacion(codigo) {
     }
   };
 }
+// Con un código de sala puesto, el botón grande une a la sala en vez de empezar un juego suelto
+// (así nadie queda jugando solo por tocar «Empezar» en vez de «Unirse»).
+function modoUnirse(si) {
+  const b = document.getElementById('empezarBtn');
+  b.textContent = si ? 'Unirse a la sala' : 'Empezar';
+  b.onclick = si ? unirseSala : start;
+}
+document
+  .getElementById('codigoSala')
+  .addEventListener('input', e => modoUnirse(/^[A-Za-z0-9]{4}$/.test(e.target.value.trim())));
+
 // Se revisa al terminar de cargar, cuando ya existen todas las pantallas.
 addEventListener('load', () => {
   const sala = (new URLSearchParams(location.search).get('sala') || '').toUpperCase();
@@ -24,6 +35,7 @@ addEventListener('load', () => {
   abrirElegir();
   irPaso(4);
   document.getElementById('codigoSala').value = sala;
+  modoUnirse(true);
   avisoRed('Te invitaron a la sala ' + sala + '. Si quieres, elige tu héroe en el paso 2, y toca «Unirse».');
   history.replaceState(null, '', location.pathname);
 });

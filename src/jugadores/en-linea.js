@@ -246,6 +246,10 @@ async function unirseSala() {
     return avisoRed(e.message);
   }
   cerrarRed();
+  if (running) {
+    running = false;
+    musica(null);
+  }
   initAudio();
   precargarMusica();
   avisoRed('Conectando con la sala ' + codigo + '…');
@@ -371,7 +375,32 @@ function alRecibirInvitado(d) {
   if (d.tipo == 'fin') {
     document.getElementById('endTitle').textContent = d.titulo;
     document.getElementById('endText').textContent = d.texto;
+    document.getElementById('queViene').innerHTML = '';
+    document.getElementById('queViene').appendChild(
+      Object.assign(document.createElement('li'), {
+        textContent: 'Tu amigo empieza la próxima partida: quédate aquí y entras solo.',
+      }),
+    );
+    document.getElementById('againBtn').hidden = true;
+    document.getElementById('cambiarBtn').hidden = true;
     document.getElementById('endScr').hidden = false;
+  }
+  if (d.tipo == 'empieza') {
+    [
+      'menu',
+      'endScr',
+      'mejoras',
+      'elegir',
+      'estado',
+      'forja',
+      'logros',
+      'records',
+      'armario',
+      'ayuda',
+      'opciones',
+    ].forEach(id => (document.getElementById(id).hidden = true));
+    document.getElementById('videoRed').hidden = false;
+    document.getElementById('tbtns').hidden = !coarse;
   }
 }
 
@@ -385,6 +414,8 @@ function salaCerrada() {
 }
 
 function cerrarRed() {
+  document.getElementById('againBtn').hidden = false;
+  document.getElementById('cambiarBtn').hidden = false;
   if (!enRed) return;
   if (enRed.envio) clearInterval(enRed.envio);
   try {
