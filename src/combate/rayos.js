@@ -92,7 +92,6 @@ function lluviaDeRayos(P) {
     G.rayosPend.push({ t: i * 3, tx, ty, ref: t && t.ref, P, i });
   }
   G.shake = Math.max(G.shake, 14);
-  G.banner = { txt: 'TORMENTA', t: 0, c: '#5ee7ff' };
   sfx('trueno');
 }
 function pasoRayos() {
@@ -107,8 +106,9 @@ function pasoRayos() {
     burst(z.tx, z.ty, 10, '#ffffff', 3, 14);
     decal(z.tx, z.ty + 4, 12, '#0a2030', 400);
     G.shake = Math.max(G.shake, 8);
-    if (z.i % 3 == 0) {
-      G.flash = Math.max(G.flash, 4);
+    // Un solo destello suave al empezar (antes destellaba cada tres rayos y tapaba la pelea).
+    if (z.i == 0) {
+      G.flash = Math.max(G.flash, 3);
       G.fcol = '#b9f3ff';
     }
     const t = z.ref && objetivos(z.P).find(o2 => o2.ref === z.ref);

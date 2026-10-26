@@ -53,16 +53,18 @@ const zonaDePiso = n =>
 const GUARDIANES = {
   10: 'zombi',
   20: 'ogro',
-  30: 'cenizas',
+  30: 'caballeroHielo',
   40: 'nigromante',
   50: 'minotauro',
   60: 'espectro',
   70: 'hechicero',
   80: 'goblinRey',
-  90: 'caballeroHielo',
+  90: 'cenizas',
   100: 'dragon',
 };
 const guardianDe = n => GUARDIANES[n] || 'cenizas';
+// El Señor de las Cenizas (muy difícil) pasó al piso 90 y el Caballero de Hielo bajó al 30; la vida
+// de cada uno ya crece con el piso, así que el Dragón de la cima sigue siendo el más duro.
 
 // Cada piso pega un poco más fuerte (ajustado para que el Dragón se pueda vencer con lo que juntas en la subida): enemigos con más vida, más enemigos, balas más rápidas y jefes más duros.
 function difDePiso(n) {

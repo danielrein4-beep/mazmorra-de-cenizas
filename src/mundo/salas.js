@@ -52,6 +52,7 @@ function jefeDerrotado() {
   guardarLogro(G.B.id);
   G.jefesVencidos = (G.jefesVencidos || 0) + 1;
   G.ultimoJefe = G.B.def.n;
+  if (G.B.id == 'dragon' && G.torre && !G.reto) G.dragonVencido = 1;
   if (!G.tocadoJefe) guardarLogro('sinGolpes');
   revisarLogros();
   const ultimo = G.reto ? retoCumplido() : G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1;

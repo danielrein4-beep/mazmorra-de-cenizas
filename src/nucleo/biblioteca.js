@@ -79,5 +79,9 @@ function ganarCenizas() {
   if (!n) return;
   guardarLogro('polvo', cenizasTengo() + n);
   document.getElementById('endText').textContent +=
-    ' Ganaste ' + n + (n == 1 ? ' ceniza' : ' cenizas') + ' para la Biblioteca de grimorios.';
+    (G.dragonVencido ? ' ¡Venciste al Dragón: +' + premioDragon() + ' cenizas de premio!' : '') +
+    ' Ganaste ' +
+    n +
+    (n == 1 ? ' ceniza' : ' cenizas') +
+    ' para la Biblioteca de grimorios.';
 }

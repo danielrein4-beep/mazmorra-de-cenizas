@@ -8,7 +8,7 @@ function alientoDragon(B, cx, cy, f) {
   B.moving = false;
   const [mx, my] = bocaDragon(B, cy),
     C = fuegoDe(B),
-    largo = B.berserk ? 280 : 240,
+    largo = B.berserk ? 340 : 300,
     ancho = 0.3;
   if (B.t == 1) {
     B.ang0 = Math.atan2(G.P.y - 10 - my, G.P.x - mx);
@@ -55,6 +55,9 @@ function alientoDragon(B, cx, cy, f) {
         conJugador(Q, hurtPlayer);
     });
     if (B.t % 12 == 0) sfx('fuego');
+    // Mientras escupe fuego también caen rayos negros cerca de la heroína (más seguidos al renacer).
+    if (B.t % (B.berserk ? 16 : 24) == 0)
+      zonaEn(B, G.P.x + rnd(-40, 40), G.P.y + rnd(-30, 30), 22, 34, RAYO_NEGRO, 'rayoNegro', 1);
     G.shake = Math.max(G.shake, 3);
   }
   if (B.t >= 110) B.cono = null;
@@ -249,9 +252,10 @@ JEFES.dragon.ataques = {
   2: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'garra'],
   3: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'rugido', 'infierno', 'muroFuego'],
 };
-// Al revivir suena Epic Boss Battle, el tema con más tambores y adrenalina.
-JEFES.dragonF.musica2 = 'batalla';
-if (JEFES.furia) JEFES.furia.musica2 = 'batalla';
+// Al revivir suena Final Stand (chiptune rápido e intenso, como una pelea de Pokémon); el Señor de las
+// Cenizas usa su versión con tambores pesados.
+JEFES.dragonF.musica2 = 'finalStand';
+if (JEFES.furia) JEFES.furia.musica2 = 'finalStandTambores';
 JEFES.dragonF.ataques = {
   1: ['aliento', 'rugido', 'aletazo', 'latigo', 'rayosNegros', 'rayosNegros', 'llamaNegra', 'vuelo'],
   2: ['aliento', 'rugido', 'rayosNegros', 'latigo', 'rugido', 'rayosNegros', 'aletazo', 'infierno', 'vuelo'],
