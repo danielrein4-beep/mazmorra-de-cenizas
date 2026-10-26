@@ -75,6 +75,7 @@ function newRun() {
     js.push(crearJugador(ELEGIDO.p2 || 0, ELEGIDO.sexo2 || 'm', 'normal', 2));
   // Aprendiz (para los más chicos): cada héroe empieza con corazones de más.
   if (G.dif.vidaExtra) js.forEach(P => ((P.max += G.dif.vidaExtra), (P.hp = P.max)));
+  ponerNombres(js);
   compartirBolsa(js);
   // Cada héroe lleva el grimorio que eligió en la Biblioteca (ver datos/grimorios.js).
   js[0].traje = ELEGIDO.vest;

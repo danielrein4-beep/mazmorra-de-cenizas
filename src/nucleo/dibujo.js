@@ -127,6 +127,7 @@ function drawWorld() {
   drawLuz();
   drawLuzColor();
   drawClima();
+  drawNombres();
   drawPoderes();
   G.pt.forEach(p => {
     w.globalAlpha = Math.min(1, (p.l / p.m) * 1.6);

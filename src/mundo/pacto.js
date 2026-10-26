@@ -1,24 +1,15 @@
 // Pacto de Demonios: una torre corta en el Abismo con los tres demonios (Silfred, Zagred y Kiplot).
-// Hay que entrar de a dos (en esta compu o en línea), o solo si eres un Rey Mago de nivel 20.
-// Con «Fuego amigo» los golpes también pegan al compañero: se puede traicionar o pelear entre ustedes.
+// Se entra solo o acompañado, y el fuego amigo va siempre: los golpes también pegan al compañero, así
+// que se puede traicionar o pelear entre ustedes.
 const PISOS_PACTO = ['pelea', 'pelea', 'silfred', 'tienda', 'pelea', 'zagred', 'tienda', 'pelea', 'kiplot'];
-const NIVEL_PACTO_SOLO = 20;
 const PREMIO_PACTO = 8000;
 
-// ¿Puede entrar? Devuelve el aviso si no.
-function avisoPacto() {
-  const dos = ELEGIDO.jug == 2 && (!coarse || enRed);
-  if (dos || estado().nivel >= NIVEL_PACTO_SOLO) return '';
-  return (
-    'Los demonios no se vencen solos: entra con un amigo (en esta compu o en línea), o vuelve cuando seas Rey Mago de nivel ' +
-    NIVEL_PACTO_SOLO +
-    '.'
-  );
-}
+// Cualquiera puede entrar (solo es muy difícil, pero se puede).
+const avisoPacto = () => '';
 
 function iniciarPacto() {
   G.torre = 1;
-  G.pacto = { traicion: !!ELEGIDO.traicion };
+  G.pacto = { traicion: true };
   G.piso = 0;
   G.pisoInicio = 1;
   G.rangoPartida = 0;
@@ -39,7 +30,7 @@ function iniciarPacto() {
   });
   G.jug[0].oro += 150;
   siguientePisoPacto();
-  if (G.pacto.traicion) G.aviso = { txt: 'Fuego amigo: tus golpes también le pegan a tu compañero', l: 160 };
+  if (G.jug.length > 1) G.aviso = { txt: 'Fuego amigo: tus golpes también le pegan a tu compañero', l: 160 };
 }
 
 function siguientePisoPacto() {

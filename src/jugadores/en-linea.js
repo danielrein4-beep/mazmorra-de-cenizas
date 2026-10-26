@@ -207,6 +207,8 @@ function miPerfil() {
     estado: estado(),
     tecs: tecsEquipadas(ELEGIDO.p),
     vest: ELEGIDO.vest,
+    apodo: LOGROS.apodo || '',
+    marco: LOGROS.marco || 'sencillo',
   };
 }
 // Al terminar, el amigo recibe sus cenizas y lo que ganó su héroe, y lo guarda en su aparato.
