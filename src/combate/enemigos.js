@@ -50,6 +50,7 @@ function updateEnemigos() {
         st: '',
         stT: 0,
       });
+      alNacerEnemigo(G.enem[G.enem.length - 1], s);
       burst(s.x, s.y - 6, 16, '#9a3aff', 2);
       ring(s.x, s.y, 12, '#c08aff', 10);
     }
@@ -69,9 +70,11 @@ function updateEnemigos() {
       vy = 0;
     if (!quieto) {
       const ia = m.def.ia,
-        sp = m.def.sp;
+        sp = m.def.sp * (m.spMul || 1);
       m.face = dx < 0 ? -1 : 1;
-      if (m.st == 'tele') {
+      // Ataques con aviso (combate/enemigos-ataques.js).
+      if (m.at) [vx, vy] = pasoAtaqueEnemigo(m, P);
+      else if (m.st == 'tele') {
         if (--m.stT <= 0) {
           m.st = 'carga';
           m.stT = 22;
@@ -93,7 +96,7 @@ function updateEnemigos() {
           vx = ux * sp * s2 - uy * sp * o2;
           vy = uy * sp * s2 + ux * sp * o2;
         }
-        if (--m.cd <= 0) {
+        if (--m.cd <= 0 && !empezarAtaqueEnemigo(m, P)) {
           if (ia == 'tirador') {
             enemBala(m, 1, 1.9, 0, '#ff5a3c', P);
             m.cd = rnd(80, 120);
@@ -140,7 +143,7 @@ function updateEnemigos() {
     m.ky *= 0.8;
     if (!solidoEnemigo(m.x + vx, m.y, 3)) m.x += vx;
     if (!solidoEnemigo(m.x, m.y + vy, 3)) m.y += vy;
-    if (!quieto && !P.est && !P.caido && dist < 9) conJugador(P, hurtPlayer);
+    if (!quieto && !P.est && !P.caido && dist < 9 * (m.esc || 1)) conJugador(P, hurtPlayer);
     if (m.hp <= 0) {
       m.d = 1;
       burst(m.x, m.y - 6, 22, '#ff5a3c', 3, 24, 1, 0.06);
@@ -151,6 +154,7 @@ function updateEnemigos() {
       G.kills++;
       hazaña('des', 1);
       relMuerte(m);
+      alMorirElite(m);
       sfx('boom');
       soltarMonedas(m.x, m.y - 4, m.def.oro || 1 + Math.floor(Math.random() * 2));
       if (Math.random() < 0.08 * G.dif.poc) G.pick.push({ x: m.x, y: m.y, t: 0 });
@@ -218,6 +222,7 @@ function updateEnemigos() {
 }
 function drawBalas() {
   const t = G.t;
+  drawZonasEn();
   G.bul.forEach(b => {
     if (b.charco == -1) {
       w.globalAlpha = Math.min(1, b.l / 30) * 0.85;
@@ -243,6 +248,7 @@ function drawBalas() {
       w.fillRect(Math.round(b.x - 3), Math.round(b.y - 4), 2, 2);
       return;
     }
+    if (b.llama) return drawLlama(b, t);
     const r = b.big ? 4 : b.r;
     w.fillStyle = b.c;
     w.beginPath();
@@ -277,12 +283,38 @@ function drawEnemigos(ents) {
       d: () => {
         w.fillStyle = 'rgba(0,0,0,.3)';
         w.beginPath();
-        w.ellipse(m.x, m.y, 5, 2, 0, 0, 7);
+        w.ellipse(m.x, m.y, 5 * (m.esc || 1), 2 * (m.esc || 1), 0, 0, 7);
         w.fill();
-        const fr = m.def.run[Math.floor((t + m.x) / 6) % 4],
-          jx = m.st == 'tele' ? rnd(-1, 1) : 0;
-        spr(w, m.hit > 2 ? white : atlas, fr, m.x + jx, m.y, m.face < 0);
-        if (m.st == 'tele' && t % 6 < 3) spr(w, red, fr, m.x + jx, m.y, m.face < 0);
+        drawAvisoEnemigo(m);
+        const avisando = m.at && m.at.t < AT_EN[m.at.id].aviso,
+          fr = m.def.run[Math.floor((t + m.x) / (avisando ? 3 : 6)) % 4],
+          jx = m.st == 'tele' || avisando ? rnd(-1, 1) : 0,
+          // Al lanzar el ataque se aplasta un instante; el fantasma desvanecido casi no se ve.
+          dib = src => {
+            if (m.squash > 0) {
+              w.save();
+              w.translate(m.x, m.y);
+              w.scale(1.22, 0.8);
+              w.translate(-m.x, -m.y);
+            }
+            spr(w, src, fr, m.x + jx, m.y, m.face < 0, m.esc);
+            if (m.squash > 0) w.restore();
+          };
+        if (m.squash > 0) m.squash--;
+        if (m.oculto > 0) {
+          m.oculto--;
+          w.globalAlpha = 0.18;
+        }
+        drawEliteFondo(m, fr, jx);
+        dib(m.hit > 2 ? white : atlas);
+        w.globalAlpha = 1;
+        if (m.st == 'tele' && t % 6 < 3) dib(red);
+        if (avisando && t % 6 < 3) {
+          w.globalAlpha = 0.6;
+          dib(atlasTono(AT_EN[m.at.id].c));
+          w.globalAlpha = 1;
+        }
+        drawEliteEncima(m);
         if (m.frio > 0) {
           w.globalAlpha = 0.45;
           spr(w, cyan, fr, m.x + jx, m.y, m.face < 0);

@@ -28,6 +28,7 @@ function pasoTransformacion(B) {
   const D = JEFES[B.seg],
     C = D.color,
     t = ++B.trans.t;
+  if (D.alTransformar) D.alTransformar(B, t);
   G.jug.forEach(P => (P.inv = Math.max(P.inv, 30)));
   G.zt = 1.4;
   if (t < 70) {
@@ -189,7 +190,7 @@ function updateFinal() {
         vy: -0.3,
         l: 26,
         m: 26,
-        c: Math.random() < 0.5 ? '#7cff4a' : '#3a8a1a',
+        c: g.c ? (Math.random() < 0.5 ? g.c : g.c2) : Math.random() < 0.5 ? '#7cff4a' : '#3a8a1a',
         s: 2,
         g: 0,
       });
@@ -215,12 +216,13 @@ function drawFinalSuelo(B) {
   G.gases.forEach(g => {
     const k = Math.min(1, g.l / 40);
     w.globalAlpha = 0.3 * k;
-    w.fillStyle = '#3a8a1a';
+    // El gas es verde; el suelo en llamas del dragón, de su fuego.
+    w.fillStyle = g.c || '#3a8a1a';
     w.beginPath();
     w.ellipse(g.x, g.y, g.r, g.r * 0.6, 0, 0, 7);
     w.fill();
     w.globalAlpha = 0.2 * k;
-    w.fillStyle = '#7cff4a';
+    w.fillStyle = g.c2 || '#7cff4a';
     w.beginPath();
     w.ellipse(g.x + Math.sin(t * 0.04) * 5, g.y - 4, g.r * 0.7, g.r * 0.4, 0, 0, 7);
     w.fill();

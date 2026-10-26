@@ -163,6 +163,7 @@ function updateJefe() {
   if (B.hit > 0) B.hit--;
   if (B.sayT > 0) B.sayT--;
   updateFinal();
+  auraDragon(B);
   if (B.trans) {
     pasoTransformacion(B);
     return;

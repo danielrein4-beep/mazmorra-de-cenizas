@@ -42,6 +42,7 @@ function textoInter(c, tecla) {
     E = tecla == null ? (coarse ? '' : 'E · ') : tecla;
   if (c.tipo == 'arma') return [(coarse ? 'Tomar: ' : E + 'Tomar ') + I.n, I.d, I.raro];
   if (c.tipo == 'cofre') return [E + 'Abrir cofre', '¿Qué habrá dentro?', false];
+  if (c.tipo == 'evento') return textoEvento(c, E);
   if (c.tipo == 'reliquia') return [E + 'Tomar ' + reliquia(c.rel).n, reliquia(c.rel).d, true];
   const n = c.it.id == 'arma' ? I.n : c.rel ? reliquia(c.rel).n : c.it.n,
     falta = c.it.precio - G.P.oro;
@@ -76,6 +77,7 @@ function interactuar() {
     ring(c.x, c.y - 8, 14, '#ffffff', 12);
     sfx('arma');
   }
+  if (c.tipo == 'evento') return usarEvento(P, c);
   if (c.tipo == 'reliquia') {
     darReliquia(P, c.rel);
     c.d = 1;
@@ -258,6 +260,7 @@ function drawObjetos(ents) {
     ents.push({
       y: c.y,
       d: () => {
+        if (c.tipo == 'evento') return drawEvento(c, t);
         if (c.tipo == 'cofre' || c.tipo == 'abierto') {
           const f = c.tipo == 'abierto' ? 2 : c.abre ? Math.min(2, Math.floor(c.abre / 7)) : 0,
             y0 = c.mimico && c.abre ? 432 : c.tipo == 'abierto' ? 400 : 416;

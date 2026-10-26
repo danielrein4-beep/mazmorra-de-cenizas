@@ -10,7 +10,7 @@ function objetivos(dueño) {
   if (B && !B.dead && !B.trans && !B.oculto && B.z < 14 && !G.intro)
     // El cuerpo del jefe: unos 64 px en los de la mazmorra, más grande en los guardianes de la Torre.
     L.push({ x: B.x, y: B.y - (B.def.cy || 32), r: B.def.r || 32, ref: B, boss: 1 });
-  G.enem.forEach(m => L.push({ x: m.x, y: m.y - m.h / 2, r: 7, ref: m }));
+  G.enem.forEach(m => L.push({ x: m.x, y: m.y - (m.h * (m.esc || 1)) / 2, r: 7 * (m.esc || 1), ref: m }));
   return L;
 }
 function objetivoCercano() {
@@ -39,6 +39,12 @@ function dañar(tg, d, heavy, sinArma) {
   P.meter = Math.min(100, P.meter + d * 0.11 * (1 + 0.5 * lvl('abismo')) * (tiene(P, 'ojoAbismo') ? 2 : 1));
   const r = tg.ref;
   if (tg.jugador) return golpearJugador(r, heavy);
+  // El monje meditando casi no recibe daño.
+  if (r.escudoEn > 0) {
+    d = Math.max(1, Math.round(d * 0.15));
+    ring(tg.x, tg.y, 10, '#ffd24a', 8);
+  }
+  d = dañoContraElite(r, d);
   if (A.efecto == 'quema') r.quema = 150;
   if (A.efecto == 'frio') r.frio = 120;
   if (A.efecto == 'vampiro') {
@@ -182,6 +188,7 @@ function cast() {
   const antes = G.shots.length;
   conForja(P, id, () => T.usar(P, a, ox, oy));
   despertarTecnica(P, id, antes, a, ox, oy);
+  despertarV(P, id, antes, a, ox, oy);
   relLanzar(P, antes);
 }
 function rayoPts(x1, y1, x2, y2) {
@@ -350,7 +357,7 @@ function updatePoderes() {
           s.hits.push(tg.ref);
           conJugador(dueño, () => {
             dañar(tg, s.dmg * (s.forja || 1), s.k == 'fuego' ? 4 : 0);
-            if (s.estalla) almaEstalla(s, tg);
+            if (s.estalla) almaEstalla(s, tg), pegarV(s, tg);
           });
           if (s.pierce > 0) s.pierce--;
           else muere = true;

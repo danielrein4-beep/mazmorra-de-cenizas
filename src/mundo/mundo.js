@@ -150,6 +150,8 @@ function entrarCuarto(c, lado) {
     G.cerrado = 1;
     G.olaT = 45;
     G.oleadas = crearOleadas(c);
+    // A veces la última oleada trae un minijefe (mundo/variedad.js).
+    G.miniSala = c.tipo == 'pelea' && Math.random() < 0.22;
   }
   if (!c.est) {
     if (c.tipo == 'tienda') ponerTienda();
@@ -188,6 +190,7 @@ function cuartoLimpio() {
   sfx('puerta');
   G.aviso = { txt: 'Cuarto despejado', l: 80 };
   if (c.tipo == 'llave') ponerCofre(240, 170, false, 'llave');
+  else if (Math.random() < 0.18) ponerEvento();
   else if (Math.random() < 0.45) ponerCofre(240, 170, Math.random() < 0.15);
   else if (Math.random() < 0.3 * G.dif.poc) G.pick.push({ x: 240, y: 170, t: 0 });
 }

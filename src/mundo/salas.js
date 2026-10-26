@@ -12,6 +12,7 @@ function updateSala() {
             ...enSala(240 + Math.cos(a) * rnd(80, 150), 160 + Math.sin(a) * rnd(40, 80)),
           );
           spawnEnemigo(k, x, y);
+          marcarSpawnOleada(j);
         });
       }
     } else if (!G.enem.length && !G.spawns.length) {

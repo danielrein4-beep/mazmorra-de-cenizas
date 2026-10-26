@@ -153,6 +153,9 @@ function resetSala() {
     escalera: null,
     rastros: [],
     rayosPend: [],
+    diferidos: [],
+    zonasEn: [],
+    miniSala: 0,
     relojUsado: 0,
     fade: 1,
     salir: 0,
@@ -269,6 +272,8 @@ function step() {
   pasoArena();
   relRastros();
   pasoRayos();
+  pasoDiferidos();
+  pasoZonasEn();
   const P = G.P,
     vw = VW / G.zoom,
     vh = VH / G.zoom;

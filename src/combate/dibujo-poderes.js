@@ -77,6 +77,8 @@ function drawPoderes() {
     w.restore();
   });
   drawReliquiasMundo();
+  // Los avisos de línea de los jefes van encima de la penumbra para que siempre se vean.
+  if (G.B && !G.B.dead) drawAvisosJefe(G.B);
   drawBrillos();
   G.shots.forEach(s => SHOT_T[s.k].draw(s));
   G.tajos.forEach(s => {
