@@ -72,6 +72,12 @@ function newRun() {
   if (ELEGIDO.jug == 2 && (!coarse || enRed))
     js.push(crearJugador(ELEGIDO.p2 || 0, ELEGIDO.sexo2 || 'm', 'normal', 2));
   compartirBolsa(js);
+  // Cada héroe lleva el grimorio que eligió en la Biblioteca (ver datos/grimorios.js).
+  js.forEach(P => {
+    P.grim = grimorioDe(P);
+    P.hojas = hojasDe(P.grim, PERSONAJES[P.pid].id);
+    P.gcd = 0;
+  });
   G.jug = js;
   G.coop = js.length > 1;
   G.P = js[0];
@@ -162,6 +168,7 @@ function decal(x, y, r, c, l) {
 function hurtPlayer() {
   const P = G.P;
   if (P.caido || P.inv > 0 || P.dash > 0 || P.est || G.U || G.over || G.intro) return;
+  if (corazaAguanta(P)) return;
   P.hp -= G.dif.golpe;
   P.inv = 70;
   P.hurt = 20;
@@ -183,7 +190,7 @@ function hurtPlayer() {
 }
 function pasoJugador(P, i) {
   P.cds = P.cds.map(c => (c > 0 ? c - 1 : 0));
-  ['dcd', 'inv', 'hurt', 'kick', 'circ', 'swing'].forEach(k => {
+  ['dcd', 'inv', 'hurt', 'kick', 'circ', 'swing', 'gcd'].forEach(k => {
     if (P[k] > 0) P[k]--;
   });
   if (P.caido) {
@@ -202,7 +209,7 @@ function pasoJugador(P, i) {
   const libre = !G.over && !G.U && !G.intro && !G.salir;
   if (libre && !P.est) {
     let vx, vy;
-    const sp = P.sp * (1 + 0.15 * lvl('pies'));
+    const sp = P.sp * (1 + 0.15 * lvl('pies')) * (P.grim == 'luz' ? 1 + 0.06 * P.hojas : 1);
     if (P.dash > 0) {
       P.dash--;
       [vx, vy] = P.dashV;
@@ -336,6 +343,7 @@ function end(win) {
       ZONAS.length +
       '). Rueda a través de las balas: mientras ruedas no te tocan.';
   if (G.torre) finTorre(win);
+  ganarCenizas();
   finAlInvitado(
     document.getElementById('endTitle').textContent,
     document.getElementById('endText').textContent,

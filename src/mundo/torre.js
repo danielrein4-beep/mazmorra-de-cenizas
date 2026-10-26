@@ -77,10 +77,10 @@ function difDePiso(n) {
   });
 }
 
-// Pisos desde los que puedes volver a empezar: el 1 y el que sigue a cada guardián que ya venciste.
+// Pisos desde los que puedes volver a empezar: el 1 y cada piso de guardián (10, 20…) al que ya llegaste.
 const pisosDeSalida = () => {
   const L = [1];
-  for (let s = 11; s <= Math.min(91, LOGROS.torre || 0); s += 10) L.push(s);
+  for (let s = 10; s <= Math.min(100, LOGROS.torre || 0); s += 10) L.push(s);
   return L;
 };
 

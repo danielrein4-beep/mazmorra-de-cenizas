@@ -164,6 +164,7 @@ const TECLAS_J2 = {
   KeyO: () => ult(),
   KeyU: () => interactuar(),
   KeyY: () => beber(),
+  KeyI: () => hechizoGrimorio(),
 };
 function teclaJ2(code) {
   if (!G || !G.coop || !TECLAS_J2[code] || G.jug[1].caido) return false;

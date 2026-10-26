@@ -1,7 +1,11 @@
-// La pantalla de elegir va en tres pasos (juego, héroe y vestuario) para que cada uno quepa sin bajar.
+// La pantalla de elegir va en cuatro pasos (juego, héroe, grimorio y vestuario) para que cada uno quepa sin bajar.
 let pasoElegir = 1;
 function irPaso(n) {
   pasoElegir = n;
+  if (n == 3) {
+    grimVisto = null;
+    pintarBiblioteca();
+  }
   document.querySelectorAll('#elegir .paso').forEach(s => (s.hidden = s.dataset.paso != n));
   document
     .querySelectorAll('.paso-tab')

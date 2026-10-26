@@ -110,7 +110,16 @@ function drawWorld() {
   );
   if (G.B) ents.push({ y: G.B.y, d: drawJefe });
   drawEnemigos(ents);
-  G.jug.forEach(Q => ents.push({ y: Q.y, d: () => conJugador(Q, drawPlayer) }));
+  G.jug.forEach(Q =>
+    ents.push({
+      y: Q.y,
+      d: () =>
+        conJugador(Q, () => {
+          drawPlayer();
+          drawCoraza(Q);
+        }),
+    }),
+  );
   ents.sort((a, b) => a.y - b.y).forEach(e => e.d());
   drawLuz();
   drawPoderes();

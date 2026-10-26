@@ -129,6 +129,7 @@ function drawHud() {
       o.fillText(i + 1, x + 45, y + 14);
     }
   });
+  drawCasillaGrim(P, 18 + P.tecs.length * 66, OH - 74);
   const vw = VW / G.zoom,
     vh = VH / G.zoom,
     toS = (x, y) => [((x - G.cam.x) / vw) * OW + OW / 2, ((y - G.cam.y) / vh) * OH + OH / 2];

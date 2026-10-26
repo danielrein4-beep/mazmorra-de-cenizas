@@ -12,6 +12,7 @@ const src = (...p) => path.join(raiz, 'src', ...p);
 const ORDEN = [
   'datos/datos.js',
   'datos/titulos.js',
+  'datos/grimorios.js',
   'nucleo/motor.js',
   'nucleo/rendimiento.js',
   'nucleo/pantalla.js',
@@ -26,6 +27,7 @@ const ORDEN = [
   'combate/proyectiles.js',
   'combate/golpes-finales.js',
   'combate/poderes.js',
+  'combate/grimorios.js',
   'combate/dibujo-poderes.js',
   'mundo/planos.js',
   'mundo/mapas.js',
@@ -45,6 +47,7 @@ const ORDEN = [
   'jugadores/en-linea.js',
   'nucleo/carta.js',
   'nucleo/pasos.js',
+  'nucleo/biblioteca.js',
   'nucleo/controles.js',
 ];
 

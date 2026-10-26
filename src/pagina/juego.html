@@ -66,6 +66,17 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .paso{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2vh,16px);width:100%}
 .paso[hidden]{display:none!important}
 #modoAviso{min-height:1.2em}
+#grimorios{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:560px}
+.grim{background:#140e1e;border:2px solid #4e4070;border-radius:6px;padding:3px;cursor:pointer;line-height:0}
+.grim[aria-pressed="true"]{border-color:var(--ember);background:#24182e}
+.grim.equipado{outline:2px solid #3aff8a;outline-offset:1px}
+#grimDet{display:flex;gap:12px;align-items:center;max-width:520px;text-align:left}
+#grimDet p{font-size:13px}
+#grimNombre{color:#ffe94a}
+#grimGrande{width:84px;height:84px;flex:none}
+.sec:disabled{opacity:.8;cursor:default}
+@media (max-width:420px){.pasos{gap:0}.paso-tab{padding:4px 5px;font-size:12px}.paso-tab b{width:18px;height:18px;margin-right:3px}}
+@media (max-height:520px){#grimGrande{width:56px;height:56px}#cenizasTxt{display:none}}
 #vestPrevia{width:clamp(40px,10vh,110px);height:auto;image-rendering:pixelated}
 .fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
 .etq{font-size:13px;color:var(--muted)}
@@ -79,7 +90,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 #tbtns{z-index:2}
 #codigoSala{font:700 16px var(--font);width:5.5em;text-transform:uppercase;letter-spacing:.15em;text-align:center;color:var(--ink);background:#17111f;border:2px solid var(--muted);border-radius:6px;padding:5px 8px}
 #codigoSala:focus-visible{outline:3px solid var(--ice);outline-offset:2px}
-#cartaImg{width:min(520px,90%);height:auto;border-radius:8px;image-rendering:auto}
+#cartaImg{width:auto;max-width:min(520px,90%);max-height:40vh;height:auto;border-radius:8px;image-rendering:auto}
 #recordInsignia{width:36px;height:39px}
 #recordTexto{font-size:14px;color:#ffe94a}
 #redAviso{min-height:1.2em;color:var(--ice)!important}
@@ -94,6 +105,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
     <button class="tb extra" id="tTomar" hidden>Tomar</button>
     <button class="tb extra" id="tPocion" hidden>Pócima</button>
     <button class="tb" id="tSpell">Técnica</button>
+    <button class="tb" id="tGrim">Grimorio</button>
     <button class="tb ult" id="tUlt">Final</button>
     <button class="tb" id="tDash">Rodar</button>
   </div>
@@ -106,15 +118,16 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
       <b>1 · 2 · 3</b><span>técnicas de tu héroe (mantén el rayo: seguidilla)</span>
       <b>E</b><span>tomar armas, abrir cofres y comprar</span>
       <b>F</b><span>tomar una pócima</span>
+      <b>G</b><span>hechizo de tu grimorio</span>
       <b>Espacio</b><span>rodar (eres intocable)</span>
       <b>Q / clic derecho</b><span>golpe final cuando la barra de furia brilla</span>
       <b>M</b><span>música sí o no</span>
-      <b>Jugador 2</b><span>flechas, L, K, J, O, U, Y o un mando</span>
+      <b>Jugador 2</b><span>flechas, L, K, J, O, U, Y, I (grimorio) o un mando</span>
     </div>
     <div class="keys" id="keysTouch" hidden>
       <b>Lado izquierdo</b><span>arrastra para moverte</span>
       <b>Lado derecho</b><span>arrastra para apuntar y lanzar</span>
-      <b>Botones</b><span>rodar, cambiar técnica, golpe final, tomar armas</span>
+      <b>Botones</b><span>rodar, cambiar técnica, grimorio, golpe final, tomar armas</span>
     </div>
     <button class="play" id="playBtn">Entrar a la mazmorra</button>
     <button class="sec btnMusica" aria-pressed="true">Música: sí</button>
@@ -123,7 +136,8 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
     <nav class="pasos" aria-label="Pasos">
       <button type="button" class="paso-tab" data-ir="1"><b>1</b> Juego</button>
       <button type="button" class="paso-tab" data-ir="2"><b>2</b> Héroe</button>
-      <button type="button" class="paso-tab" data-ir="3"><b>3</b> Vestuario</button>
+      <button type="button" class="paso-tab" data-ir="3"><b>3</b> Grimorio</button>
+      <button type="button" class="paso-tab" data-ir="4"><b>4</b> Vestuario</button>
     </nav>
     <section class="paso" data-paso="1">
       <h1 class="h-chico">¿A qué jugamos?</h1>
@@ -145,11 +159,19 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
       <div class="fila"><button type="button" class="sec" data-ir="1">Atrás</button><button class="play" data-ir="3">Siguiente</button></div>
     </section>
     <section class="paso" data-paso="3" hidden>
+      <h1 class="h-chico">Tu grimorio</h1>
+      <p id="cenizasTxt"></p>
+      <div id="grimorios"></div>
+      <div id="grimDet"><canvas id="grimGrande" width="120" height="120" aria-hidden="true"></canvas><div><strong id="grimNombre"></strong><p id="grimTexto"></p></div></div>
+      <div class="fila"><button type="button" class="sec" id="grimUsar"></button><button type="button" class="sec" id="grimComprar"></button></div>
+      <div class="fila"><button type="button" class="sec" data-ir="2">Atrás</button><button class="play" data-ir="4">Siguiente</button></div>
+    </section>
+    <section class="paso" data-paso="4" hidden>
       <h1 class="h-chico">Tu vestuario</h1>
       <canvas id="vestPrevia" width="48" height="84" aria-label="Tu héroe con el vestuario elegido"></canvas>
       <div class="fila"><span class="etq">Vestuario</span><div id="vestuarios"></div></div>
       <p id="vestAviso" aria-live="polite"></p>
-      <div class="fila"><button type="button" class="sec" data-ir="2">Atrás</button><button class="play" id="empezarBtn">Empezar</button></div>
+      <div class="fila"><button type="button" class="sec" data-ir="3">Atrás</button><button class="play" id="empezarBtn">Empezar</button></div>
       <div class="fila" id="filaRed"><span class="etq">En línea</span><button type="button" class="sec" id="crearSala">Crear sala</button><span class="etq">o</span><input id="codigoSala" maxlength="4" placeholder="K7Q2" aria-label="Código de sala de tu amigo" autocomplete="off" autocapitalize="characters" spellcheck="false"><button type="button" class="sec" id="unirseSala">Unirse</button></div>
       <p id="redAviso" aria-live="polite"></p>
     </section>
@@ -162,9 +184,8 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
   <div class="overlay" id="endScr" hidden>
     <h1 id="endTitle">Caíste</h1>
     <p id="endText"></p>
+    <div class="fila"><button class="play" id="againBtn">Otra vez</button><button class="sec" id="cartaBtn" hidden>Compartir mi carta</button></div>
     <img id="cartaImg" alt="Tu carta de aventurero" hidden>
-    <button class="sec" id="cartaBtn" hidden>Compartir mi carta</button>
-    <button class="play" id="againBtn">Otra vez</button>
     <p class="creditos">Música de MintoDog y nene. Dibujos de 0x72 y Reaktori (Debts in the Depths). Todo de uso libre (CC0), vía OpenGameArt e itch.io.</p>
   </div>
 </div>

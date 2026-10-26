@@ -24,7 +24,7 @@ function objetivoCercano() {
 function dañar(tg, d, heavy, sinArma) {
   const P = G.P,
     A = armaInfo(P.arma);
-  d = Math.round(d * (sinArma ? 1 : A.mult));
+  d = Math.round(efectoGrimorio(P, tg, d * (sinArma ? 1 : A.mult)));
   P.meter = Math.min(100, P.meter + d * 0.11 * (1 + 0.5 * lvl('abismo')));
   const r = tg.ref;
   if (A.efecto == 'quema') r.quema = 150;

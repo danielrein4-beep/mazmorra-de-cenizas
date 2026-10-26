@@ -30,6 +30,7 @@ addEventListener('keydown', e => {
   if (e.code == 'KeyQ') ult();
   if (e.code == 'KeyE') interactuar();
   if (e.code == 'KeyF') beber();
+  if (e.code == 'KeyG') hechizoGrimorio();
   if (['Digit1', 'Digit2', 'Digit3'].includes(e.code)) G.P.spell = +e.code.slice(5) - 1;
   if (e.code.startsWith('Arrow')) e.preventDefault();
 });
@@ -118,7 +119,14 @@ const tend = e => {
 cv.addEventListener('touchend', tend);
 cv.addEventListener('touchcancel', tend);
 // En línea, los botones del invitado se mandan al anfitrión.
-const BOTON_RED = { tDash: 'dash', tUlt: 'ult', tTomar: 'tomar', tPocion: 'pocima', tSpell: 'sig' };
+const BOTON_RED = {
+  tDash: 'dash',
+  tUlt: 'ult',
+  tTomar: 'tomar',
+  tPocion: 'pocima',
+  tSpell: 'sig',
+  tGrim: 'grim',
+};
 const tap = (id, fn) =>
   document.getElementById(id).addEventListener(
     'touchstart',
@@ -133,6 +141,7 @@ tap('tDash', dash);
 tap('tUlt', ult);
 tap('tTomar', () => interactuar());
 tap('tPocion', beber);
+tap('tGrim', hechizoGrimorio);
 tap('tSpell', () => {
   G.P.spell = (G.P.spell + 1) % 3;
 });
