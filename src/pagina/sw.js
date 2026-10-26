@@ -1,5 +1,5 @@
 // Guarda el juego y la música en el teléfono para que abra sin internet.
-const CACHE = 'mazmorra-v27',
+const CACHE = 'mazmorra-v28',
   ARCHIVOS = [
     './',
     'index.html',
@@ -16,7 +16,8 @@ const CACHE = 'mazmorra-v27',
     'musica/dragon.mp3',
   ];
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)));
+  // 'reload': baja cada archivo del servidor, no la copia vieja que el navegador guarda unos minutos.
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS.map(u => new Request(u, { cache: 'reload' })))));
   self.skipWaiting();
 });
 self.addEventListener('activate', e => {
@@ -26,7 +27,11 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request)
+    // 'no-cache': siempre pregunta al servidor si hay versión nueva (si no la hay, responde sin volver a bajarlo).
+    fetch(
+      e.request,
+      e.request.mode == 'navigate' || e.request.url.endsWith('.html') ? { cache: 'no-cache' } : {},
+    )
       .then(r => {
         const c = r.clone();
         if (r.ok && new URL(e.request.url).origin === location.origin)
