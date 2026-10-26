@@ -66,7 +66,7 @@ function alientoDragon(B, cx, cy, f) {
 
 // Colores de los pixelitos de fuego: naranja y amarillo, o morado, fucsia y negro al renacer.
 const pixelesFuego = B =>
-  B.berserk
+  B.berserk || (B.def && B.def.demonio)
     ? ['#b06bff', '#8a2aff', '#8a2aff', '#ff3fd2', '#2a0a4a', '#12051e', '#e0c0ff']
     : ['#ff8a2a', '#ff5a1a', '#ffb04a', '#ffe94a', '#ffe94a', '#fff3c0', '#c0301a'];
 // El chorro ya no tiene forma dibujada: son solo los pixelitos (deja apenas un resplandor en la boca).
@@ -252,10 +252,9 @@ JEFES.dragon.ataques = {
   2: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'garra'],
   3: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'rugido', 'infierno', 'muroFuego'],
 };
-// Al revivir suena Final Stand (chiptune rápido e intenso, como una pelea de Pokémon); el Señor de las
-// Cenizas usa su versión con tambores pesados.
-JEFES.dragonF.musica2 = 'finalStand';
-if (JEFES.furia) JEFES.furia.musica2 = 'finalStandTambores';
+// Al revivir suena Volatile Reaction (Kevin MacLeod): rápida, rockera, pura adrenalina.
+JEFES.dragonF.musica2 = 'revive';
+if (JEFES.furia) JEFES.furia.musica2 = 'revive';
 JEFES.dragonF.ataques = {
   1: ['aliento', 'rugido', 'aletazo', 'latigo', 'rayosNegros', 'rayosNegros', 'llamaNegra', 'vuelo'],
   2: ['aliento', 'rugido', 'rayosNegros', 'latigo', 'rugido', 'rayosNegros', 'aletazo', 'infierno', 'vuelo'],

@@ -112,6 +112,7 @@ function iniciarTorre(desde) {
 }
 
 function siguientePiso() {
+  if (G.pacto) return siguientePisoPacto();
   juntarTodos();
   const n = ++G.piso;
   G.zona = zonaDePiso(n);

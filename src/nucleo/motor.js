@@ -73,6 +73,8 @@ function newRun() {
   const js = [crearJugador(ELEGIDO.p, ELEGIDO.sexo, ELEGIDO.vest, 1)];
   if (ELEGIDO.jug == 2 && (!coarse || enRed))
     js.push(crearJugador(ELEGIDO.p2 || 0, ELEGIDO.sexo2 || 'm', 'normal', 2));
+  // Aprendiz (para los más chicos): cada héroe empieza con corazones de más.
+  if (G.dif.vidaExtra) js.forEach(P => ((P.max += G.dif.vidaExtra), (P.hp = P.max)));
   compartirBolsa(js);
   // Cada héroe lleva el grimorio que eligió en la Biblioteca (ver datos/grimorios.js).
   js[0].traje = ELEGIDO.vest;
@@ -396,7 +398,8 @@ function end(win) {
       ' de ' +
       ZONAS_AVENTURA +
       '). Rueda a través de las balas: mientras ruedas no te tocan.';
-  if (G.torre) finTorre(win);
+  if (G.pacto) finPacto(win);
+  else if (G.torre) finTorre(win);
   if (G.arena) finArena();
   if (G.reto) finReto(win);
   const textoBase = document.getElementById('endText').textContent;
@@ -434,12 +437,19 @@ function start() {
       : 'La arena es de dos: elige «Dos en esta pantalla» o juega en línea.';
     return;
   }
+  // Los demonios: de a dos, o solo siendo Rey Mago de nivel 20.
+  if (ELEGIDO.juego == 'pacto' && avisoPacto()) {
+    irPaso(1);
+    document.getElementById('modoAviso').textContent = avisoPacto();
+    return;
+  }
   pantallaCompleta();
   initAudio();
   precargarMusica();
   newRun();
   if (ELEGIDO.juego == 'reto') iniciarReto();
   else if (ELEGIDO.juego == 'torre') iniciarTorre();
+  else if (ELEGIDO.juego == 'pacto') iniciarPacto();
   else if (ELEGIDO.juego == 'arena') iniciarArena();
   else entrarZona(0);
   if (!G.arena) empezarGuia();

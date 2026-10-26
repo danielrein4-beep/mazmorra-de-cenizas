@@ -125,7 +125,9 @@ const cenizasDePartida = () =>
   Math.round(
     ((G.kills || 0) / 4 + (G.jefesVencidos || 0) * 20 + (G.torre ? pisosSubidos() * 2 : 0)) *
       ((G.jugTodos || G.jug || []).some(P => tiene(P, 'calizCenizas')) ? 1.5 : 1),
-  ) + premioDragon();
+  ) +
+  premioDragon() +
+  premioPacto();
 // Vencer al Dragón del piso 100 reparte 5.000 cenizas entre quienes lo vencieron (en línea, mitad y mitad).
 const PREMIO_DRAGON = 5000;
 const premioDragon = () =>

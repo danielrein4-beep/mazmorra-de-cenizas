@@ -23,9 +23,11 @@ const TEMAS = {
   dragon: { src: 'musica/coloso.mp3' },
   // Fanfarria de victoria de cynicmusic (CC0): suena una vez.
   victoria: { src: 'musica/victoria.mp3', unaVez: 1 },
-  // Final Stand de Centurion_of_war (CC0): suena cuando el Dragón y el Señor de las Cenizas reviven.
-  finalStand: { src: 'musica/final-stand.mp3' },
-  finalStandTambores: { src: 'musica/final-stand-tambores.mp3' },
+  // Kevin MacLeod (incompetech.com, CC-BY 4.0): Volatile Reaction cuando un jefe revive, y los demonios.
+  revive: { src: 'musica/revive.mp3' },
+  demonios: { src: 'musica/demonios.mp3' },
+  demoniosFuria: { src: 'musica/demonios-furia.mp3' },
+  reyDemonio: { src: 'musica/rey-demonio.mp3' },
 };
 const FANFARRIA = {
   bpm: 132,

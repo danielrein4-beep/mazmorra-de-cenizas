@@ -81,6 +81,13 @@ const LISTA_LOGROS = [
     ok: () => !!LOGROS.jugoEnLinea,
   },
   { id: 'retoL', n: 'Reto cumplido', d: 'Supera un reto del día.', p: 40, ok: () => !!LOGROS.retosHechos },
+  {
+    id: 'pactoL',
+    n: 'Cazademonios',
+    d: 'Vence a Kiplot, Rey de los Demonios.',
+    p: 200,
+    ok: () => !!LOGROS.pacto,
+  },
 ];
 
 // Revisa los logros nuevos, paga sus cenizas y los anuncia. Devuelve el texto para la pantalla final.

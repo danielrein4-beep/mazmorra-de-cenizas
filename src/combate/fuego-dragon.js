@@ -3,7 +3,7 @@
 // Dragón Ancestral su fuego se vuelve negro y morado, con meteoros oscuros y un aura de llamas.
 const FUEGO_NORMAL = ['#ff8a2a', '#ffb04a', '#ffe94a'],
   FUEGO_NEGRO = ['#b06bff', '#8a2aff', '#ff3fd2'];
-const fuegoDe = B => (B.berserk ? FUEGO_NEGRO : FUEGO_NORMAL);
+const fuegoDe = B => (B.berserk || (B.def && B.def.demonio) ? FUEGO_NEGRO : FUEGO_NORMAL);
 
 // Lo que el dragón suelta durante un ataque se vuelve llama (y, al renacer, llama negra).
 function conLlamas(id, fn) {
@@ -218,6 +218,7 @@ Object.assign(JEFES.dragonF, {
 // Aura del dragón: brasas a su alrededor, negras y moradas cuando renace.
 function auraDragon(B) {
   truenosAmbiente(B);
+  auraDemonio(B);
   if (B.id != 'dragon' || B.dead || G.t % 3) return;
   const C = fuegoDe(B);
   G.pt.push({

@@ -2,8 +2,8 @@
 function objetivos(dueño) {
   const L = [],
     B = G.B;
-  // En la arena, el rival también es un blanco.
-  if (G.arena)
+  // En la arena, el rival también es un blanco; en el Pacto de Demonios, si eligieron fuego amigo.
+  if (G.arena || (G.pacto && G.pacto.traicion))
     G.jug.forEach(Q => {
       if (Q !== (dueño || G.P) && !Q.caido) L.push({ x: Q.x, y: Q.y - 12, r: 8, ref: Q, jugador: 1 });
     });
@@ -18,6 +18,8 @@ function objetivoCercano() {
   let best = null,
     bd = 1e9;
   objetivos().forEach(o2 => {
+    // La puntería automática no apunta al compañero (traicionar es a propósito).
+    if (o2.jugador && !G.arena) return;
     const d = Math.hypot(o2.x - P.x, o2.y - P.y);
     if (d < bd) {
       bd = d;

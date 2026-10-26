@@ -133,7 +133,18 @@ function pintarRecordTorre() {
   document
     .querySelectorAll('.juego')
     .forEach(b => b.setAttribute('aria-pressed', b.dataset.j == (ELEGIDO.juego || 'aventura')));
+  document.getElementById('filaTraicion').hidden = ELEGIDO.juego != 'pacto';
+  document
+    .querySelectorAll('.traicion')
+    .forEach(b => b.setAttribute('aria-pressed', b.dataset.t == (ELEGIDO.traicion ? '1' : '0')));
 }
+document.querySelectorAll('.traicion').forEach(
+  b =>
+    (b.onclick = () => {
+      ELEGIDO.traicion = b.dataset.t == '1';
+      pintarRecordTorre();
+    }),
+);
 document.querySelectorAll('.juego').forEach(
   b =>
     (b.onclick = () => {
@@ -142,11 +153,13 @@ document.querySelectorAll('.juego').forEach(
       document.getElementById('modoAviso').textContent =
         b.dataset.j == 'reto'
           ? textoReto()
-          : b.dataset.j == 'arena'
-            ? coarse
-              ? 'Arena: tú contra un amigo, al mejor de tres. En el teléfono se juega en línea (paso 4).'
-              : 'Arena: tú contra un amigo, al mejor de tres, en esta compu o en línea.'
-            : '';
+          : b.dataset.j == 'pacto'
+            ? 'Pacto de Demonios: Silfred, Zagred y Kiplot, lo más duro del juego. Se entra de a dos (o solo siendo Rey Mago de nivel 20). Con fuego amigo, se pueden traicionar.'
+            : b.dataset.j == 'arena'
+              ? coarse
+                ? 'Arena: tú contra un amigo, al mejor de tres. En el teléfono se juega en línea (paso 4).'
+                : 'Arena: tú contra un amigo, al mejor de tres, en esta compu o en línea.'
+              : '';
       if (typeof pintarElegir == 'function') pintarElegir();
       pintarRecordTorre();
     }),

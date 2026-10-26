@@ -126,8 +126,23 @@ const ZONAS = [
     planos: ['forja', 'laberinto', 'cruz', 'pilares', 'forja'],
   },
 ];
+// Aprendiz (para niños y para empezar): jefes y enemigos más débiles, balas lentas y 2 corazones de más.
 // Pesadilla: jefes con el doble de vida y más rápidos, más enemigos, balas veloces, cada golpe quita un corazón entero.
 const DIFS = {
+  aprendiz: {
+    id: 'aprendiz',
+    n: 'Aprendiz',
+    jefe: 0.6,
+    enem: 0.7,
+    bala: 0.75,
+    cdJ: 1.3,
+    cant: 0.8,
+    olas: 0,
+    golpe: 1,
+    poc: 1.5,
+    oro: 1,
+    vidaExtra: 4,
+  },
   normal: {
     id: 'normal',
     n: 'Normal',

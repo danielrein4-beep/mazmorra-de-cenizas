@@ -52,10 +52,17 @@ function jefeDerrotado() {
   guardarLogro(G.B.id);
   G.jefesVencidos = (G.jefesVencidos || 0) + 1;
   G.ultimoJefe = G.B.def.n;
-  if (G.B.id == 'dragon' && G.torre && !G.reto) G.dragonVencido = 1;
+  if (G.B.id == 'dragon' && G.torre && !G.pacto && !G.reto) G.dragonVencido = 1;
+  if (G.B.id == 'kiplot' && G.pacto) G.pactoVencido = 1;
   if (!G.tocadoJefe) guardarLogro('sinGolpes');
   revisarLogros();
-  const ultimo = G.reto ? retoCumplido() : G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1;
+  const ultimo = G.reto
+    ? retoCumplido()
+    : G.pacto
+      ? ultimoPacto()
+      : G.torre
+        ? G.piso >= 100
+        : G.zona == ZONAS_AVENTURA - 1;
   if (ultimo && !G.reto && G.dif.id == 'pesadilla') guardarLogro('pesadilla');
   if (VESTUARIOS.filter(desbloqueado).length > antes) G.vestNuevo = 1;
   if (ultimo) {

@@ -293,7 +293,16 @@ function drawJefe() {
     ].forEach(([a, b]) => spr(w, tc, fr, B.x + jx + a * esc, y + b * esc, B.face < 0, esc));
     w.globalAlpha = 1;
   }
-  spr(w, B.dead && t % 4 < 2 ? white : atlas, fr, B.x + jx, y, B.face < 0, esc);
+  // Los demonios tienen el cuerpo negro (el contorno de su color lo hace leer sobre el suelo).
+  spr(
+    w,
+    B.dead && t % 4 < 2 ? white : B.def.cuerpo ? atlasTono(B.def.cuerpo) : atlas,
+    fr,
+    B.x + jx,
+    y,
+    B.face < 0,
+    esc,
+  );
   if (B.hit > 2) spr(w, white, fr, B.x + jx, y, B.face < 0, esc);
   if (B.frio > 0) {
     w.globalAlpha = 0.45;

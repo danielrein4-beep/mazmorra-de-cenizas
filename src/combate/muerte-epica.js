@@ -1,7 +1,8 @@
 // Muerte del último jefe (el de la Aventura o el Dragón del piso 100): no se apaga sin más. Se congela
 // el golpe, suena la fanfarria, rayos de luz salen de su cuerpo, la sala tiembla cada vez más, toda la
 // energía se junta en el centro y estalla en una explosión enorme con el cartel de VICTORIA.
-const esUltimoJefe = () => !G.reto && (G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1);
+const esUltimoJefe = () =>
+  !G.reto && (G.pacto ? ultimoPacto() : G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1);
 const FIN_EPICO = 260;
 
 // Devuelve true si se encarga de este paso (si no, sigue la muerte de siempre).

@@ -276,7 +276,7 @@ function pintarElegir() {
   document
     .querySelectorAll('.sexo2')
     .forEach(b => b.setAttribute('aria-pressed', b.dataset.s == ELEGIDO.sexo2));
-  if (!LOGROS.cenizas) ELEGIDO.modo = 'normal';
+  if (!LOGROS.cenizas && ELEGIDO.modo == 'pesadilla') ELEGIDO.modo = 'normal';
   document.querySelectorAll('.modo').forEach(b => {
     b.setAttribute('aria-pressed', b.dataset.m == ELEGIDO.modo);
     if (b.dataset.m == 'pesadilla') b.textContent = LOGROS.cenizas ? 'Pesadilla' : 'Pesadilla (bloqueado)';
@@ -393,7 +393,9 @@ document.querySelectorAll('.modo').forEach(
       av.textContent =
         ELEGIDO.modo == 'pesadilla'
           ? 'Pesadilla: jefes con el doble de vida y más rápidos, más enemigos, balas veloces y cada golpe quita un corazón entero.'
-          : '';
+          : ELEGIDO.modo == 'aprendiz'
+            ? 'Aprendiz: ideal para los más chicos o para empezar. Enemigos más débiles, balas lentas y dos corazones de más.'
+            : '';
       pintarElegir();
     }),
 );

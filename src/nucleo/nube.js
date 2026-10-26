@@ -25,7 +25,7 @@ const SIN_SERVIDOR = 'No se pudo hablar con el servidor de récords. Revisa tu i
 
 // Al terminar una partida: sube tu récord de la Torre (si pusiste apodo) y respalda tu progreso.
 function subirALaNube() {
-  if (LOGROS.apodo && G && G.torre && G.piso > (G.pisoInicio || 1))
+  if (LOGROS.apodo && G && G.torre && !G.pacto && G.piso > (G.pisoInicio || 1))
     pedir('/api/records', {
       id: idAparato(),
       apodo: LOGROS.apodo,

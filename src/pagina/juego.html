@@ -289,10 +289,11 @@ body.botonesGrandes #tbtns{gap:16px}
     </nav>
     <section class="paso" data-paso="1">
       <h1 class="h-chico">¿A qué jugamos?</h1>
-      <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button><button type="button" class="sec juego" data-j="arena">Arena PvP</button><button type="button" class="sec juego" data-j="reto">Reto del día</button></div>
+      <div class="fila"><span class="etq">Juego</span><button type="button" class="sec juego" data-j="aventura">Aventura</button><button type="button" class="sec juego" data-j="torre">Torre de 100 pisos</button><button type="button" class="sec juego" data-j="arena">Arena PvP</button><button type="button" class="sec juego" data-j="reto">Reto del día</button><button type="button" class="sec juego" data-j="pacto">Pacto de Demonios</button></div>
+      <div class="fila" id="filaTraicion" hidden><span class="etq">Fuego amigo</span><button type="button" class="sec traicion" data-t="0">No</button><button type="button" class="sec traicion" data-t="1">Sí, se vale traicionar</button></div>
       <div class="fila" id="filaRecord"><canvas id="recordInsignia" width="48" height="52"></canvas><span id="recordTexto"></span></div>
       <div class="fila" id="filaPiso" hidden><span class="etq">Empezar en</span><div id="pisos" class="fila"></div></div>
-      <div class="fila"><span class="etq">Modo</span><button type="button" class="sec modo" data-m="normal">Normal</button><button type="button" class="sec modo" data-m="pesadilla">Pesadilla</button></div>
+      <div class="fila"><span class="etq">Modo</span><button type="button" class="sec modo" data-m="aprendiz">Aprendiz</button><button type="button" class="sec modo" data-m="normal">Normal</button><button type="button" class="sec modo" data-m="pesadilla">Pesadilla</button></div>
       <p id="modoAviso" aria-live="polite"></p>
       <div class="fila" id="filaJug"><span class="etq">Jugadores</span><button type="button" class="sec njug" data-n="1">Uno</button><button type="button" class="sec njug" data-n="2">Dos en esta pantalla</button></div>
       <div class="fila"><button class="play" data-ir="2">Siguiente</button></div>
