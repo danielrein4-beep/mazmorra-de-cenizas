@@ -189,6 +189,8 @@ function pasoM(i, t) {
 }
 function alternarMusica() {
   musicaOn = !musicaOn;
+  const vr = document.getElementById('videoRed');
+  if (vr) vr.muted = !musicaOn;
   try {
     localStorage.setItem('mazmorra-musica', musicaOn ? 'si' : 'no');
   } catch (e) {}

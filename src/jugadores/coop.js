@@ -114,6 +114,8 @@ function leerControles(P, i) {
       c.ay = G.cam.y + (mouse.y / OH - 0.5) * vh;
     }
     c.fuego = mouse.down || !!touch.aim;
+  } else if (enRed && enRed.rol == 'anfitrion') {
+    controlesRemotos(P, c);
   } else {
     const g = leerMando();
     if (g) {

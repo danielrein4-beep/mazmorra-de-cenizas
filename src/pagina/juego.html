@@ -66,6 +66,11 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .vest i{width:14px;height:14px;border-radius:3px;display:block}
 .vest[aria-pressed="true"]{border-color:var(--ember)}
 #vestAviso{min-height:1.2em;color:#ffe94a!important}
+#videoRed{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;background:#000;border-radius:6px;pointer-events:none;z-index:1}
+#tbtns{z-index:2}
+#codigoSala{font:700 16px var(--font);width:5.5em;text-transform:uppercase;letter-spacing:.15em;text-align:center;color:var(--ink);background:#17111f;border:2px solid var(--muted);border-radius:6px;padding:5px 8px}
+#codigoSala:focus-visible{outline:3px solid var(--ice);outline-offset:2px}
+#redAviso{min-height:1.2em;color:var(--ice)!important}
 @media (max-height:520px){.barras,#heroeDesc{display:none}.heroe{padding:4px 6px}.heroe canvas{width:26px}.overlay{gap:6px}.h-chico{font-size:22px!important}.play{padding:6px 22px}}
 .sec,.vest,.heroe .clase,.barra,.carta .desc,.tec,.keys span,.overlay p{font-weight:400!important}
 </style>
@@ -73,6 +78,7 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 <div id="wrap">
   <canvas id="cv" width="960" height="540" aria-label="Mazmorra de Cenizas"></canvas>
   <p id="girar">Gira el teléfono para jugar en grande.</p>
+  <video id="videoRed" playsinline hidden></video>
   <div id="tbtns" hidden>
     <button class="tb extra" id="tTomar" hidden>Tomar</button>
     <button class="tb extra" id="tPocion" hidden>Pócima</button>
@@ -114,6 +120,8 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
     <div class="fila"><span class="etq">Vestuario</span><div id="vestuarios"></div></div>
     <p id="vestAviso" aria-live="polite"></p>
     <button class="play" id="empezarBtn">Empezar</button>
+    <div class="fila" id="filaRed"><span class="etq">En línea</span><button type="button" class="sec" id="crearSala">Crear sala</button><span class="etq">o</span><input id="codigoSala" maxlength="4" placeholder="K7Q2" aria-label="Código de sala de tu amigo" autocomplete="off" autocapitalize="characters" spellcheck="false"><button type="button" class="sec" id="unirseSala">Unirse</button></div>
+    <p id="redAviso" aria-live="polite"></p>
   </div>
   <div class="overlay" id="mejoras" hidden>
     <h1>Elige un poder</h1>

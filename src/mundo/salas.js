@@ -92,6 +92,11 @@ function mostrarMejoras(k) {
       ? 'El jefe cayó y desbloqueaste un vestuario nuevo. Toma una mejora para lo que viene.'
       : 'El jefe cayó. Toma una mejora para lo que viene.');
   if (!G.coop || k == 1) G.vestNuevo = 0;
+  // En línea, el jugador 2 elige su poder en su propio aparato.
+  if (mejorasAlInvitado(ops, k)) {
+    L.innerHTML = '';
+    document.querySelector('#mejoras p').textContent = 'Tu amigo está eligiendo su poder…';
+  }
   document.getElementById('mejoras').hidden = false;
   L.querySelector('button')?.focus();
 }

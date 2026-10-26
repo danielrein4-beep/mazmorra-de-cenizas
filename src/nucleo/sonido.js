@@ -1,12 +1,14 @@
 // Efectos de sonido épicos hechos con el sintetizador del navegador: capas de golpe grave,
 // ruido filtrado, distorsión y eco de sala, con un compresor al final para que suenen grandes sin saturar.
 let fxBus = null,
+  fxSalida = null,
   revIn = null,
   curvaDist = null;
 const ultimoSfx = {};
 function prepararSonido() {
   if (fxBus || !AC) return;
   const comp = AC.createDynamicsCompressor();
+  fxSalida = comp;
   comp.threshold.value = -16;
   comp.ratio.value = 5;
   comp.attack.value = 0.003;

@@ -64,7 +64,8 @@ const zb = () => (G.B && !G.B.dead ? 0.8 : 1);
 function newRun() {
   G = { zona: 0, dif: DIFS[ELEGIDO.modo] || DIFS.normal, start: performance.now(), kills: 0 };
   const js = [crearJugador(ELEGIDO.p, ELEGIDO.sexo, ELEGIDO.vest, 1)];
-  if (ELEGIDO.jug == 2 && !coarse) js.push(crearJugador(ELEGIDO.p2 || 0, ELEGIDO.sexo2 || 'm', 'normal', 2));
+  if (ELEGIDO.jug == 2 && (!coarse || enRed))
+    js.push(crearJugador(ELEGIDO.p2 || 0, ELEGIDO.sexo2 || 'm', 'normal', 2));
   compartirBolsa(js);
   G.jug = js;
   G.coop = js.length > 1;
@@ -325,6 +326,10 @@ function end(win) {
       ' de ' +
       ZONAS.length +
       '). Rueda a través de las balas: mientras ruedas no te tocan.';
+  finAlInvitado(
+    document.getElementById('endTitle').textContent,
+    document.getElementById('endText').textContent,
+  );
   document.getElementById('endScr').hidden = false;
   document.getElementById('againBtn').focus();
 }

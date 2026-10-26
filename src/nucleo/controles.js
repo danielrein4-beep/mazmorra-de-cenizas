@@ -16,6 +16,10 @@ addEventListener('keydown', e => {
     document.querySelectorAll('#mejorasLista button')[+e.code.slice(5) - 1]?.click();
     return;
   }
+  if (teclaInvitado(e.code)) {
+    if (e.code == 'Space') e.preventDefault();
+    return;
+  }
   if (!running || !G) return;
   if (teclaJ2(e.code)) return;
   if (G.P.caido && !['KeyM'].includes(e.code)) return;
@@ -46,6 +50,7 @@ cv.addEventListener('mousemove', e => {
 cv.addEventListener('mousedown', e => {
   [mouse.x, mouse.y] = toC(e);
   if (e.button == 2) {
+    if (botonInvitado('ult')) return;
     if (running && G) ult();
   } else mouse.down = true;
 });
@@ -56,6 +61,7 @@ cv.addEventListener('contextmenu', e => e.preventDefault());
 addEventListener(
   'wheel',
   e => {
+    if (botonInvitado('sig')) return;
     if (running && G) G.P.spell = (G.P.spell + (e.deltaY > 0 ? 1 : 2)) % 3;
   },
   { passive: true },
@@ -101,11 +107,14 @@ const tend = e => {
 };
 cv.addEventListener('touchend', tend);
 cv.addEventListener('touchcancel', tend);
+// En línea, los botones del invitado se mandan al anfitrión.
+const BOTON_RED = { tDash: 'dash', tUlt: 'ult', tTomar: 'tomar', tPocion: 'pocima', tSpell: 'sig' };
 const tap = (id, fn) =>
   document.getElementById(id).addEventListener(
     'touchstart',
     e => {
       e.preventDefault();
+      if (botonInvitado(BOTON_RED[id])) return;
       if (running && G) fn();
     },
     { passive: false },
