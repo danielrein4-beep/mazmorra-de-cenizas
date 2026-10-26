@@ -72,6 +72,11 @@ const ENEMIGOS = {
   shaman: { run: f4(432, 201, 16, 23), hp: 55, sp: 0.5, ia: 'anillo' },
   zhielo: { run: f4(432, 136), hp: 42, sp: 0.95, ia: 'perseguir' },
   necro: { run: f4(368, 225, 16, 23), hp: 70, sp: 0.45, ia: 'anillo' },
+  // Criaturas de Debts in the Depths (Reaktori, CC0) que viven en la Torre.
+  murcielago: { run: f4(130, 590, 25, 25), hp: 40, sp: 1.3, ia: 'perseguir' },
+  baba: { run: f4(240, 590, 26, 26), hp: 80, sp: 0.4, ia: 'anillo' },
+  fantasma: { run: f4(400, 590, 19, 28), hp: 50, sp: 0.9, ia: 'perseguir' },
+  monje: { run: f4(0, 620, 21, 20), hp: 75, sp: 0.55, ia: 'abanico' },
   mimico: {
     run: [
       [304, 432, 16, 16],

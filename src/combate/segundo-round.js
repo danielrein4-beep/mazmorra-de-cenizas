@@ -47,7 +47,7 @@ function pasoTransformacion(B) {
   }
   if (t >= 70 && t < 130) {
     B.hp = Math.round((B.max * (t - 70)) / 60);
-    B.esc = 2 + (0.4 * (t - 70)) / 60;
+    B.esc = B.esc0 * (1 + (0.2 * (t - 70)) / 60);
     if (t % 6 == 0) {
       G.bolts.push(Object.assign(rayoPts(B.x + rnd(-16, 16), B.y - 260, B.x, B.y - 30), { gordo: 1, l: 12 }));
       G.shake = 10;
@@ -57,7 +57,7 @@ function pasoTransformacion(B) {
   if (t == 130) {
     G.banner = null;
     B.hp = B.max;
-    B.esc = 2.4;
+    B.esc = B.esc0 * 1.2;
     B.trans = null;
     B.berserk = 1;
     B.cd = 40;
@@ -76,9 +76,8 @@ function pasoTransformacion(B) {
 
 // Atlas teñido del color de furia de cada jefe (se prepara una vez).
 const tintesFuria = {};
-function atlasFuria(seg) {
-  return tintesFuria[seg] || (tintesFuria[seg] = tint(JEFES[seg].color));
-}
+const atlasTono = col => tintesFuria[col] || (tintesFuria[col] = tint(col));
+const atlasFuria = seg => atlasTono(JEFES[seg].color);
 
 // Marcas del cielo: el suelo avisa y, al terminar la cuenta, cae algo. Cada una devuelve su radio de daño.
 const CAE = {

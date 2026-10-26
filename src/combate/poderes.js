@@ -3,7 +3,8 @@ function objetivos() {
   const L = [],
     B = G.B;
   if (B && !B.dead && !B.trans && !B.oculto && B.z < 14 && !G.intro)
-    L.push({ x: B.x, y: B.y - 32, r: 32, ref: B, boss: 1 }); // el cuerpo del jefe ocupa unos 64 px
+    // El cuerpo del jefe: unos 64 px en los de la mazmorra, más grande en los guardianes de la Torre.
+    L.push({ x: B.x, y: B.y - (B.def.cy || 32), r: B.def.r || 32, ref: B, boss: 1 });
   G.enem.forEach(m => L.push({ x: m.x, y: m.y - m.h / 2, r: 7, ref: m }));
   return L;
 }

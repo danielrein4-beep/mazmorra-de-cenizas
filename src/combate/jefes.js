@@ -47,8 +47,10 @@ function crearJefe(id) {
   return {
     id,
     def: d,
+    esc: d.esc || 2,
+    esc0: d.esc || 2,
     x: 240,
-    y: 150,
+    y: 150 + Math.max(0, (d.cy || 32) - 32) * 2,
     z: 0,
     hp,
     max: hp,
@@ -219,11 +221,12 @@ function updateJefe() {
   const ul = B.phase > B.def.fases.length,
     f = (ul ? 1.3 : 1) * (B.berserk ? 1.25 : 1),
     cx = B.x,
-    cy = B.y - B.z - 34;
+    cy = B.y - B.z - (B.def.boca || 34);
   if (B.st == 'move') {
     if (Math.hypot(B.tx - B.x, B.ty - B.y) < 6) {
       B.tx = rnd(80, 400);
-      B.ty = rnd(70, 200);
+      // Los guardianes altos se quedan más abajo para que no se corten arriba de la pantalla.
+      B.ty = rnd(70 + Math.max(0, (B.def.cy || 32) - 32) * 2, 210);
     }
     const d = Math.max(1, Math.hypot(B.tx - B.x, B.ty - B.y)),
       sp = B.def.sp * (ul ? 1.5 : 1) * vel;
@@ -265,9 +268,10 @@ function drawJefe() {
   const sh = Math.max(0.3, 1 - B.z / 120);
   w.fillStyle = 'rgba(0,0,0,.35)';
   w.beginPath();
-  w.ellipse(B.x, B.y, 20 * sh, 5 * sh, 0, 0, 7);
+  w.ellipse(B.x, B.y, 10 * esc * sh, 2.5 * esc * sh, 0, 0, 7);
   w.fill();
-  const fr = (B.moving ? B.def.run : B.def.idle)[Math.floor(t / (B.moving ? 6 : 10)) % 4],
+  const L = B.moving ? B.def.run : B.def.idle,
+    fr = L[Math.floor(t / (B.def.vel || (B.moving ? 6 : 10))) % L.length],
     jx =
       (B.st == 'charge' && B.t < 42) ||
       (B.st == 'roca' && B.t < 18) ||
@@ -275,6 +279,18 @@ function drawJefe() {
         ? rnd(-1.5, 1.5)
         : 0,
     y = B.y - B.z;
+  // Los guardianes de la Torre llevan un contorno de su color para que se lean sobre cualquier suelo.
+  if (B.def.tono && !B.dead) {
+    const tc = atlasTono(B.def.tono);
+    w.globalAlpha = 0.6;
+    [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ].forEach(([a, b]) => spr(w, tc, fr, B.x + jx + a * esc, y + b * esc, B.face < 0, esc));
+    w.globalAlpha = 1;
+  }
   spr(w, B.dead && t % 4 < 2 ? white : atlas, fr, B.x + jx, y, B.face < 0, esc);
   if (B.hit > 2) spr(w, white, fr, B.x + jx, y, B.face < 0, esc);
   if (B.frio > 0) {

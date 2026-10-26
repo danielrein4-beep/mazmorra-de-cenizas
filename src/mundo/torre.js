@@ -10,7 +10,7 @@ ZONAS.push(
     oscuro: 0.55,
     jefe: 'zombi',
     planoJefe: 'pantano',
-    enem: ['necro', 'chort', 'imp', 'masked', 'skelet', 'zhielo'],
+    enem: ['necro', 'chort', 'murcielago', 'masked', 'fantasma', 'zhielo'],
     planos: ['laberinto', 'cruz', 'pilares', 'cripta', 'foso2'],
   },
   {
@@ -21,7 +21,7 @@ ZONAS.push(
     oscuro: 0.22,
     jefe: 'ogro',
     planoJefe: 'foso',
-    enem: ['orcW', 'masked', 'shaman', 'goblin', 'chort', 'necro'],
+    enem: ['orcW', 'monje', 'shaman', 'baba', 'chort', 'necro'],
     planos: ['pilares', 'antesala', 'cruz', 'vacio2', 'laberinto'],
   },
   {
@@ -32,7 +32,7 @@ ZONAS.push(
     oscuro: 0.5,
     jefe: 'cenizas',
     planoJefe: 'trono',
-    enem: ['zhielo', 'orcW', 'shaman', 'necro', 'masked', 'chort'],
+    enem: ['zhielo', 'orcW', 'murcielago', 'necro', 'monje', 'fantasma'],
     planos: ['foso2', 'forja', 'laberinto', 'cruz', 'pilares'],
   },
   {
@@ -43,15 +43,26 @@ ZONAS.push(
     oscuro: 0.55,
     jefe: 'cenizas',
     planoJefe: 'trono',
-    enem: ['necro', 'shaman', 'orcW', 'masked', 'chort', 'zhielo'],
+    enem: ['necro', 'shaman', 'monje', 'baba', 'fantasma', 'murcielago'],
     planos: ['forja', 'trono', 'laberinto', 'cruz', 'pilares'],
   },
 );
 const zonaDePiso = n =>
   n <= 10 ? 0 : n <= 20 ? 1 : n <= 30 ? 2 : n <= 50 ? 3 : n <= 70 ? 4 : n <= 90 ? 5 : 6;
-// Guardianes de cada diez pisos; el del piso 100 siempre es el Señor de las Cenizas.
-const GUARDIANES = ['zombi', 'ogro', 'cenizas'];
-const guardianDe = n => (n >= 100 ? 'cenizas' : GUARDIANES[(n / 10 - 1) % GUARDIANES.length]);
+// Guardianes de cada diez pisos (combate/guardianes.js); en la cima espera el Dragón (combate/dragon.js).
+const GUARDIANES = {
+  10: 'zombi',
+  20: 'ogro',
+  30: 'cenizas',
+  40: 'nigromante',
+  50: 'minotauro',
+  60: 'espectro',
+  70: 'hechicero',
+  80: 'goblinRey',
+  90: 'caballeroHielo',
+  100: 'dragon',
+};
+const guardianDe = n => GUARDIANES[n] || 'cenizas';
 
 // Cada piso pega un poco más fuerte: enemigos con más vida, más enemigos, balas más rápidas y jefes más duros.
 function difDePiso(n) {

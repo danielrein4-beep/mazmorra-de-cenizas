@@ -177,7 +177,7 @@ function atlasVestuario(id) {
   if (tintes[id]) return tintes[id];
   const v = VESTUARIOS.find(x => x.id == id);
   if (!v || !v.c) return atlas;
-  const [c, x] = mk(512, 512);
+  const [c, x] = mk(atlas.width, atlas.height);
   x.drawImage(atlas, 0, 0);
   const d = x.getImageData(128, 0, 144, 330),
     a = d.data;

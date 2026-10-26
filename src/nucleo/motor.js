@@ -55,11 +55,11 @@ function tile(x, r, tx, ty) {
   x.drawImage(atlas, r[0], r[1], 16, 16, tx * 16, ty * 16, 16, 16);
 }
 function tint(col) {
-  const [c, x] = mk(512, 512);
+  const [c, x] = mk(atlas.width, atlas.height);
   x.drawImage(atlas, 0, 0);
   x.globalCompositeOperation = 'source-in';
   x.fillStyle = col;
-  x.fillRect(0, 0, 512, 512);
+  x.fillRect(0, 0, atlas.width, atlas.height);
   return c;
 }
 const lvl = id => G.P.mej[id] || 0;

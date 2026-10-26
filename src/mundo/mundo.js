@@ -138,7 +138,8 @@ function entrarCuarto(c, lado) {
     G.B = crearJefe(c.jefe || Z.jefe);
     G.cerrado = 1;
     G.intro = { t: 0 };
-    musica((c.jefe || Z.jefe) == 'cenizas' ? 'final' : 'jefe_' + (c.jefe || Z.jefe));
+    const idJ = c.jefe || Z.jefe;
+    musica(JEFES[idJ].musica || (idJ == 'cenizas' ? 'final' : 'jefe_' + idJ));
     return;
   }
   musica('sala');

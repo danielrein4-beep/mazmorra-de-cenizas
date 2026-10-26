@@ -37,7 +37,7 @@ Object.assign(ATAQUES, {
   teleporte: (B, cx, cy, f) => {
     if (B.t == 1) {
       burst(cx, cy, 50, '#3a2e3e', 3, 34, 2);
-      burst(cx, cy, 20, '#ff5a3c', 2.5);
+      burst(cx, cy, 20, B.def.tono || '#ff5a3c', 2.5);
       B.oculto = 1;
       sfx('sombra');
     }
@@ -46,9 +46,9 @@ Object.assign(ATAQUES, {
         a = Math.atan2(P.y - B.y, P.x - B.x);
       [B.x, B.y] = enSala(P.x + Math.cos(a) * 90, P.y + Math.sin(a) * 60);
       B.oculto = 0;
-      ring(B.x, B.y - 30, 40, '#ff5a3c', 16, 3);
+      ring(B.x, B.y - 30, 40, B.def.tono || '#ff5a3c', 16, 3);
       burst(B.x, B.y - 30, 40, '#3a2e3e', 3, 30, 2);
-      bossFire(14 + B.phase * 2, 1.5 * f, rnd(0, 1), '#ff5a3c', B.x, B.y - 34);
+      bossFire(14 + B.phase * 2, 1.5 * f, rnd(0, 1), B.def.tono || '#ff5a3c', B.x, B.y - 34);
       sfx('rugido');
     }
     return B.t > 50;

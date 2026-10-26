@@ -276,7 +276,10 @@ function drawLuz() {
     G.rings.forEach(r => {
       if (r.r > 25) L(r.x, r.y, r.r * 1.2, (0.5 * r.l) / r.m);
     });
-  if (G.B && !G.B.dead) L(G.B.x, G.B.y - 30, 70, 0.6);
+  if (G.B && !G.B.dead) {
+    const r = G.B.def.r || 32;
+    L(G.B.x, G.B.y - G.B.z - (G.B.def.cy || 30), r * 2.2, r > 32 ? 0.8 : 0.6);
+  }
   G.inter.slice(0, 4).forEach(c => L(c.x, c.y - 8, 30, 0.5));
   Object.keys(G.room.p).forEach(l => {
     if (puertaAbierta(l)) {

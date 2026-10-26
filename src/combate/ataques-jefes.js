@@ -85,7 +85,7 @@ const ATAQUES = {
     if (B.t == 20)
       for (let i = 0; i < 3; i++) {
         const a = i * 2.09;
-        spawnEnemigo('imp', ...enSala(B.x + Math.cos(a) * 40, B.y + Math.sin(a) * 24));
+        spawnEnemigo(B.def.horda || 'imp', ...enSala(B.x + Math.cos(a) * 40, B.y + Math.sin(a) * 24));
       }
     return B.t > 40;
   },
@@ -129,7 +129,7 @@ const ATAQUES = {
     if (B.t == 15) {
       for (let i = 0; i < 4; i++) {
         const a = i * 1.571 + 0.4;
-        spawnEnemigo('tiny', ...enSala(B.x + Math.cos(a) * 44, B.y + Math.sin(a) * 28));
+        spawnEnemigo(B.def.horda || 'tiny', ...enSala(B.x + Math.cos(a) * 44, B.y + Math.sin(a) * 28));
       }
       ring(B.x, B.y, 40, '#9a3aff', 16);
     }

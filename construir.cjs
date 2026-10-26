@@ -37,6 +37,8 @@ const ORDEN = [
   'combate/furia-cenizas.js',
   'combate/furia-rey.js',
   'combate/furia-gruk.js',
+  'combate/guardianes.js',
+  'combate/dragon.js',
   'mundo/mundo.js',
   'mundo/torre.js',
   'mundo/salas.js',
