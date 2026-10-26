@@ -5,7 +5,7 @@ const JEFES = {
     sub: 'Señor del pantano',
     idle: f4(16, 332, 32, 36),
     run: f4(144, 332, 32, 36),
-    hp: 1200,
+    hp: 2800,
     sp: 0.45,
     fases: [[0.5, '¡Grrraaah!']],
     ataques: {
@@ -18,7 +18,7 @@ const JEFES = {
     sub: 'Guardián del foso',
     idle: f4(16, 380, 32, 36),
     run: f4(144, 380, 32, 36),
-    hp: 1400,
+    hp: 3600,
     sp: 0.6,
     fases: [[0.5, '¡GRUK APLASTA!']],
     ataques: { 1: ['salto', 'roca', 'giro', 'salto'], 2: ['salto2', 'roca', 'giro', 'salto2', 'roca'] },
@@ -28,7 +28,7 @@ const JEFES = {
     sub: 'Dueño de la mazmorra',
     idle: f4(16, 428, 32, 36),
     run: f4(144, 428, 32, 36),
-    hp: 1600,
+    hp: 4600,
     sp: 0.6,
     fases: [
       [0.66, '¡Insolente!'],

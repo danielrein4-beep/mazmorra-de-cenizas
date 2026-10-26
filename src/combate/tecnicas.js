@@ -56,7 +56,8 @@ const TEC = {
       P.combo++;
       P.comboT = G.t;
       const fin = P.combo >= 3;
-      rayo(x, y, a, fin ? 60 : 34 + P.combo * 8, fin);
+      // Pega al instante y nunca falla, por eso hace algo menos de daño que el fuego.
+      rayo(x, y, a, fin ? 48 : 26 + P.combo * 7, fin);
       if (fin) {
         P.combo = 0;
         P.cds[P.spell] = 55;
@@ -70,7 +71,7 @@ const TEC = {
     mej: ['Filo del alba', 'Tajo más amplio, más fuerte y que lanza una onda de luz.'],
     usar(P, a) {
       const lv = lvl('tajo'),
-        r = 30 * (1 + 0.3 * lv);
+        r = 40 * (1 + 0.3 * lv);
       golpeArco(P.x, P.y - 12, a, r, 2.3, Math.round(30 * (1 + 0.25 * lv)), 3, true);
       P.swing = 10;
       sfx('tajo');
@@ -142,9 +143,9 @@ const TEC = {
     mej: ['Golpe de montaña', 'Más alcance y más daño.'],
     usar(P, a) {
       const lv = lvl('martillazo'),
-        x = P.x + Math.cos(a) * 20,
-        y = P.y - 6 + Math.sin(a) * 14,
-        r = 26 * (1 + 0.3 * lv);
+        x = P.x + Math.cos(a) * 26,
+        y = P.y - 8 + Math.sin(a) * 18,
+        r = 32 * (1 + 0.3 * lv);
       P.swing = 12;
       objetivos().forEach(t => {
         if (Math.hypot(t.x - x, t.y - y) < r + t.r) dañar(t, Math.round(45 * (1 + 0.3 * lv)), 4, true);

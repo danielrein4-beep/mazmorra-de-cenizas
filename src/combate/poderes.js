@@ -2,7 +2,7 @@
 function objetivos() {
   const L = [],
     B = G.B;
-  if (B && !B.dead && B.z < 14 && !G.intro) L.push({ x: B.x, y: B.y - 34, r: 24, ref: B, boss: 1 });
+  if (B && !B.dead && B.z < 14 && !G.intro) L.push({ x: B.x, y: B.y - 32, r: 32, ref: B, boss: 1 }); // el cuerpo del jefe ocupa unos 64 px
   G.enem.forEach(m => L.push({ x: m.x, y: m.y - m.h / 2, r: 7, ref: m }));
   return L;
 }
