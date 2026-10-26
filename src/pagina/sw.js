@@ -1,5 +1,5 @@
 // Guarda el juego y la música en el teléfono para que abra sin internet.
-const CACHE = 'mazmorra-v11',
+const CACHE = 'mazmorra-v12',
   ARCHIVOS = [
     './',
     'index.html',

@@ -320,6 +320,12 @@ function animarElegir() {
     const r = PERSONAJES[i][ELEGIDO.sexo].spr[i == ELEGIDO.p ? 'run' : 'idle'][t];
     x.drawImage(i == ELEGIDO.p ? src : atlas, r[0], r[1], 16, 28, 0, 0, 48, 84);
   });
+  // En el paso del vestuario, tu héroe en grande con el traje que elegiste.
+  const vp = document.getElementById('vestPrevia').getContext('2d'),
+    rv = PERSONAJES[ELEGIDO.p][ELEGIDO.sexo].spr.run[t];
+  vp.imageSmoothingEnabled = false;
+  vp.clearRect(0, 0, 48, 84);
+  vp.drawImage(src, rv[0], rv[1], 16, 28, 0, 0, 48, 84);
   requestAnimationFrame(animarElegir);
 }
 function abrirElegir() {
@@ -329,7 +335,7 @@ function abrirElegir() {
   document.getElementById('elegir').hidden = false;
   pintarElegir();
   animarElegir();
-  document.querySelector('#heroes .heroe[aria-pressed="true"]')?.focus();
+  irPaso(1);
 }
 document.querySelectorAll('.sexo').forEach(
   b =>
@@ -363,7 +369,7 @@ document.getElementById('j2sig').onclick = () => {
 document.querySelectorAll('.modo').forEach(
   b =>
     (b.onclick = () => {
-      const av = document.getElementById('vestAviso');
+      const av = document.getElementById('modoAviso');
       if (b.dataset.m == 'pesadilla' && !LOGROS.cenizas) {
         av.textContent = 'Pesadilla se desbloquea al ganar una vez.';
         return;
