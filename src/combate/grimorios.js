@@ -244,25 +244,3 @@ function drawCoraza(P) {
   }
   w.globalAlpha = 1;
 }
-// Casilla del hechizo en la pantalla de juego, al lado de las tres técnicas.
-function drawCasillaGrim(P, x, y) {
-  if (!P.grim) return;
-  const g = grimorio(P.grim);
-  o.fillStyle = 'rgba(10,6,16,.8)';
-  o.fillRect(x, y, 58, 58);
-  o.strokeStyle = P.gcd > 0 ? '#4e4070' : g.c;
-  o.lineWidth = P.gcd > 0 ? 2 : 3;
-  o.strokeRect(x + 1, y + 1, 56, 56);
-  dibujarGrimorio(o, g, P.hojas, x + 29, y + 24, 34, G.t);
-  if (P.gcd > 0) {
-    o.fillStyle = 'rgba(0,0,0,.55)';
-    o.fillRect(x + 3, y + 3, 52, (52 * P.gcd) / Math.round(CD_HECHIZO / (0.8 + 0.2 * P.hojas)));
-  }
-  txt('Grimorio', x + 29, y + 52, coarse ? 10 : 12, '#f1e9ff', 'center');
-  if (!coarse) {
-    o.font = '9px ' + CIFRAS;
-    o.fillStyle = '#8f82a6';
-    o.textAlign = 'left';
-    o.fillText('G', x + 46, y + 14);
-  }
-}

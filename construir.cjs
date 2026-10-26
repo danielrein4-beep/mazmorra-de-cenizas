@@ -63,6 +63,7 @@ const ORDEN = [
   'nucleo/bolsa.js',
   'nucleo/armario.js',
   'nucleo/estilo-ui.js',
+  'nucleo/hud-premium.js',
   'nucleo/ficha.js',
   'nucleo/escena-menu.js',
   'nucleo/pasos.js',

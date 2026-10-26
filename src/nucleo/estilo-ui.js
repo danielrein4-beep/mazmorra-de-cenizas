@@ -1,6 +1,6 @@
 // Estilo de las pantallas: marcos de pixel con remaches para paneles y botones (se dibujan una vez y van
 // a CSS como imágenes de borde), iconos de la botonera del inicio y un sonido corto al tocar.
-function marcoPixel(fondo, borde, luz, sombra, remache) {
+function lienzoMarco(fondo, borde, luz, sombra, remache) {
   const [c, x] = mk(18, 18);
   x.fillStyle = borde;
   x.fillRect(0, 0, 18, 18);
@@ -21,8 +21,9 @@ function marcoPixel(fondo, borde, luz, sombra, remache) {
       [15, 15],
     ].forEach(([a, b]) => x.fillRect(a, b, 2, 2));
   }
-  return 'url(' + c.toDataURL() + ')';
+  return c;
 }
+const marcoPixel = (...a) => 'url(' + lienzoMarco(...a).toDataURL() + ')';
 const raizCss = document.documentElement.style;
 raizCss.setProperty('--marco-panel', marcoPixel('#120c1c', '#2a1e3a', '#3a2a4e', '#08050e', '#a07010'));
 raizCss.setProperty('--marco-sec', marcoPixel('#1d1528', '#4e4070', '#6a5a8a', '#120c1c', null));

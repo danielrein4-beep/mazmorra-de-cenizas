@@ -1,146 +1,20 @@
-// Interfaz sobre el juego: vidas, furia, arma, monedas, barra del jefe, minimapa, técnicas y carteles.
+// Interfaz sobre el juego: paneles (nucleo/hud-premium.js), avisos, números de daño, presentación del jefe y carteles.
 function drawHud() {
   const P = G.P,
     B = G.B,
     t = G.t;
-  for (let i = 0; i < P.max / 2; i++) {
-    const v = P.hp - i * 2,
-      r = v >= 2 ? R.hFull : v == 1 ? R.hHalf : R.hEmpty;
-    o.drawImage(atlas, r[0], r[1], 13, 12, 18 + i * 44, 16, 39, 36);
-  }
-  const full = P.meter >= 100;
-  o.fillStyle = 'rgba(10,6,16,.8)';
-  o.fillRect(18, 60, 140, 14);
-  o.fillStyle = full ? (t % 20 < 10 ? '#ff2a4a' : '#ffffff') : '#a0204a';
-  o.fillRect(20, 62, (136 * P.meter) / 100, 10);
-  txt(full ? ULT[P.ult].n + (coarse ? '' : ' · Q') : 'Furia', 20, 94, 15, full ? '#ffe94a' : '#c3b6d9');
-  const AI = armaInfo(P.arma);
-  o.fillStyle = 'rgba(10,6,16,.8)';
-  o.fillRect(18, 104, 40, 40);
-  o.strokeStyle = AI.raro ? '#5ee7ff' : '#4e4070';
-  o.lineWidth = 2;
-  o.strokeRect(19, 105, 38, 38);
-  o.save();
-  o.translate(38, 124);
-  o.rotate(0.785);
-  const sk = Math.max(1, Math.floor(30 / Math.max(AI.spr[2], AI.spr[3])));
-  o.drawImage(
-    atlas,
-    AI.spr[0],
-    AI.spr[1],
-    AI.spr[2],
-    AI.spr[3],
-    (-AI.spr[2] * sk) / 2,
-    (-AI.spr[3] * sk) / 2,
-    AI.spr[2] * sk,
-    AI.spr[3] * sk,
-  );
-  o.restore();
-  txt(AI.n, 66, 120, 15, AI.raro ? '#5ee7ff' : '#f1e9ff');
-  txt(AI.d, 66, 138, 12, '#c3b6d9');
-  o.drawImage(atlas, 289 + 8 * (Math.floor(t / 8) % 4), 385, 6, 7, 22, 154, 18, 21);
-  txt('' + P.oro, 48, 170, 15, '#ffe94a');
-  // Cenizas que llevas ganadas en esta partida (se suman a tu bolsa al terminar).
-  dibujarGema(o, 31, 196, 8);
-  txt('+' + cenizasDePartida(), 48, 202, 13, '#5ee7ff');
-  o.drawImage(atlas, 288, 352, 16, 16, 96, 150, 30, 30);
-  txt('x' + P.poc, 128, 170, 15, P.poc ? '#ff8a9a' : '#8f82a6');
-  if (!coarse && P.poc) txt('F', 150, 170, 13, '#8f82a6');
-  if (P.llaves) {
-    o.fillStyle = '#ffe94a';
-    o.fillRect(176, 160, 14, 6);
-    o.fillRect(186, 156, 8, 14);
-    o.fillStyle = '#0b0812';
-    o.fillRect(188, 160, 4, 6);
-    o.fillStyle = '#ffe94a';
-    o.fillRect(176, 166, 3, 5);
-    o.fillRect(181, 166, 3, 4);
-    txt('x' + P.llaves, 200, 170, 15, '#ffe94a');
-  }
-  if (G.torre) {
-    // En la Torre, en vez del minimapa: la insignia del rango que llevas en esta partida.
-    dibujarInsignia(o, G.rangoPartida, OW - 58, 56, 76, G.t);
-  } else {
-    const mmx = OW - 18 - (G.mundo ? G.mundo.W : 5) * 26 + 4;
-    o.fillStyle = 'rgba(10,6,16,.6)';
-    o.fillRect(mmx - 6, 10, OW - mmx - 6, 90);
-    drawMinimapa(mmx, 16);
-  }
-  txt(
-    (G.torre ? 'Piso ' + G.piso + ' · ' : '') +
-      (G.arena ? 'Arena' : ZONAS[G.zona].n) +
-      (G.dif.id == 'pesadilla' ? ' · Pesadilla' : ''),
-    OW - 18,
-    118,
-    15,
-    G.dif.id == 'pesadilla' ? '#ff8a9a' : '#f1e9ff',
-    'right',
-  );
-  txt(musicaOn ? 'M · música sí' : 'M · música no', OW - 18, 136, 12, '#8f82a6', 'right');
+  drawPanelHeroe(P, t);
+  drawPanelZona();
   if (B && (!B.dead || B.dt < 100) && !G.intro) {
-    o.fillStyle = 'rgba(10,6,16,.85)';
-    const bw = Math.min(460, OW - 40),
-      bx = OW / 2 - bw / 2,
-      by = vertical() ? 186 : 16;
-    o.fillRect(bx, by, bw, 22);
-    o.fillStyle = '#3a1020';
-    o.fillRect(bx + 4, by + 4, bw - 8, 14);
-    o.fillStyle = B.phase > B.def.fases.length ? '#ff3a2a' : '#c8324a';
-    o.fillRect(bx + 4, by + 4, ((bw - 8) * B.hp) / B.max, 14);
-    o.fillStyle = '#ff8a9a';
-    o.fillRect(bx + 4, by + 4, ((bw - 8) * B.hp) / B.max, 3);
-    o.fillStyle = '#0b0812';
-    B.def.fases.forEach(f => o.fillRect(bx + 4 + (bw - 8) * f[0], by + 4, 2, 14));
-    txt(B.def.n, OW / 2, by + 42, 16, '#f1e9ff', 'center');
+    drawBarraJefe(B);
   } else if (G.oleadas && G.cerrado) {
     const n = G.enem.length + G.spawns.length;
-    txt(
-      'Oleada ' + (G.ola + 1) + ' de ' + G.oleadas.length + (n ? ' · quedan ' + n : ''),
-      OW / 2,
-      vertical() ? 214 : 34,
-      18,
-      '#f1e9ff',
-      'center',
-      1,
-    );
+    const tx = 'Oleada ' + (G.ola + 1) + ' de ' + G.oleadas.length + (n ? ' · quedan ' + n : ''),
+      oy = vertical() ? 150 : 52;
+    marco('panel', OW / 2 - 130, oy, 260, 40);
+    txt(tx, OW / 2, oy + 26, 15, '#f1e9ff', 'center');
   }
-  P.tecs.forEach((id, i) => {
-    const s = TEC[id],
-      x = 18 + i * 66,
-      y = OH - 74,
-      sel = P.spell == i;
-    o.fillStyle = 'rgba(10,6,16,.8)';
-    o.fillRect(x, y, 58, 58);
-    o.strokeStyle = sel ? s.c : '#4e4070';
-    o.lineWidth = sel ? 3 : 2;
-    o.strokeRect(x + 1, y + 1, 56, 56);
-    icono(o, id, x + 29, y + 23, 3);
-    const nv = nivelTec(P, id);
-    if (nv >= 5) {
-      o.strokeStyle = t % 20 < 10 ? '#ffe94a' : '#ffffff';
-      o.lineWidth = 2;
-      o.strokeRect(x - 2, y - 2, 62, 62);
-    }
-    if (nv > 1) {
-      o.font = '8px ' + CIFRAS;
-      o.fillStyle = '#ffe94a';
-      o.textAlign = 'left';
-      o.fillText(ROMANO[nv - 1], x + 5, y + 13);
-    }
-    const cdT = Math.round(s.cd * armaInfo(P.arma).cdm);
-    if (P.cds[i] > 0) {
-      o.fillStyle = 'rgba(0,0,0,.55)';
-      o.fillRect(x + 3, y + 3, 52, Math.min(52, (52 * P.cds[i]) / cdT));
-    }
-    txt(s.n, x + 29, y + 52, coarse ? 10 : 13, sel ? '#f1e9ff' : '#c3b6d9', 'center');
-    if (!coarse) {
-      o.font = '9px ' + CIFRAS;
-      o.fillStyle = '#8f82a6';
-      o.textAlign = 'left';
-      o.fillText(i + 1, x + 45, y + 14);
-    }
-  });
-  drawCasillaGrim(P, 18 + P.tecs.length * 66, OH - 74);
+  drawBarraTecnicas(P, t);
   const vw = VW / G.zoom,
     vh = VH / G.zoom,
     toS = (x, y) => [((x - G.cam.x) / vw) * OW + OW / 2, ((y - G.cam.y) / vh) * OH + OH / 2];
@@ -157,11 +31,7 @@ function drawHud() {
       [cx, cy] = toS(c.x, c.y - 26);
     o.font = '700 17px ' + FUENTE;
     const tw = Math.max(o.measureText(t1).width, o.measureText(t2).width * 0.8) + 28;
-    o.fillStyle = 'rgba(10,6,16,.9)';
-    o.fillRect(cx - tw / 2, cy - 50, tw, 50);
-    o.strokeStyle = raro ? '#5ee7ff' : '#c3b6d9';
-    o.lineWidth = 2;
-    o.strokeRect(cx - tw / 2, cy - 50, tw, 50);
+    marco(raro ? 'sel' : 'panel', cx - tw / 2, cy - 54, tw, 58);
     txt(t1, cx, cy - 28, 17, raro ? '#5ee7ff' : '#ffffff', 'center');
     txt(t2, cx, cy - 10, 13, '#c3b6d9', 'center');
   });
