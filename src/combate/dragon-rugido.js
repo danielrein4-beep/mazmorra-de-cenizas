@@ -252,8 +252,8 @@ JEFES.dragon.ataques = {
   2: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'garra'],
   3: ['aliento', 'vuelo', 'aletazo', 'latigo', 'rugido', 'rayosNegros', 'rugido', 'infierno', 'muroFuego'],
 };
-// Al revivir suena Volatile Reaction (Kevin MacLeod): rápida, rockera, pura adrenalina.
-JEFES.dragonF.musica2 = 'revive';
+// Al revivir, el Dragón pasa a metal rápido (Boss Battle #9 de nene); el Señor de las Cenizas, a Volatile Reaction.
+JEFES.dragonF.musica2 = 'reviveDragon';
 if (JEFES.furia) JEFES.furia.musica2 = 'revive';
 JEFES.dragonF.ataques = {
   1: ['aliento', 'rugido', 'aletazo', 'latigo', 'rayosNegros', 'rayosNegros', 'llamaNegra', 'vuelo'],

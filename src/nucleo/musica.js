@@ -25,6 +25,8 @@ const TEMAS = {
   victoria: { src: 'musica/victoria.mp3', unaVez: 1 },
   // Kevin MacLeod (incompetech.com, CC-BY 4.0): Volatile Reaction cuando un jefe revive, y los demonios.
   revive: { src: 'musica/revive.mp3' },
+  // Cuando el Dragón revive: Boss Battle #9 [Metal] de nene (CC0), con su entrada y su bucle.
+  reviveDragon: { src: 'musica/revive-dragon.mp3', intro: 'musica/revive-dragon-intro.mp3' },
   demonios: { src: 'musica/demonios.mp3' },
   demoniosFuria: { src: 'musica/demonios-furia.mp3' },
   reyDemonio: { src: 'musica/rey-demonio.mp3' },

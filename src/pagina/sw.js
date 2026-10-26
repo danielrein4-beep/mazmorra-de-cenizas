@@ -1,5 +1,5 @@
 // Guarda el juego y la música en el teléfono para que abra sin internet.
-const CACHE = 'mazmorra-v36',
+const CACHE = 'mazmorra-v37',
   ARCHIVOS = [
     './',
     'index.html',
@@ -13,6 +13,8 @@ const CACHE = 'mazmorra-v36',
     'musica/coloso.mp3',
     'musica/victoria.mp3',
     'musica/revive.mp3',
+    'musica/revive-dragon.mp3',
+    'musica/revive-dragon-intro.mp3',
     'musica/demonios.mp3',
     'musica/demonios-furia.mp3',
     'musica/rey-demonio.mp3',
