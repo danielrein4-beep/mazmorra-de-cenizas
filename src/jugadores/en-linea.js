@@ -91,6 +91,7 @@ function alRecibirAnfitrion(d) {
   }
   if (d.tipo == 'entrada') {
     enRed.entrada = d;
+    medidasInvitado(d);
     if (d.acc && d.acc.length) enRed.acciones.push(...d.acc);
   }
   if (d.tipo == 'elige' && enRed.opsMejora) {
@@ -102,7 +103,7 @@ function alRecibirAnfitrion(d) {
 
 // La imagen del lienzo y todo el sonido del juego salen como una videollamada hacia el invitado.
 function transmitir() {
-  const video = cv.captureStream(30);
+  const video = VISTA2.cv.captureStream(30);
   // Pixel art: mejor nítido que suave, aunque baje un poco la fluidez si la conexión es lenta.
   video.getVideoTracks().forEach(t => (t.contentHint = 'detail'));
   if (AC) {
@@ -140,17 +141,19 @@ function amigoSeFue() {
 
 // Controles del jugador 2 cuando juega desde otro aparato (los lee leerControles).
 function controlesRemotos(P, c) {
+  // El ratón del invitado apunta sobre su propia vista (jugadores/vista-invitado.js).
   const e = enRed.entrada,
-    vw = VW / G.zoom,
-    vh = VH / G.zoom;
+    V = VISTA2,
+    vw = V.OW / 3 / V.zoom,
+    vh = V.OH / 3 / V.zoom;
   c.mx = e.mx || 0;
   c.my = e.my || 0;
   if (e.stick && Math.hypot(e.stick.dx, e.stick.dy) > 0.2) {
     c.ax = P.x + e.stick.dx * 100;
     c.ay = P.y - 14 + e.stick.dy * 100;
   } else if (e.raton) {
-    c.ax = G.cam.x + (e.ax / OW - 0.5) * vw;
-    c.ay = G.cam.y + (e.ay / OH - 0.5) * vh;
+    c.ax = V.cam.x + (e.ax / V.OW - 0.5) * vw;
+    c.ay = V.cam.y + (e.ay / V.OH - 0.5) * vh;
   } else {
     const tg = objetivoCercano();
     c.ax = tg ? tg.x : P.x + P.face * 50;
@@ -248,6 +251,8 @@ function enviarEntrada() {
   }
   enRed.con.send({
     tipo: 'entrada',
+    w: OW,
+    h: OH,
     mx,
     my,
     ax: mouse.x,

@@ -45,6 +45,7 @@ const ORDEN = [
   'mundo/torre.js',
   'mundo/salas.js',
   'jugadores/en-linea.js',
+  'jugadores/vista-invitado.js',
   'nucleo/carta.js',
   'nucleo/pasos.js',
   'nucleo/biblioteca.js',

@@ -242,7 +242,8 @@ function drawCaido(P) {
 // Panel del jugador 2, a la derecha bajo el minimapa.
 function drawHudJ2() {
   if (!G.coop) return;
-  const P = G.jug[1],
+  // En la vista del invitado, el recuadro pequeño muestra al anfitrión.
+  const P = G.jug[G.P === G.jug[1] ? 0 : 1],
     t = G.t,
     x0 = OW - 18;
   for (let i = 0; i < P.max / 2; i++) {
@@ -255,9 +256,11 @@ function drawHudJ2() {
   o.fillRect(x0 - 120, 180, 120, 10);
   o.fillStyle = full ? (t % 20 < 10 ? '#ff8a2a' : '#ffffff') : '#c05a1a';
   o.fillRect(x0 - 118, 182, (116 * P.meter) / 100, 6);
-  txt('Jugador 2 · ' + P.nombre + (P.caido ? ' (caído)' : ''), x0, 206, 14, '#ff8a2a', 'right');
+  txt((vistaPropia() ? 'Tu amigo · ' : 'Jugador 2 · ') + P.nombre + (P.caido ? ' (caído)' : ''), x0, 206, 14, '#ff8a2a', 'right');
   const AI = armaInfo(P.arma);
   txt(AI.n, x0, 222, 12, AI.raro ? '#5ee7ff' : '#c3b6d9', 'right');
+  // En línea cada uno ve sus técnicas en su pantalla: no hace falta repetir las del otro.
+  if (vistaPropia()) return;
   P.tecs.forEach((id, i) => {
     const x = OW - 18 - (3 - i) * 50,
       y = OH - 58,

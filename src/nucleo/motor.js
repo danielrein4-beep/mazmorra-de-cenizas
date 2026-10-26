@@ -1,6 +1,7 @@
 // Motor: lienzos, atlas, estado de la partida, paso de cada jugador, bucle, cámara y fin de partida.
-const cv = document.getElementById('cv'),
-  o = cv.getContext('2d');
+const cv = document.getElementById('cv');
+// «o» es el lienzo de salida; en línea cambia un momento a la vista del invitado (jugadores/vista-invitado.js).
+let o = cv.getContext('2d');
 o.imageSmoothingEnabled = false;
 const mk = (a, b) => {
   const c = document.createElement('canvas');
@@ -270,7 +271,7 @@ function step() {
   let focus;
   if (G.intro || (B && B.dead && B.dt < 170)) focus = { x: B.x, y: B.y - 30 };
   else if (G.U) focus = G.U.t < 55 ? G.U.own || P : G.U.foco;
-  else if (G.coop) {
+  else if (G.coop && !vistaPropia()) {
     const cc = camaraCoop();
     focus = cc.focus;
     if (!(B && B.dead)) G.zt = cc.zoom;
@@ -284,7 +285,8 @@ function step() {
   G.cam.x += (focus.x - G.cam.x) * 0.1;
   G.cam.y += (focus.y - G.cam.y) * 0.1;
   G.zoom += (G.zt - G.zoom) * 0.1;
-  if (!G.U && !(B && B.dead) && !G.intro && !G.coop) G.zt += (zb() - G.zt) * 0.05;
+  if (!G.U && !(B && B.dead) && !G.intro && (!G.coop || vistaPropia())) G.zt += (zb() - G.zt) * 0.05;
+  if (vistaPropia()) camaraInvitado(G.intro || G.U || (B && B.dead && B.dt < 170) ? focus : null);
   G.cam.x = vw >= WW ? WW / 2 : Math.max(vw / 2, Math.min(WW - vw / 2, G.cam.x));
   G.cam.y = vh >= WH ? WH / 2 : Math.max(vh / 2, Math.min(WH - vh / 2, G.cam.y));
   G.shake *= 0.86;

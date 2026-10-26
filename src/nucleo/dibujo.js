@@ -151,17 +151,26 @@ function txt(s, x, y, size, col, al, sh) {
   o.fillText(s, x, y);
 }
 function render() {
-  const vw = VW / G.zoom,
-    vh = VH / G.zoom,
-    sx = (Math.random() - 0.5) * G.shake,
+  const sx = (Math.random() - 0.5) * G.shake,
     sy = (Math.random() - 0.5) * G.shake;
   drawWorld();
+  pintarSalida(sx, sy);
+  ocultar('tTomar', !(coarse && G.cerca));
+  ocultar('tPocion', !(coarse && G.P.poc));
+  ponerFiltro(G.inv > 0 ? 'invert(1) grayscale(1) contrast(4)' : '');
+  if (vistaPropia()) renderInvitado();
+  if (G.inv > 0) G.inv--;
+}
+// Lo que va del mundo a la pantalla: el recorte de la cámara, la viñeta, la interfaz, el destello y el fundido.
+function pintarSalida(sx, sy) {
+  const vw = VW / G.zoom,
+    vh = VH / G.zoom;
+  sx = sx === undefined ? (Math.random() - 0.5) * G.shake : sx;
+  sy = sy === undefined ? (Math.random() - 0.5) * G.shake : sy;
   o.fillStyle = '#000';
   o.fillRect(0, 0, OW, OH);
   o.drawImage(wc, G.cam.x - vw / 2 + sx, G.cam.y - vh / 2 + sy, vw, vh, 0, 0, OW, OH);
   if (!calidadBaja) o.drawImage(VINETA, 0, 0);
-  ocultar('tTomar', !(coarse && G.cerca));
-  ocultar('tPocion', !(coarse && G.P.poc));
   drawHud();
   if (G.flash > 0) {
     o.globalAlpha = G.flash / 14;
@@ -173,6 +182,4 @@ function render() {
     o.fillStyle = 'rgba(0,0,0,' + Math.min(1, G.fade) + ')';
     o.fillRect(0, 0, OW, OH);
   }
-  ponerFiltro(G.inv > 0 ? 'invert(1) grayscale(1) contrast(4)' : '');
-  if (G.inv > 0) G.inv--;
 }
