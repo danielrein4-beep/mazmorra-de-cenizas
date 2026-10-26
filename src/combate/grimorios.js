@@ -223,6 +223,7 @@ const HECHIZOS = {
 function corazaAguanta(P) {
   if (!P.muralla) return false;
   P.muralla--;
+  relEscudoRoto(P);
   P.inv = 50;
   burst(P.x, P.y - 12, 24, '#d0a060', 3, 26, 2, 0.1);
   ring(P.x, P.y - 12, 20, '#d0a060', 12, 3);

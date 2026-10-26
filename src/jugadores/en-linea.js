@@ -66,9 +66,16 @@ async function crearSala() {
     acciones: [],
   };
   avisoRed('Creando la sala…');
-  peer.on('open', () =>
-    avisoRed('Sala ' + codigo + ' lista. Dile a tu amigo que entre con el código ' + codigo + '.'),
-  );
+  peer.on('open', () => {
+    avisoRed(
+      'Sala ' +
+        codigo +
+        ' lista. Dile a tu amigo que entre con el código ' +
+        codigo +
+        ', o pásale el enlace.',
+    );
+    mostrarInvitacion(codigo);
+  });
   peer.on('error', e => avisoRed(mensajeError(e)));
   peer.on('connection', con => {
     if (enRed.con) return con.close();
@@ -347,7 +354,8 @@ function alRecibirInvitado(d) {
         '</span></span><strong></strong><span class="desc"></span>';
       const cx = b.querySelector('canvas').getContext('2d');
       cx.imageSmoothingEnabled = false;
-      icono(cx, m.ico, 24, 24, 4);
+      if (m.rel) dibujarReliquia(cx, m.rel, 24, 24, 4);
+      else icono(cx, m.ico, 24, 24, 4);
       b.querySelector('strong').textContent = m.n;
       b.querySelector('.desc').textContent = m.d;
       b.onclick = () => {

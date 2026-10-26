@@ -50,6 +50,7 @@ function jefeDerrotado() {
   const antes = VESTUARIOS.filter(desbloqueado).length;
   guardarLogro(G.B.id);
   G.jefesVencidos = (G.jefesVencidos || 0) + 1;
+  G.ultimoJefe = G.B.def.n;
   if (!G.tocadoJefe) guardarLogro('sinGolpes');
   revisarLogros();
   const ultimo = G.reto ? retoCumplido() : G.torre ? G.piso >= 100 : G.zona == ZONAS_AVENTURA - 1;
@@ -72,7 +73,13 @@ function mostrarMejoras(k) {
   touch.move = touch.aim = null;
   const MJ = mejorasDe(Object.assign({}, PERSONAJES[P.pid], { tecs: P.tecs })),
     pool = MJ.filter(m => m.id != 'cura' && (P.mej[m.id] || 0) < m.max).sort(() => Math.random() - 0.5);
-  const ops = pool.slice(0, P.hp < P.max ? 2 : 3);
+  // Dos reliquias al azar y una mejora de técnica o de vida; con la vida baja, también curarse.
+  const ops = pool.slice(0, 1),
+    r1 = reliquiaAlAzar(P),
+    r2 = r1 && reliquiaAlAzar({ rel: Object.assign({}, P.rel, { [r1]: 1 }) });
+  [r2, r1]
+    .filter(Boolean)
+    .forEach(id => ops.unshift({ id: 'rel_' + id, rel: id, n: reliquia(id).n, d: reliquia(id).d, max: 1 }));
   if (P.hp < P.max) ops.push(MJ.find(m => m.id == 'cura'));
   const L = document.getElementById('mejorasLista');
   L.innerHTML = '';
@@ -86,13 +93,21 @@ function mostrarMejoras(k) {
       '</span></span><strong></strong><span class="desc"></span>';
     const cx = b.querySelector('canvas').getContext('2d');
     cx.imageSmoothingEnabled = false;
-    icono(cx, m.ico, 24, 24, 4);
+    if (m.rel) dibujarReliquia(cx, m.rel, 24, 24, 4);
+    else icono(cx, m.ico, 24, 24, 4);
+    if (m.rel) {
+      b.style.borderColor = RAREZA[reliquia(m.rel).r].c;
+      b.dataset.rareza = 'Reliquia ' + RAREZA[reliquia(m.rel).r].n.toLowerCase();
+    }
     b.querySelector('strong').textContent = m.n + (m.max > 1 && m.max < 99 ? ' ' + 'I'.repeat(nv) : '');
-    b.querySelector('.desc').textContent = m.d;
+    b.querySelector('.desc').textContent = (m.rel ? b.dataset.rareza + '. ' : '') + m.d;
     b.onclick = () => elegirMejora(m);
     L.appendChild(b);
   });
+  // En la Torre, cada guardián vencido deja una página de la crónica.
+  const cronica = G.torre && !G.reto && CRONICAS[G.piso];
   document.querySelector('#mejoras p').textContent =
+    (cronica ? 'Crónica del piso ' + G.piso + ': ' + cronica + ' ' : '') +
     (G.coop ? 'Jugador ' + (k + 1) + ', ' + P.nombre + '. ' : '') +
     (G.vestNuevo
       ? 'El jefe cayó y desbloqueaste un vestuario nuevo. Toma una mejora para lo que viene.'
@@ -113,7 +128,8 @@ function elegirMejora(m) {
 }
 function elegirMejoraAqui(m) {
   const P = (G.jugTodos || G.jug)[G.elige || 0];
-  P.mej[m.id] = (P.mej[m.id] || 0) + 1;
+  if (m.rel) darReliquia(P, m.rel);
+  else P.mej[m.id] = (P.mej[m.id] || 0) + 1;
   if (m.id == 'corazon') {
     P.max += 2;
     P.hp = P.max;

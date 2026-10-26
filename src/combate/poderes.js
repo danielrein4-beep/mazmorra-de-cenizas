@@ -29,8 +29,14 @@ function objetivoCercano() {
 function dañar(tg, d, heavy, sinArma) {
   const P = G.P,
     A = armaInfo(P.arma);
-  d = Math.round(dañoConEstado(P, tg, efectoGrimorio(P, tg, d * (sinArma ? 1 : A.mult) * (P.multTec || 1))));
-  P.meter = Math.min(100, P.meter + d * 0.11 * (1 + 0.5 * lvl('abismo')));
+  d = Math.round(
+    relGolpe(
+      P,
+      tg,
+      dañoConEstado(P, tg, efectoGrimorio(P, tg, d * (sinArma ? 1 : A.mult) * (P.multTec || 1))),
+    ),
+  );
+  P.meter = Math.min(100, P.meter + d * 0.11 * (1 + 0.5 * lvl('abismo')) * (tiene(P, 'ojoAbismo') ? 2 : 1));
   const r = tg.ref;
   if (tg.jugador) return golpearJugador(r, heavy);
   if (A.efecto == 'quema') r.quema = 150;
@@ -175,6 +181,7 @@ function cast() {
   const antes = G.shots.length;
   conForja(P, id, () => T.usar(P, a, ox, oy));
   despertarTecnica(P, id, antes, a, ox, oy);
+  relLanzar(P, antes);
 }
 function rayoPts(x1, y1, x2, y2) {
   const d = Math.hypot(x2 - x1, y2 - y1),
@@ -260,6 +267,7 @@ function dash() {
   }
   const m = Math.hypot(dx, dy);
   P.dashV = [(dx / m) * 3.6, (dy / m) * 3.6];
+  relRodarInicio(P);
   P.dash = 13;
   P.dcd = Math.round(40 * (1 - 0.3 * lvl('pies')));
   burst(P.x, P.y, 10, '#8a7a9a', 1.5, 18);

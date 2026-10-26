@@ -39,6 +39,7 @@ function updateEnemigos() {
         y: s.y,
         h: d.run[0][3],
         hp: Math.round(d.hp * G.dif.enem),
+        hpMax: Math.round(d.hp * G.dif.enem),
         max: Math.round(d.hp * G.dif.enem),
         hit: 0,
         face: 1,
@@ -149,6 +150,7 @@ function updateEnemigos() {
       P.meter = Math.min(100, P.meter + 6 * (1 + 0.5 * (P.mej.abismo || 0)));
       G.kills++;
       hazaña('des', 1);
+      relMuerte(m);
       sfx('boom');
       soltarMonedas(m.x, m.y - 4, m.def.oro || 1 + Math.floor(Math.random() * 2));
       if (Math.random() < 0.08 * G.dif.poc) G.pick.push({ x: m.x, y: m.y, t: 0 });

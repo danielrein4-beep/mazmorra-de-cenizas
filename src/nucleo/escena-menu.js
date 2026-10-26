@@ -143,7 +143,8 @@ function luzEscena(x, y, r, c) {
 let ultimoCuadroEscena = 0;
 function bucleEscena(ahora) {
   requestAnimationFrame(bucleEscena);
-  const ver = !running || pausado;
+  // Solo fuera de la partida: en la pausa y al elegir poder se sigue viendo el juego detrás.
+  const ver = !running && document.getElementById('mejoras').hidden;
   fondoMenu.hidden = !ver;
   if (!ver || !atlas.complete || ahora - ultimoCuadroEscena < 33) return;
   ultimoCuadroEscena = ahora;

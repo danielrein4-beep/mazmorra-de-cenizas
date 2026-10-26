@@ -88,6 +88,7 @@ function iniciarTorre(desde) {
   const ini = desde || (pisosDeSalida().includes(ELEGIDO.pisoInicio) ? ELEGIDO.pisoInicio : 1);
   G.torre = 1;
   G.piso = ini - 1;
+  G.pisoInicio = ini;
   G.rangoPartida = nivelTitulo(ini);
   // Si empiezas más arriba, recibes los poderes de los guardianes que te saltas y algo de oro.
   const saltados = Math.floor((ini - 1) / 10);
@@ -100,6 +101,7 @@ function iniciarTorre(desde) {
       const m = pool[Math.floor(Math.random() * pool.length)];
       P.mej[m.id] = (P.mej[m.id] || 0) + 1;
       if (m.id == 'corazon') P.max += 2;
+      darReliquia(P, reliquiaAlAzar(P, true), true);
     }
     P.hp = P.max;
   });

@@ -14,10 +14,11 @@ const ORIGENES = (
 ).split(',');
 const TOPE_GUARDADO = 64 * 1024;
 
-let db = { records: {}, guardados: {} };
+let db = { records: {}, guardados: {}, retos: {} };
 try {
   db = JSON.parse(fs.readFileSync(ARCHIVO, 'utf8'));
 } catch (e) {}
+db.retos = db.retos || {};
 let pendiente = null;
 // Escribe a disco como mucho una vez por segundo, en un archivo aparte que luego reemplaza al bueno.
 function guardarDisco() {
@@ -118,6 +119,30 @@ const RUTAS = {
     const g = typeof b.codigo == 'string' && db.guardados[b.codigo];
     return g && g.datos ? [200, { datos: g.datos }] : [404, { error: 'codigo' }];
   },
+  // Reto del día: cada aparato guarda su mejor intento de la fecha (UTC). Gana quien lo supera, luego el piso
+  // más alto y luego el menor tiempo. Solo se guardan los últimos siete días.
+  'POST /api/reto': b => {
+    const hoy = new Date().toISOString().slice(0, 10),
+      ayer = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+    if (!idValido(b.id) || !apodoValido(b.apodo) || ![hoy, ayer].includes(b.fecha) || !entero(b.piso, 100) || !entero(b.seg, 36000))
+      return [400, { error: 'datos' }];
+    const dia = (db.retos[b.fecha] = db.retos[b.fecha] || {}),
+      nuevo = { apodo: b.apodo.trim(), piso: b.piso, ok: b.ok ? 1 : 0, seg: b.seg, fecha: Date.now() },
+      viejo = dia[b.id],
+      mejor = !viejo || nuevo.ok > viejo.ok || (nuevo.ok == viejo.ok && (nuevo.piso > viejo.piso || (nuevo.piso == viejo.piso && nuevo.seg < viejo.seg)));
+    if (mejor || viejo.apodo != nuevo.apodo) dia[b.id] = mejor ? nuevo : Object.assign(viejo, { apodo: nuevo.apodo });
+    Object.keys(db.retos).sort().slice(0, -7).forEach(k => delete db.retos[k]);
+    guardarDisco();
+    return [200, { ok: 1 }];
+  },
+  'GET /api/reto': (b, q) => {
+    const fecha = /^\d{4}-\d{2}-\d{2}$/.test(q.get('fecha') || '') ? q.get('fecha') : new Date().toISOString().slice(0, 10),
+      lista = Object.values(db.retos[fecha] || {})
+        .sort((a, c) => c.ok - a.ok || c.piso - a.piso || a.seg - c.seg)
+        .slice(0, 30)
+        .map(({ apodo, piso, ok, seg }) => ({ apodo, piso, ok, seg }));
+    return [200, { fecha, lista }];
+  },
   'GET /salud': () => [200, { ok: 1 }],
 };
 
@@ -139,7 +164,7 @@ http
     if (!ruta) return responder(res, 404, { error: 'ruta' }, origen);
     try {
       const cuerpo = req.method == 'POST' ? await leerCuerpo(req) : {};
-      const [codigo, datos] = ruta(cuerpo);
+      const [codigo, datos] = ruta(cuerpo, new URLSearchParams(req.url.split('?')[1] || ''));
       responder(res, codigo, datos, origen);
     } catch (e) {
       responder(res, 400, { error: 'pedido' }, origen);

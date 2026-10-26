@@ -2,6 +2,7 @@
 const tipoArmaAzar = () => G.jug[Math.floor(Math.random() * G.jug.length)].tipoArma;
 function soltarMonedas(x, y, n) {
   n = Math.round(n * (G.dif ? G.dif.oro : 1));
+  if (n >= 5 && (G.jug || []).some(P => tiene(P, 'trebol'))) n *= 2;
   for (let i = 0; i < n; i++) {
     const a = Math.random() * 6.283,
       v = rnd(0.8, 2.4);
@@ -19,10 +20,11 @@ const TIENDA = [
   { id: 'pocima', n: 'Pócima', precio: 15, d: 'Se guarda; tómala con F cuando la necesites.' },
   { id: 'corazon', n: 'Corazón extra', precio: 60, d: 'Un corazón más de vida.' },
   { id: 'furia', n: 'Furia llena', precio: 30, d: 'Tu golpe final queda listo.' },
+  { id: 'reliquia', n: 'Reliquia', precio: 70, d: '' },
 ];
 function ponerTienda() {
-  G.vendedor = { x: 240, y: 186 };
-  [150, 210, 270, 330].forEach((x, i) => {
+  G.vendedor = { x: 240, y: 186, frase: fraseZaro() };
+  [120, 180, 240, 300, 360].forEach((x, i) => {
     const it = TIENDA[i];
     G.inter.push({
       tipo: 'venta',
@@ -31,6 +33,7 @@ function ponerTienda() {
       t: 0,
       it,
       arma: it.id == 'arma' ? armaAlAzar(tipoArmaAzar(), 1) : null,
+      rel: it.id == 'reliquia' ? reliquiaAlAzar(G.jug[0], true) : null,
     });
   });
 }
@@ -39,11 +42,18 @@ function textoInter(c, tecla) {
     E = tecla == null ? (coarse ? '' : 'E · ') : tecla;
   if (c.tipo == 'arma') return [(coarse ? 'Tomar: ' : E + 'Tomar ') + I.n, I.d, I.raro];
   if (c.tipo == 'cofre') return [E + 'Abrir cofre', '¿Qué habrá dentro?', false];
-  const n = c.it.id == 'arma' ? I.n : c.it.n,
+  if (c.tipo == 'reliquia') return [E + 'Tomar ' + reliquia(c.rel).n, reliquia(c.rel).d, true];
+  const n = c.it.id == 'arma' ? I.n : c.rel ? reliquia(c.rel).n : c.it.n,
     falta = c.it.precio - G.P.oro;
   return [
     E + 'Comprar ' + n + ' · ' + c.it.precio + ' monedas',
-    falta > 0 ? 'Te faltan ' + falta + ' monedas' : c.it.id == 'arma' ? I.d : c.it.d,
+    falta > 0
+      ? 'Te faltan ' + falta + ' monedas'
+      : c.it.id == 'arma'
+        ? I.d
+        : c.rel
+          ? reliquia(c.rel).d
+          : c.it.d,
     c.it.id == 'arma',
   ];
 }
@@ -65,6 +75,10 @@ function interactuar() {
     burst(c.x, c.y - 8, 20, I.raro ? '#5ee7ff' : '#ffe94a', 2.5);
     ring(c.x, c.y - 8, 14, '#ffffff', 12);
     sfx('arma');
+  }
+  if (c.tipo == 'reliquia') {
+    darReliquia(P, c.rel);
+    c.d = 1;
   }
   if (c.tipo == 'cofre' && !c.abre) {
     c.abre = 1;
@@ -91,12 +105,13 @@ function interactuar() {
       return;
     }
     if (it.id == 'pocima') P.poc++;
+    if (it.id == 'reliquia') darReliquia(P, c.rel);
     if (it.id == 'corazon') {
       P.max += 2;
       P.hp += 2;
     }
     if (it.id == 'furia') P.meter = 100;
-    G.aviso = { txt: it.n, l: 60 };
+    if (it.id != 'reliquia') G.aviso = { txt: it.n, l: 60 };
     c.d = 1;
   }
 }
@@ -286,7 +301,8 @@ function drawObjetos(ents) {
           const [sx, sy, sw, sh] = I.spr;
           w.rotate(0.785);
           w.drawImage(atlas, sx, sy, sw, sh, -sw / 2, -sh / 2, sw, sh);
-        } else if (c.it.id == 'pocima') w.drawImage(atlas, 288, 336, 16, 16, -8, -8, 16, 16);
+        } else if (c.rel) dibujarReliquia(w, c.rel, 0, 0, 1);
+        else if (c.it.id == 'pocima') w.drawImage(atlas, 288, 336, 16, 16, -8, -8, 16, 16);
         else if (c.it.id == 'corazon') w.drawImage(atlas, 289, 370, 13, 12, -6, -6, 13, 12);
         else {
           w.fillStyle = '#ff2a4a';

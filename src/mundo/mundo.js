@@ -135,6 +135,7 @@ function entrarCuarto(c, lado) {
   });
   G.cam = { x: P.x, y: P.y - 20 };
   G.fade = lado ? 0.7 : 1;
+  relSala();
   if (c.tipo == 'jefe' && !c.limpio) {
     G.B = crearJefe(c.jefe || Z.jefe);
     G.tocadoJefe = 0;
@@ -155,10 +156,12 @@ function entrarCuarto(c, lado) {
     if (c.tipo == 'tesoro') {
       ponerCofre(240, 160, false, 'raro');
       soltarMonedas(240, 200, 8);
+      G.inter.push({ tipo: 'reliquia', x: 240, y: 214, t: 0, rel: reliquiaAlAzar(G.jug[0], true) });
     }
     if (c.tipo == 'secreto') {
       ponerCofre(240, 150, false, 'raro');
       soltarMonedas(240, 195, 22);
+      G.inter.push({ tipo: 'reliquia', x: 280, y: 214, t: 0, rel: reliquiaAlAzar(G.jug[0]) });
       G.pick.push({ x: 200, y: 180, t: 0 });
     }
   }

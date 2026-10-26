@@ -1,6 +1,7 @@
 // Botones, teclado, ratón y táctil; arranque cuando carga el atlas.
-document.getElementById('playBtn').onclick = abrirElegir;
-document.getElementById('againBtn').onclick = abrirElegir;
+// La primera vez, el prólogo (datos/historia.js) antes de elegir.
+document.getElementById('playBtn').onclick = () =>
+  LOGROS.prologo ? abrirElegir() : mostrarPrologo(abrirElegir);
 document.getElementById('empezarBtn').onclick = start;
 if (coarse) {
   document.getElementById('keysPc').hidden = true;
@@ -12,7 +13,7 @@ addEventListener('keydown', e => {
     alternarMusica();
     return;
   }
-  if (!document.getElementById('mejoras').hidden && /^Digit[1-3]$/.test(e.code)) {
+  if (!document.getElementById('mejoras').hidden && /^Digit[1-4]$/.test(e.code)) {
     document.querySelectorAll('#mejorasLista button')[+e.code.slice(5) - 1]?.click();
     return;
   }

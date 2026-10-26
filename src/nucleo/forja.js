@@ -5,7 +5,9 @@ const ROMANO = ['I', 'II', 'III', 'IV', 'V'];
 // La forja de cada héroe: la tuya, o la del amigo en línea que llegó con su perfil.
 const forjaDe = (id, P) => ((P && P.forja) || LOGROS.forja || {})[id] || 0;
 // Nivel de la técnica en la partida: 1 de base, más la forja (0-2) y las mejoras tras los jefes (0-2).
-const nivelTec = (P, id) => 1 + forjaDe(id, P) + (P.mej[id] || 0);
+// La Corona del Rey Mago (reliquia) sube un nivel más; el tope es V.
+const nivelTec = (P, id) =>
+  Math.min(5, 1 + forjaDe(id, P) + (P.mej[id] || 0) + (tiene(P, 'coronaRey') ? 1 : 0));
 
 // cast() llama a esto alrededor de cada técnica: el daño de golpes y proyectiles sale con su forja.
 function conForja(P, id, fn) {

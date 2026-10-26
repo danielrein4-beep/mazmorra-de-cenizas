@@ -42,7 +42,7 @@ function drawHud() {
   if (G.vendedor) {
     const [vx, vy] = toS(G.vendedor.x, G.vendedor.y - 30);
     txt('Zaro, el mercader', vx, vy - 24, 15, '#ffe94a', 'center', 1);
-    txt('Pasa y mira, que todo brilla.', vx, vy - 6, 13, '#c3b6d9', 'center', 1);
+    txt(G.vendedor.frase || FRASES_ZARO[0], vx, vy - 6, 13, '#c3b6d9', 'center', 1);
   }
   o.textAlign = 'center';
   G.nums.forEach(n => {
@@ -80,6 +80,9 @@ function drawHud() {
     o.fillRect(0, OH - 196, OW * k, 6);
     txt(B.def.n.toUpperCase(), 60 + (1 - k) * -400, OH - 130, 46, '#ffffff', 'left', 1);
     txt(B.def.sub, 64 + (1 - k) * -400, OH - 96, 20, '#ff8a9a', 'left');
+    // Lo que dice el jefe al presentarse (datos/historia.js).
+    if (FRASES_JEFE[B.id])
+      txt('«' + FRASES_JEFE[B.id] + '»', 64 + (1 - k) * -400, OH - 70, 15, '#f1e9ff', 'left');
     o.globalAlpha = 1;
   }
   if (G.banner) {

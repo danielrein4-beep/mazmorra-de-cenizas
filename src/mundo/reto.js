@@ -74,5 +74,8 @@ function finReto(win) {
     guardarLogro('polvo', (LOGROS.polvo || 0) + PREMIO_RETO);
     t += ' Ganaste ' + PREMIO_RETO + ' cenizas.';
   } else if (!ok) t += ' Puedes intentarlo otra vez.';
+  t += subirReto(ok)
+    ? ' Tu intento entró al ranking de hoy.'
+    : ' Pon tu apodo en Récords para entrar al ranking del reto.';
   document.getElementById('endText').textContent = t;
 }

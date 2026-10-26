@@ -36,6 +36,7 @@ function marco(tipo, x, y, w, h, alfa) {
 
 // Panel del héroe arriba a la izquierda: retrato, corazones, furia, arma y bolsa.
 function drawPanelHeroe(P, t) {
+  drawFilaReliquias(P, t);
   const corazones = Math.ceil(P.max / 2),
     w = Math.max(268, 92 + corazones * 30),
     h = 128,
@@ -123,6 +124,24 @@ function drawPanelHeroe(P, t) {
     o.fillRect(bx + 8, by + 1, 6, 10);
     txt('x' + P.llaves, bx + 18, by + 12, 13, '#ffe94a');
   }
+}
+
+// Reliquias de la partida debajo del panel del héroe; las que forman sinergia llevan un borde dorado.
+function drawFilaReliquias(P, t) {
+  const ids = Object.keys(P.rel || {});
+  if (!ids.length) return;
+  const enSinergia = new Set(SINERGIAS.filter(s => sinergia(P, s.id)).flatMap(s => [s.a, s.b])),
+    por = 10;
+  ids.forEach((id, i) => {
+    const x = 14 + (i % por) * 26,
+      y = 146 + Math.floor(i / por) * 26;
+    o.fillStyle = 'rgba(10,6,16,.75)';
+    o.fillRect(x, y, 24, 24);
+    o.strokeStyle = enSinergia.has(id) ? (t % 30 < 15 ? '#ffd24a' : '#ffe9a0') : RAREZA[reliquia(id).r].c;
+    o.lineWidth = enSinergia.has(id) ? 2 : 1;
+    o.strokeRect(x + 0.5, y + 0.5, 23, 23);
+    dibujarReliquia(o, id, x + 12, y + 12, 2);
+  });
 }
 
 // Panel de la zona arriba a la derecha: minimapa (o la insignia en la Torre) y el nombre del lugar.

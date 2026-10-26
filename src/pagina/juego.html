@@ -124,6 +124,13 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 @media (max-width:600px){.ficha{grid-template-columns:1fr}.ficha-izq{flex-direction:row;flex-wrap:wrap;justify-content:center}#fichaHeroe{width:80px;height:100px}#fichaInsignia{width:44px;height:48px}.ficha .hab{grid-template-columns:6.5em 1.6em minmax(0,1fr) 2.4em}}
 
 #forjaHeroe{color:#ffe94a}
+.prologo p{opacity:0;animation:aparecerTexto 1s forwards;font-size:clamp(14px,1.9vw,20px)!important;color:#ffe9c0!important;max-width:46ch;margin:8px auto!important;line-height:1.5}
+@keyframes aparecerTexto{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#prologoSeguir{opacity:0;animation:aparecerTexto 1s 4.4s forwards}
+.que-viene{list-style:none;margin:0;padding:2px 12px;border:10px solid transparent;border-image:var(--marco-tile) 6 fill / 10px;text-align:left;max-width:min(560px,92vw);font-size:clamp(12px,1.5vw,15px);color:var(--ink)}
+.que-viene li{padding:2px 0 2px 16px;position:relative}
+.que-viene li::before{content:"›";position:absolute;left:2px;color:#ffd24a}
+@media (max-height:440px){#cartaImg{max-height:26vh}.que-viene li:nth-child(n+3){display:none}#endScr p#endText{font-size:12px}}
 #armarioEspacios{display:flex;gap:8px;justify-content:center}
 #armarioEspacios .espacio{display:flex;flex-direction:column;align-items:center;gap:2px;font:400 12px var(--font);color:var(--ink);background:#140e1e;border:2px dashed #4e4070;border-radius:6px;padding:6px 8px;cursor:pointer}
 #armarioEspacios .espacio[aria-pressed="true"]{border:2px solid var(--ember);background:#24182e}
@@ -262,6 +269,7 @@ body.botonesGrandes #tbtns{gap:16px}
       <b>Lado derecho</b><span>arrastra para apuntar y lanzar</span>
       <b>Botones</b><span>rodar, cambiar técnica, grimorio, golpe final, tomar armas</span>
     </div>
+    <p class="creditos">Música de MintoDog, nene, Emma_MA, Juhani Junkala y Umplix. Dibujos de 0x72 y Reaktori (Debts in the Depths). Todo de uso libre (CC0), vía OpenGameArt e itch.io.</p>
     <button class="play" id="ayudaVolver">Volver</button>
   </div>
   <div class="overlay" id="elegir" hidden>
@@ -306,7 +314,7 @@ body.botonesGrandes #tbtns{gap:16px}
       <div class="fila"><span class="etq">Vestuario</span><div id="vestuarios"></div></div>
       <p id="vestAviso" aria-live="polite"></p>
       <div class="fila"><button type="button" class="sec" data-ir="3">Atrás</button><button class="play" id="empezarBtn">Empezar</button></div>
-      <div class="fila" id="filaRed"><span class="etq">En línea</span><button type="button" class="sec" id="crearSala">Crear sala</button><span class="etq">o</span><input id="codigoSala" maxlength="4" placeholder="K7Q2" aria-label="Código de sala de tu amigo" autocomplete="off" autocapitalize="characters" spellcheck="false"><button type="button" class="sec" id="unirseSala">Unirse</button></div>
+      <div class="fila" id="filaRed"><span class="etq">En línea</span><button type="button" class="sec" id="crearSala">Crear sala</button><span class="etq">o</span><input id="codigoSala" maxlength="4" placeholder="K7Q2" aria-label="Código de sala de tu amigo" autocomplete="off" autocapitalize="characters" spellcheck="false"><button type="button" class="sec" id="unirseSala">Unirse</button><button type="button" class="sec" id="copiarEnlace" hidden>Copiar enlace</button></div>
       <p id="redAviso" aria-live="polite"></p>
     </section>
   </div>
@@ -350,7 +358,8 @@ body.botonesGrandes #tbtns{gap:16px}
     <button class="play" id="logrosVolver">Volver</button>
   </div>
   <div class="overlay" id="records" hidden>
-    <h1 class="h-chico">Récords de la Torre</h1>
+    <h1 class="h-chico">Récords</h1>
+    <div class="fila"><button type="button" class="sec" id="tabTorre">Torre</button><button type="button" class="sec" id="tabReto">Reto de hoy</button></div>
     <div class="fila"><input id="apodo" maxlength="18" placeholder="Tu apodo" aria-label="Tu apodo para la tabla" autocomplete="off" spellcheck="false"><button type="button" class="sec" id="apodoGuardar">Guardar apodo</button></div>
     <p id="recordsNota" aria-live="polite"></p>
     <div id="recordsLista"></div>
@@ -363,6 +372,11 @@ body.botonesGrandes #tbtns{gap:16px}
     <div id="armarioLista"></div>
     <p id="armarioAviso" aria-live="polite"></p>
     <button class="play" id="armarioVolver">Listo</button>
+  </div>
+  <div class="overlay" id="prologo" hidden>
+    <h1 class="h-chico">Prólogo</h1>
+    <div id="prologoTexto" class="prologo"></div>
+    <button class="play" id="prologoSeguir">Abrir mi grimorio</button>
   </div>
   <div class="overlay" id="pausa" hidden>
     <h1 class="h-chico">Pausa</h1>
@@ -386,13 +400,14 @@ body.botonesGrandes #tbtns{gap:16px}
     <h1>Elige un poder</h1>
     <p>El jefe cayó. Toma una mejora para lo que viene.</p>
     <div id="mejorasLista"></div>
+    <button type="button" class="sec" id="hazanaBtn">Compartir la hazaña</button>
   </div>
   <div class="overlay" id="endScr" hidden>
     <h1 id="endTitle">Caíste</h1>
     <p id="endText"></p>
-    <div class="fila"><button class="play" id="againBtn">Otra vez</button><button type="button" class="sec aMenu">Menú</button><button class="sec" id="cartaBtn" hidden>Compartir mi carta</button></div>
+    <ul id="queViene" class="que-viene" aria-label="Lo que viene"></ul>
+    <div class="fila"><button class="play" id="againBtn">Otra vez</button><button type="button" class="sec" id="cambiarBtn">Cambiar héroe</button><button type="button" class="sec aMenu">Menú</button><button class="sec" id="cartaBtn" hidden>Compartir mi carta</button></div>
     <img id="cartaImg" alt="Tu carta de aventurero" hidden>
-    <p class="creditos">Música de MintoDog, nene, Emma_MA, Juhani Junkala y Umplix. Dibujos de 0x72 y Reaktori (Debts in the Depths). Todo de uso libre (CC0), vía OpenGameArt e itch.io.</p>
   </div>
 </div>
 

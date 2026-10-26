@@ -36,31 +36,69 @@ function subirALaNube() {
   if (LOGROS.codigoNube) respaldar().catch(() => {});
 }
 
+// Récords: la Torre de siempre o el reto de hoy (todos juegan el mismo reto ese día).
+let tablaRecords = 'torre';
 async function mostrarRecords() {
   const L = document.getElementById('recordsLista'),
-    nota = document.getElementById('recordsNota');
+    nota = document.getElementById('recordsNota'),
+    reto = tablaRecords == 'reto';
   document.getElementById('apodo').value = LOGROS.apodo || '';
-  irAPanel('records');
+  document.getElementById('tabTorre').setAttribute('aria-pressed', !reto);
+  document.getElementById('tabReto').setAttribute('aria-pressed', reto);
+  irAPanelSiHace('records');
   L.innerHTML = '';
   nota.textContent = 'Cargando…';
   try {
-    const { lista } = await pedir('/api/records');
-    nota.textContent = lista.length
-      ? 'Los mejores de la Torre. Tu récord sube solo al terminar cada partida.'
-      : 'Todavía nadie subió su récord. ¡Sé el primero!';
+    const { lista } = await pedir(reto ? '/api/reto?fecha=' + fechaHoy() : '/api/records'),
+      R = retoDeHoy();
+    nota.textContent = reto
+      ? 'Reto de hoy: pisos ' +
+        R.desde +
+        ' a ' +
+        R.hasta +
+        ' con ' +
+        R.reglas.map(r => r.n).join(' y ') +
+        '.' +
+        (lista.length ? '' : ' Nadie lo jugó todavía.')
+      : lista.length
+        ? 'Los mejores de la Torre. Tu récord sube solo al terminar cada partida.'
+        : 'Todavía nadie subió su récord. ¡Sé el primero!';
     lista.forEach((r, i) => {
       const f = document.createElement('div');
       f.className = 'fila-record' + (r.apodo == LOGROS.apodo ? ' mia' : '');
       f.innerHTML = '<b></b><span class="apodo"></span><span class="piso"></span><small></small>';
       f.querySelector('b').textContent = i + 1;
       f.querySelector('.apodo').textContent = r.apodo;
-      f.querySelector('.piso').textContent = 'Piso ' + r.piso;
-      f.querySelector('small').textContent = tituloDe(r.piso).n + (r.heroe ? ' · ' + r.heroe : '');
+      f.querySelector('.piso').textContent = reto ? (r.ok ? 'Superado' : 'Piso ' + r.piso) : 'Piso ' + r.piso;
+      f.querySelector('small').textContent = reto
+        ? Math.floor(r.seg / 60) + ' min ' + (r.seg % 60) + ' s'
+        : tituloDe(r.piso).n + (r.heroe ? ' · ' + r.heroe : '');
       L.appendChild(f);
     });
   } catch (e) {
     nota.textContent = SIN_SERVIDOR;
   }
+}
+document.getElementById('tabTorre').onclick = () => {
+  tablaRecords = 'torre';
+  mostrarRecords();
+};
+document.getElementById('tabReto').onclick = () => {
+  tablaRecords = 'reto';
+  mostrarRecords();
+};
+// Al terminar un reto, tu intento entra al ranking del día (si pusiste apodo).
+function subirReto(ok) {
+  if (!LOGROS.apodo || !G.reto) return false;
+  pedir('/api/reto', {
+    id: idAparato(),
+    apodo: LOGROS.apodo,
+    fecha: fechaHoy(),
+    piso: Math.min(100, G.piso),
+    ok: ok ? 1 : 0,
+    seg: Math.min(36000, Math.round((performance.now() - G.start) / 1000)),
+  }).catch(() => {});
+  return true;
 }
 document.getElementById('recordsBtn').onclick = mostrarRecords;
 document.getElementById('recordsVolver').onclick = () => {

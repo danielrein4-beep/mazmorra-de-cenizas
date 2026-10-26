@@ -118,9 +118,14 @@ function grimorioDe(P) {
 }
 // Fuerza del grimorio según sus hojas: 1 hoja = 1, cada hoja suma un 25 %.
 const fuerzaGrim = hojas => 1 + 0.25 * (hojas - 1);
+// Pisos que subiste de verdad en esta partida (empezar arriba no regala cenizas ni experiencia).
+const pisosSubidos = () => Math.max(0, (G.piso || 0) - (G.pisoInicio || 1));
 // Cenizas de una partida: por enemigos, jefes vencidos y pisos de la Torre.
 const cenizasDePartida = () =>
-  Math.round((G.kills || 0) / 4 + (G.jefesVencidos || 0) * 20 + (G.torre ? G.piso * 2 : 0));
+  Math.round(
+    ((G.kills || 0) / 4 + (G.jefesVencidos || 0) * 20 + (G.torre ? pisosSubidos() * 2 : 0)) *
+      ((G.jugTodos || G.jug || []).some(P => tiene(P, 'calizCenizas')) ? 1.5 : 1),
+  );
 
 // Dibuja el libro: tapa de su color, esquinas de metal y el trébol con sus hojas.
 function dibujarGrimorio(x, g, hojas, cx, cy, s, t) {

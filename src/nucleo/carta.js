@@ -61,14 +61,15 @@ function mostrarCarta() {
 }
 
 // En el teléfono abre el menú de compartir (WhatsApp, Instagram…); en la computadora la descarga.
-function compartirCarta(c) {
+function compartirCarta(c, textoPropio) {
   c.toBlob(async blob => {
     const archivo = new File([blob], 'carta-mazmorra.png', { type: 'image/png' }),
       texto =
+        textoPropio ||
         'Llegué al piso ' +
-        Math.max(LOGROS.torre || 0, G.piso || 0) +
-        ' de la Torre en Mazmorra de Cenizas. ¿Me superas? https://' +
-        URL_JUEGO;
+          Math.max(LOGROS.torre || 0, G.piso || 0) +
+          ' de la Torre en Mazmorra de Cenizas. ¿Me superas? https://' +
+          URL_JUEGO;
     try {
       if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
         await navigator.share({ files: [archivo], text: texto, title: 'Mazmorra de Cenizas' });

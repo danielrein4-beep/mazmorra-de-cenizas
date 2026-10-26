@@ -138,6 +138,10 @@ function ult() {
   G.stop = 8;
   sfx('ult');
   vibrar(160);
+  if (tiene(P, 'ojoAbismo')) {
+    G.enem.forEach(m => (m.frio = 240));
+    if (B && !B.dead) B.frio = 120;
+  }
 }
 function golpeFinal(x, y, c) {
   G.inv = 7;

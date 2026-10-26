@@ -80,6 +80,7 @@ function newRun() {
     P.grim = grimorioDe(P);
     P.hojas = hojasDe(P.grim, PERSONAJES[P.pid].id);
     P.gcd = 0;
+    P.rel = {};
   });
   // En línea, el héroe del amigo usa su propio grimorio y su forja.
   const amigo = enRed && enRed.rol == 'anfitrion' && enRed.perfil;
@@ -150,6 +151,8 @@ function resetSala() {
     cerrado: 0,
     oleadas: null,
     escalera: null,
+    rastros: [],
+    relojUsado: 0,
     fade: 1,
     salir: 0,
     ola: 0,
@@ -200,6 +203,8 @@ function hurtPlayer() {
   ring(P.x, P.y - 10, 18, '#ff4a5a', 14);
   sfx('hurt');
   vibrar(90);
+  relHerido(P);
+  if (P.hp <= 0 && !G.arena && relFenix(P)) return;
   if (P.hp <= 0) {
     if (G.arena) return finRonda(P);
     if (caer(P)) return;
@@ -215,6 +220,7 @@ function pasoJugador(P, i) {
   ['dcd', 'inv', 'hurt', 'kick', 'circ', 'swing', 'gcd', 'aura'].forEach(k => {
     if (P[k] > 0) P[k]--;
   });
+  relPaso(P);
   if (P.caido) {
     P.moving = false;
     return;
@@ -235,8 +241,12 @@ function pasoJugador(P, i) {
     if (P.dash > 0) {
       P.dash--;
       [vx, vy] = P.dashV;
+      relRodando(P);
       if (G.t % 2 == 0) G.ghosts.push({ x: P.x, y: P.y, face: P.face, l: 14, spr: P.spr });
-      if (P.dash == 0) burst(P.x, P.y, 6, '#8a7a9a', 1, 16);
+      if (P.dash == 0) {
+        burst(P.x, P.y, 6, '#8a7a9a', 1, 16);
+        relRodarFin(P);
+      }
     } else {
       vx = mx * sp;
       vy = my * sp;
@@ -256,6 +266,7 @@ function step() {
   G.jug.forEach(Q => conJugador(Q, () => pasoJugador(Q, Q.num - 1)));
   pasoGuia();
   pasoArena();
+  relRastros();
   const P = G.P,
     vw = VW / G.zoom,
     vh = VH / G.zoom;
@@ -387,6 +398,7 @@ function end(win) {
   subirALaNube();
   finAlInvitado(document.getElementById('endTitle').textContent, textoBase);
   premiosAlInvitado();
+  pintarQueViene();
   document.getElementById('endScr').hidden = false;
   document.getElementById('againBtn').focus();
 }

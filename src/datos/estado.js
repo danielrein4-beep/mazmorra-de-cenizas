@@ -49,7 +49,7 @@ function dañoConEstado(P, tg, d) {
 }
 
 const expDePartida = () =>
-  Math.round((G.kills || 0) * 3 + (G.jefesVencidos || 0) * 60 + (G.torre ? G.piso * 8 : 0));
+  Math.round((G.kills || 0) * 3 + (G.jefesVencidos || 0) * 60 + (G.torre ? pisosSubidos() * 8 : 0));
 // Al terminar: el héroe de esta compu guarda lo suyo; el del amigo se le manda (jugadores/en-linea.js).
 function ganarEstado() {
   const P = (G.jugTodos || G.jug)[0];
