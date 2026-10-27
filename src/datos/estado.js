@@ -78,6 +78,7 @@ function sumarEstado(H, exp) {
     subio = 1;
   }
   guardarLogro('estado', E);
+  if (subio) sfx('nivel');
   return (
     (subio ? ' ¡Subiste a nivel ' + E.nivel + '!' : '') +
     (subidas.length ? ' Estado: ' + subidas.join(', ') + '.' : '')

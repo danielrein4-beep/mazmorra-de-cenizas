@@ -6,6 +6,7 @@ let fxBus = null,
   curvaDist = null;
 const ultimoSfx = {};
 function prepararSonido() {
+  prepararMuestras();
   if (fxBus || !AC) return;
   const comp = AC.createDynamicsCompressor();
   fxSalida = comp;
@@ -263,12 +264,14 @@ function sfx(k) {
   prepararSonido();
   k = ALIAS[k] || k;
   const f = SND[k];
-  if (!f) return;
+  if (!f && !SONIDOS_DATOS[k]) return;
   const ahora = AC.currentTime;
   if (ultimoSfx[k] && ahora - ultimoSfx[k] < 0.035) return;
   ultimoSfx[k] = ahora;
+  const v = 1 + (Math.random() - 0.5) * 0.08;
   try {
-    f(1 + (Math.random() - 0.5) * 0.08);
+    if (f) f(v);
+    muestra(k, v);
   } catch (e) {}
 }
 

@@ -55,7 +55,7 @@ function pasoGuia() {
   }
   if (g.t > 30 && PASOS_GUIA[g.i].listo(G.jug[0], g)) {
     g.ok = 40;
-    sfx('moneda');
+    sfx('logro');
   }
 }
 function drawGuia() {

@@ -24,6 +24,7 @@ const ORDEN = [
   'datos/marcos.js',
   'nucleo/hud.js',
   'nucleo/sonido.js',
+  'nucleo/sonidos-reales.js',
   'nucleo/musica.js',
   'datos/personajes.js',
   'jugadores/coop.js',
@@ -110,6 +111,12 @@ new Function(js); // falla aquí si algún archivo tiene un error de sintaxis
 const atlas = 'data:image/png;base64,' + fs.readFileSync(src('recursos', 'atlas.png')).toString('base64');
 // Los demonios del Pacto, cada uno en su hoja de animaciones (ver combate/jefes-hoja.js).
 const hoja = n => 'data:image/png;base64,' + fs.readFileSync(src('recursos', n + '.png')).toString('base64');
+// Sonidos grabados: { golpe: [base64, ...], ... } agrupados por nombre (golpe0.mp3, golpe1.mp3...).
+const sonidos = {};
+for (const f of fs.readdirSync(src('recursos', 'sonidos'))) {
+  const k = f.replace(/\d*\.mp3$/, '').replace('dano', 'daño');
+  (sonidos[k] = sonidos[k] || []).push(fs.readFileSync(src('recursos', 'sonidos', f)).toString('base64'));
+}
 const pagina = fs
   .readFileSync(src('pagina', 'juego.html'), 'utf8')
   .replace('/*__JS__*/', () => js)
@@ -117,7 +124,8 @@ const pagina = fs
   .replace('__KIPLOT__', hoja('kiplot'))
   .replace('__SILFRED__', hoja('silfred'))
   .replace('__ZAGRED__', hoja('zagred'))
-  .replace('__BELIAL__', hoja('belial'));
+  .replace('__BELIAL__', hoja('belial'))
+  .replace('__SONIDOS__', () => JSON.stringify(sonidos));
 fs.writeFileSync(path.join(raiz, 'mazmorra.html'), pagina);
 
 // Versión instalable: manifiesto, iconos, guardado sin conexión y la música aparte.
