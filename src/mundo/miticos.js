@@ -45,6 +45,7 @@ function premioDiablo(B) {
   if (!almas) return;
   guardarLogro('almas', almasTengo() + almas);
   G.almasPartida = (G.almasPartida || 0) + almas;
+  G.diablosVencidos = (G.diablosVencidos || 0) + 1;
   G.aviso = { txt: '+' + almas + ' almas', l: 140 };
   const M = MITICOS.find(m => m.de == B.id);
   if (M && !tengoMitico(M.id) && Math.random() < M.prob) {

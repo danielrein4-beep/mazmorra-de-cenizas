@@ -31,6 +31,7 @@ document.getElementById('noticias').onclick = () => mostrarLogros();
 
 // Punto de aviso: Forja si alcanza para subir una técnica, Armario si alcanza para comprar una.
 function pintarAvisosMenu() {
+  pintarBotonLiga();
   const pi = ELEGIDO.p,
     c = cenizasTengo(),
     forjar = tecsDelHeroe(pi).some(

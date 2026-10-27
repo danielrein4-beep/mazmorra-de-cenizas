@@ -95,6 +95,8 @@ const ORDEN = [
   'nucleo/menu-noticias.js',
   'nucleo/hud-anime.js',
   'nucleo/marcos-ui.js',
+  'nucleo/ligas.js',
+  'nucleo/ligas-ui.js',
   'nucleo/una-mas.js',
   'jugadores/invitacion.js',
   'nucleo/pasos.js',

@@ -21,6 +21,7 @@ try {
 db.retos = db.retos || {};
 db.periodos = db.periodos || {};
 db.porHeroe = db.porHeroe || {};
+db.ligas = db.ligas || {};
 // La clave del servidor de enlace se genera en el VPS y se deja en el volumen de datos (nunca en el repo).
 let claveTurnCache = null;
 function claveTurn() {
@@ -226,6 +227,31 @@ const RUTAS = {
       200,
       { iceServers: [stun, { urls: ['turn:' + host + ':3478?transport=udp', 'turn:' + host + ':3478?transport=tcp'], username, credential }] },
     ];
+  },
+  // Ligas: copas de la temporada (el mes). Contra trampas: entre una subida y otra las copas no pueden
+  // cambiar más de 120 (una partida da como mucho unas 120), y cada aparato empieza el mes con hasta 1.500.
+  'POST /api/liga': (b, q, ip) => {
+    if (muchasSubidas(ip)) return [429, { error: 'espera' }];
+    if (!idValido(b.id) || !apodoValido(b.apodo) || !entero(b.copas, 20000)) return [400, { error: 'datos' }];
+    const mes = new Date().toISOString().slice(0, 7),
+      tabla = (db.ligas[mes] = db.ligas[mes] || {}),
+      viejo = tabla[b.id];
+    if (viejo ? Math.abs(b.copas - viejo.copas) > 120 : b.copas > 1500) return [400, { error: 'copas' }];
+    tabla[b.id] = { apodo: b.apodo.trim(), copas: b.copas, heroe: String(b.heroe || '').slice(0, 20), fecha: Date.now() };
+    Object.keys(db.ligas)
+      .sort()
+      .slice(0, -3)
+      .forEach(k => delete db.ligas[k]);
+    guardarDisco();
+    return [200, { ok: 1 }];
+  },
+  'GET /api/liga': () => {
+    const tabla = db.ligas[new Date().toISOString().slice(0, 7)] || {},
+      lista = Object.values(tabla)
+        .sort((a, c) => c.copas - a.copas || a.fecha - c.fecha)
+        .slice(0, 50)
+        .map(({ apodo, copas, heroe }) => ({ apodo, copas, heroe }));
+    return [200, { lista }];
   },
   'GET /salud': () => [200, { ok: 1 }],
 };

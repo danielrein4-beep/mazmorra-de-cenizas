@@ -25,6 +25,22 @@ const MARCOS = [
     fx: 'corona',
   },
   {
+    id: 'campeon',
+    n: 'Campeón',
+    req: () => (LOGROS.copasMax || 0) >= 2200,
+    pide: 'Llega a la liga Campeón (2.200 copas)',
+    borde: '#ff3a2a',
+    fx: 'corona',
+  },
+  {
+    id: 'leyenda',
+    n: 'Leyenda de Cenizas',
+    req: () => (LOGROS.copasMax || 0) >= 3000,
+    pide: 'Llega a la liga Leyenda de Cenizas (3.000 copas)',
+    borde: '#ff8a2a',
+    fx: 'llamas',
+  },
+  {
     id: 'abismo',
     n: 'Pacto del Abismo',
     req: () => !!LOGROS.pacto,

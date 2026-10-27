@@ -180,6 +180,7 @@ function premiosAlInvitado() {
       haz: Q.hazañas,
       exp: expDePartida(),
       kills: G.kills,
+      copas: copasDelInvitado(),
     });
     Q.hazañas = null;
   });
@@ -188,7 +189,8 @@ function recibirPremios(d) {
   if (d.cenizas) guardarLogro('polvo', cenizasTengo() + d.cenizas);
   const t =
     (d.cenizas ? ' Ganaste ' + d.cenizas + (d.cenizas == 1 ? ' ceniza.' : ' cenizas.') : '') +
-    sumarEstado(d.haz || {}, d.exp || 0);
+    sumarEstado(d.haz || {}, d.exp || 0) +
+    sumarCopas(d.copas || 0);
   guardarLogro('jugoEnLinea');
   guardarLogro('maxKills', Math.max(LOGROS.maxKills || 0, d.kills || 0));
   document.getElementById('endText').textContent += t + revisarLogros();

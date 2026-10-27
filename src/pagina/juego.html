@@ -191,6 +191,21 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 .titulo-misiones{color:#5ee7ff}
 .titulo-marcos{color:#d9b0ff}
 .titulo-miticos{color:#ffd24a}
+.liga-cab{display:flex;align-items:center;gap:14px;text-align:left}
+.liga-cab canvas{width:120px;height:120px}
+.liga-cab b{display:block;font:700 26px var(--font)}
+.liga-cab span{display:block;color:#ffe94a;font-size:16px}
+.liga-barra{display:block;width:min(260px,52vw);height:8px;background:#0b0812;border:1px solid #4e4070;margin:6px 0 4px}
+.liga-barra i{display:block;height:100%;background:linear-gradient(90deg,#ffd24a,#ff8a2a)}
+.liga-cab small{color:#c3b6d9;font-size:12px}
+.liga-temp{margin:0;max-width:560px;color:#c3b6d9;font-size:13px}
+#ligaLista{display:grid;gap:5px;width:min(560px,100%);max-height:46vh;overflow-y:auto}
+.fila-liga{display:flex;align-items:center;gap:10px;text-align:left;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:4px 10px}
+.fila-liga canvas{width:44px;height:44px}
+.fila-liga b{display:block;font-size:15px}
+.fila-liga small{color:#c3b6d9;font-size:12px}
+.fila-liga.actual{border-color:#ffd24a;box-shadow:0 0 10px rgba(255,210,74,.35)}
+.fila-liga.bloqueada{opacity:.55}
 .almas{margin:0;color:#ff9af0;font-size:13px}
 #miticosLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;width:min(720px,100%)}
 .mitico{display:flex;flex-direction:column;gap:2px;text-align:left;background:#0b0612;border:2px solid var(--c);border-radius:6px;padding:6px 8px;color:var(--ink);font:400 13px var(--font);cursor:pointer;box-shadow:0 0 10px color-mix(in srgb,var(--c) 45%,transparent)}
@@ -293,6 +308,7 @@ body.botonesGrandes #tbtns{gap:16px}
       <button type="button" class="tile" id="grimMenuBtn"><canvas data-ico="uiGrimorio" width="36" height="36"></canvas><span>Grimorios</span></button>
       </div></div>
       <div class="grupo"><small>Comunidad</small><div class="tiles">
+      <button type="button" class="tile" id="ligasBtn"><canvas id="ligaIco" width="36" height="36"></canvas><span>Ligas</span></button>
       <button type="button" class="tile" id="logrosBtn"><canvas data-ico="uiLogros" width="36" height="36"></canvas><span>Logros</span></button>
       <button type="button" class="tile" id="recordsBtn"><canvas data-ico="uiRecords" width="36" height="36"></canvas><span>Récords</span></button>
       </div></div>
@@ -403,6 +419,14 @@ body.botonesGrandes #tbtns{gap:16px}
     <strong id="forjaHeroe"></strong>
     <div id="forjaLista"></div>
     <button class="play" id="forjaVolver">Volver</button>
+  </div>
+  <div class="overlay" id="ligas" hidden>
+    <h1 class="h-chico">Ligas</h1>
+    <div class="liga-cab"><canvas id="ligaEscudo" width="120" height="120"></canvas><div><b id="ligaNombre"></b><span id="ligaCopas"></span><i class="liga-barra"><i id="ligaBarra"></i></i><small id="ligaSig"></small></div></div>
+    <p id="ligaTemporada" class="liga-temp"></p>
+    <div class="fila"><button type="button" class="sec" id="tabCamino">Camino de ligas</button><button type="button" class="sec" id="tabTablaLiga">Tabla de la temporada</button></div>
+    <div id="ligaLista"></div>
+    <button class="play" id="ligasVolver">Volver</button>
   </div>
   <div class="overlay" id="logros" hidden>
     <h1 class="h-chico">Logros</h1>
