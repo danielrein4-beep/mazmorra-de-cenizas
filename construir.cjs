@@ -105,13 +105,15 @@ const js = ORDEN.map(f => `// ===== ${f} =====\n` + fs.readFileSync(src(f), 'utf
 new Function(js); // falla aquí si algún archivo tiene un error de sintaxis
 
 const atlas = 'data:image/png;base64,' + fs.readFileSync(src('recursos', 'atlas.png')).toString('base64');
-// Kiplot: el Dragón Demonio de Sombras de Vinzes (itch.io), en su propia hoja de animaciones.
-const kiplot = 'data:image/png;base64,' + fs.readFileSync(src('recursos', 'kiplot.png')).toString('base64');
+// Los demonios del Pacto, cada uno en su hoja de animaciones (ver combate/jefes-hoja.js).
+const hoja = n => 'data:image/png;base64,' + fs.readFileSync(src('recursos', n + '.png')).toString('base64');
 const pagina = fs
   .readFileSync(src('pagina', 'juego.html'), 'utf8')
   .replace('/*__JS__*/', () => js)
   .replace('__ATLAS__', atlas)
-  .replace('__KIPLOT__', kiplot);
+  .replace('__KIPLOT__', hoja('kiplot'))
+  .replace('__SILFRED__', hoja('silfred'))
+  .replace('__ZAGRED__', hoja('zagred'));
 fs.writeFileSync(path.join(raiz, 'mazmorra.html'), pagina);
 
 // Versión instalable: manifiesto, iconos, guardado sin conexión y la música aparte.

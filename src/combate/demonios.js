@@ -114,7 +114,7 @@ demonio(
     color: '#8a2aff',
     bpm: 190,
     grito: '¡EL SILENCIO TE TRAGA!',
-    n: 'Silfred Desatado',
+    n: 'Silfred Desatada',
     hp: 4400,
     sp: 1,
     fases: [[0.45, '¡Nadie sale del abismo!']],
@@ -128,7 +128,7 @@ demonio(
   'zagred',
   {
     n: 'Zagred',
-    sub: 'El Carnicero del Abismo',
+    sub: 'La Carnicera del Abismo',
     idle: f4(0, 590, 31, 24),
     run: f4(0, 590, 31, 24),
     esc: 3.6,
@@ -233,5 +233,12 @@ function auraDemonio(B) {
   if (B.berserk && !B.trans && G.t % 130 == 0)
     zonaEn(B, G.P.x + rnd(-50, 50), G.P.y + rnd(-36, 36), 22, 40, RAYO_NEGRO, 'rayoNegro', 1);
 }
-// Kiplot ya es negro en su dibujo: no hace falta teñirlo.
-['kiplot', 'kiplotF'].forEach(id => Object.assign(JEFES[id], { cuerpo: null, hoja: 1 }));
+// Los tres se dibujan con su hoja de artista (combate/jefes-hoja.js), sin teñir; tamaño y alturas a su medida.
+const MEDIDAS_DEMONIO = {
+  silfred: { esc: 3, r: 30, cy: 44, boca: 66 },
+  zagred: { esc: 3.2, r: 34, cy: 44, boca: 62 },
+  kiplot: {},
+};
+Object.entries(MEDIDAS_DEMONIO).forEach(([id, m]) =>
+  [id, id + 'F'].forEach(k => Object.assign(JEFES[k], { cuerpo: null, hoja: 1 }, m)),
+);

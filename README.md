@@ -38,6 +38,7 @@ si uno crece, se parte por tema dentro de su carpeta.
 
 - Dibujos: [16x16 DungeonTileset II](https://0x72.itch.io/dungeontileset-ii) de 0x72 (CC0).
 - Dragón y criaturas de la Torre: [Debts in the Depths](https://reaktori.itch.io/debts-in-the-depths-asset-pack) de Reaktori (CC0).
+- Silfred y Zagred: [ArchDemon](https://kiyoz.itch.io/duskborne-enemy-4) y [DemonKin](https://kiyoz.itch.io/duskborne-enemy-3) de KiyoZ, serie DuskBorne (gratis, uso en juegos permitido).
 - Kiplot, Rey de los Demonios: [Shadow Demon Dragon](https://vinzes.itch.io/epic-2d-pixel-art-shadow-demon-dragon-with-10-animations-sfx) de Vinzes (gratis, uso en juegos permitido).
 - Música: MintoDog ([Heavy Dungeon](https://opengameart.org/node/181405), [Heavy Boss Battle 1](https://opengameart.org/content/heavy-boss-battle-1), [Hard Boss Battle 2](https://opengameart.org/content/hard-boss-battle-2)) y nene ([Boss Battle #2](https://opengameart.org/content/boss-battle-2-symphonic-metal)), en OpenGameArt (CC0).
 - Música de la Torre: Emma_MA ([Determined Pursuit](https://opengameart.org/content/determined-pursuit-epic-orchestra-loop)) y Juhani Junkala ([Epic Boss Battle](https://opengameart.org/node/55649)), en OpenGameArt (CC0).
