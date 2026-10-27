@@ -295,6 +295,14 @@ function drawJefe() {
     ].forEach(([a, b]) => spr(w, tc, fr, B.x + jx + a * esc, y + b * esc, B.face < 0, esc));
     w.globalAlpha = 1;
   }
+  // Contorno oscuro de un píxel del mundo, el mismo que llevan los héroes y los diablos.
+  if (!B.dead)
+    [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ].forEach(([a, b]) => spr(w, atlasTono('#0e0616'), fr, B.x + jx + a, y + b, B.face < 0, esc));
   // Los demonios tienen el cuerpo negro (el contorno de su color lo hace leer sobre el suelo).
   spr(
     w,

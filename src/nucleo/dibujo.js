@@ -124,6 +124,7 @@ function drawWorld() {
     }),
   );
   ents.sort((a, b) => a.y - b.y).forEach(e => e.d());
+  drawTinteZona();
   drawLuz();
   drawLuzColor();
   drawClima();

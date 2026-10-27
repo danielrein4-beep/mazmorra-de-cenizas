@@ -47,6 +47,19 @@ function drawLuzColor() {
   w.restore();
 }
 
+// Tinte de cada zona (por orden de ZONAS): una luz de color suave sobre todo el cuarto, héroes, enemigos y
+// jefes incluidos, para que el arte de distintos artistas se vea bajo la misma luz.
+const TINTE_ZONA = ['#2e8a62', '#4a86d0', '#d0602a', '#6a2ad0', '#c8a050', '#3a5aa8', '#b01a2e'];
+function drawTinteZona() {
+  if (calidadBaja) return;
+  w.save();
+  w.globalCompositeOperation = 'soft-light';
+  w.globalAlpha = 0.35;
+  w.fillStyle = TINTE_ZONA[G.zona] || TINTE_ZONA[0];
+  w.fillRect(0, 0, WW, WH);
+  w.restore();
+}
+
 // Cómo es el clima de cada zona (por orden de ZONAS).
 const CLIMAS = [
   { tipo: 'niebla', c: '#9affc0', n: 7 },
