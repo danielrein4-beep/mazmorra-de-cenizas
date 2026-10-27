@@ -89,6 +89,7 @@ function newRun() {
   // En línea, el héroe de cada amigo usa su propio grimorio, su forja, su traje y sus técnicas.
   aplicarPerfiles(js);
   aplicarEstado(js);
+  aplicarMitico(js);
   G.jug = js;
   G.coop = js.length > 1;
   G.P = js[0];

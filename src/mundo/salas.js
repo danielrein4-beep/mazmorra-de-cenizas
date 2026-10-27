@@ -54,6 +54,7 @@ function jefeDerrotado() {
   G.ultimoJefe = G.B.def.n;
   if (G.B.id == 'dragon' && G.torre && !G.pacto && !G.reto) G.dragonVencido = 1;
   if (G.B.id == 'kiplot' && G.pacto) G.pactoVencido = 1;
+  if (G.pacto && G.B.def.demonio) premioDiablo(G.B);
   if (!G.tocadoJefe) guardarLogro('sinGolpes');
   revisarLogros();
   const ultimo = G.reto
@@ -118,6 +119,7 @@ function mostrarMejoras(k) {
   // En la Torre, cada guardián vencido deja una página de la crónica.
   const cronica = G.torre && !G.reto && CRONICAS[G.piso];
   document.querySelector('#mejoras p').textContent =
+    (G.miticoNuevo && !k ? '¡OBJETO MÍTICO: ' + G.miticoNuevo + '! Equípalo en el Armario. ' : '') +
     (cronica ? 'Crónica del piso ' + G.piso + ': ' + cronica + ' ' : '') +
     (G.coop ? 'Jugador ' + (k + 1) + ', ' + P.nombre + '. ' : '') +
     (G.vestNuevo

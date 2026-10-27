@@ -41,7 +41,8 @@ function pintarBolsa() {
     E = estado();
   B.hidden = running && !pausado;
   document.getElementById('bolsaNivel').textContent = 'Nivel ' + E.nivel;
-  document.getElementById('bolsaCenizas').textContent = (LOGROS.polvo || 0) + ' cenizas';
+  document.getElementById('bolsaCenizas').textContent =
+    (LOGROS.polvo || 0) + ' cenizas' + (LOGROS.almas ? ' · ' + LOGROS.almas + ' almas' : '');
 }
 (() => {
   const c = document.getElementById('bolsaGema').getContext('2d');

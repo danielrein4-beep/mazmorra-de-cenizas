@@ -1,7 +1,10 @@
-// Pacto de Demonios: una torre corta en el Abismo con los tres demonios (Silfred, Zagred y Kiplot).
+// Pacto de Demonios: una torre corta en el Abismo con los demonios Silfred, Belial, Zagred y Kiplot.
 // Se entra solo o acompañado, y el fuego amigo va siempre: los golpes también pegan al compañero, así
 // que se puede traicionar o pelear entre ustedes.
-const PISOS_PACTO = ['pelea', 'pelea', 'silfred', 'tienda', 'pelea', 'zagred', 'tienda', 'pelea', 'kiplot'];
+// Antes de cada diablo, tres pisos bravos; después de cada uno, un respiro.
+const PISOS_PACTO = ['silfred', 'belial', 'zagred', 'kiplot'].flatMap((d, i) =>
+  ['pelea', 'pelea', 'pelea', d].concat(i < 3 ? ['tienda'] : []),
+);
 const PREMIO_PACTO = 8000;
 
 // Cualquiera puede entrar (solo es muy difícil, pero se puede).
@@ -44,6 +47,12 @@ function siguientePisoPacto() {
   G.dif = difDePiso(88 + n * 2);
   // Con más héroes, los demonios aguantan más: la mitad de vida extra por cada compañero.
   G.dif.jefe *= 1 + 0.5 * ((G.jugTodos || G.jug).length - 1);
+  // Los pisos de pelea traen una oleada más y más enemigos; los diablos pegan un corazón entero por golpe,
+  // aguantan más y atacan más seguido. Hay que llegar con todo al máximo, y aun así cuesta.
+  if (tipoP == 'pelea')
+    Object.assign(G.dif, { olas: G.dif.olas + 1, cant: G.dif.cant * 1.3, enem: G.dif.enem * 1.25 });
+  if (jefe)
+    Object.assign(G.dif, { golpe: 2, jefe: G.dif.jefe * 1.4, cdJ: G.dif.cdJ * 0.8, bala: G.dif.bala * 1.1 });
   const Z = ZONAS[G.zona],
     c = {
       x: 0,
@@ -84,9 +93,10 @@ function finPacto(win) {
     ? '¡Vencieron al Rey de los Demonios!'
     : 'El abismo los tragó';
   document.getElementById('endText').textContent = win
-    ? 'Silfred, Zagred y Kiplot cayeron. El abismo queda en silencio… por ahora. ¡+' +
+    ? 'Silfred, Belial, Zagred y Kiplot cayeron. El abismo queda en silencio… por ahora. ¡+' +
       premioPacto() +
-      ' cenizas!'
-    : 'Cayeron en el abismo ' + G.piso + ' de ' + PISOS_PACTO.length + '.';
+      ' cenizas!' +
+      textoPremioDiablo()
+    : 'Cayeron en el abismo ' + G.piso + ' de ' + PISOS_PACTO.length + '.' + textoPremioDiablo();
   if (win) guardarLogro('pacto');
 }

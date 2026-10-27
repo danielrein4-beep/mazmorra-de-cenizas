@@ -190,6 +190,15 @@ body{font-variant-ligatures:none;background:var(--bg);color:var(--ink);font-fami
 #misionesHoy{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:5px;width:min(760px,100%)}
 .titulo-misiones{color:#5ee7ff}
 .titulo-marcos{color:#d9b0ff}
+.titulo-miticos{color:#ffd24a}
+.almas{margin:0;color:#ff9af0;font-size:13px}
+#miticosLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;width:min(720px,100%)}
+.mitico{display:flex;flex-direction:column;gap:2px;text-align:left;background:#0b0612;border:2px solid var(--c);border-radius:6px;padding:6px 8px;color:var(--ink);font:400 13px var(--font);cursor:pointer;box-shadow:0 0 10px color-mix(in srgb,var(--c) 45%,transparent)}
+.mitico b{color:var(--c);font-size:14px}
+.mitico span{color:#e8e0f8;font-size:12px}
+.mitico small{color:#c3b6d9;font-size:12px}
+.mitico.puesto small{color:#3aff8a}
+.mitico.bloqueado{opacity:.6;box-shadow:none;cursor:default}
 #marcosLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;width:min(720px,100%)}
 .marco{display:flex;flex-direction:column;align-items:center;gap:2px;background:#140e1e;border:1px solid #4e4070;border-radius:6px;padding:4px 6px;cursor:pointer;color:var(--ink);font:400 13px var(--font)}
 .marco canvas{width:220px;height:64px;max-width:100%}
@@ -416,6 +425,9 @@ body.botonesGrandes #tbtns{gap:16px}
     <p>Llevas tres técnicas. Toca un espacio y luego la técnica que quieres ahí. Las nuevas se compran con cenizas.</p>
     <div id="armarioEspacios"></div>
     <div id="armarioLista"></div>
+    <strong class="titulo-miticos">Objetos míticos de los diablos</strong>
+    <p id="almasTexto" class="almas"></p>
+    <div id="miticosLista"></div>
     <strong class="titulo-marcos">Marcos de tu nombre</strong>
     <div id="marcosLista"></div>
     <p id="armarioAviso" aria-live="polite"></p>
@@ -464,5 +476,6 @@ const ATLAS_SRC='__ATLAS__';
 const KIPLOT_SRC='__KIPLOT__';
 const SILFRED_SRC='__SILFRED__';
 const ZAGRED_SRC='__ZAGRED__';
+const BELIAL_SRC='__BELIAL__';
 /*__JS__*/
 </script>

@@ -64,6 +64,7 @@ const ORDEN = [
   'mundo/mundo.js',
   'mundo/torre.js',
   'mundo/pacto.js',
+  'mundo/miticos.js',
   'mundo/arena.js',
   'mundo/reto.js',
   'mundo/variedad.js',
@@ -113,7 +114,8 @@ const pagina = fs
   .replace('__ATLAS__', atlas)
   .replace('__KIPLOT__', hoja('kiplot'))
   .replace('__SILFRED__', hoja('silfred'))
-  .replace('__ZAGRED__', hoja('zagred'));
+  .replace('__ZAGRED__', hoja('zagred'))
+  .replace('__BELIAL__', hoja('belial'));
 fs.writeFileSync(path.join(raiz, 'mazmorra.html'), pagina);
 
 // Versión instalable: manifiesto, iconos, guardado sin conexión y la música aparte.

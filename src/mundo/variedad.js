@@ -25,11 +25,14 @@ const NOMBRE_MINI = {
   fantasma: 'Alma en Pena',
   monje: 'Maestro Lagarto',
 };
+// En los pisos del Pacto de Demonios casi la mitad de los enemigos son élite.
 const probElite = () =>
-  Math.min(
-    0.28,
-    (0.06 + 0.025 * G.zona + (G.torre ? G.piso / 250 : 0)) * (G.dif.id == 'pesadilla' ? 1.5 : 1),
-  );
+  G.pacto
+    ? 0.45
+    : Math.min(
+        0.28,
+        (0.06 + 0.025 * G.zona + (G.torre ? G.piso / 250 : 0)) * (G.dif.id == 'pesadilla' ? 1.5 : 1),
+      );
 
 // Al entrar a un cuarto de pelea: a veces la última oleada trae un minijefe.
 function marcarSpawnOleada(j) {

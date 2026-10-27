@@ -1,7 +1,7 @@
 // Jefes dibujados con una hoja de animaciones hecha por un artista (en vez de los cuadros del atlas).
 // Cada hoja tiene una fila por animación (quieto, caminar, ataque, golpe, muerte), mirando a la derecha.
 // Kiplot: el Dragón Demonio de Sombras de Vinzes. Silfred: la ArchDemon y Zagred: la DemonKin de KiyoZ
-// (serie DuskBorne). Todos de itch.io, con uso en juegos permitido.
+// (serie DuskBorne). Belial: Noir «ascendida» de TheSpriteShop. Todos de itch.io, con uso en juegos permitido.
 const imagenHoja = src => Object.assign(new Image(), { src });
 const HOJAS = {
   // filas: cuadros de cada animación; vel: pasos por cuadro; suave: dibujo en alta (no es pixel art).
@@ -36,6 +36,20 @@ const HOJAS = {
     pieY: 80,
     escala: 2,
   },
+  // Belial trae una sola animación (flotando, con sus alas); la usa para todo. Mira a la izquierda.
+  belial: {
+    img: imagenHoja(BELIAL_SRC),
+    fw: 162,
+    fh: 209,
+    filas: [7, 7, 7, 7, 7],
+    vel: [8, 8, 4, 6, 16],
+    pieX: 72,
+    pieY: 152,
+    escala: 0.7,
+    unaFila: 1,
+    izq: 1,
+    retrato: [22, 18, 100, 140],
+  },
 };
 const FILA_HOJA = { idle: 0, walk: 1, attack: 2, hit: 3, death: 4 };
 
@@ -55,7 +69,7 @@ function drawJefeHoja(B, t, jx, y) {
   if (!H || !H.img.complete || !H.img.naturalWidth) return false;
   const [fila, n] = cuadroHoja(B, t, H),
     k = H.escala,
-    der = B.face >= 0;
+    der = B.face >= 0 != !!H.izq;
   w.save();
   w.imageSmoothingEnabled = !!H.suave;
   w.translate(Math.round(B.x + jx), Math.round(y));
@@ -68,7 +82,17 @@ function drawJefeHoja(B, t, jx, y) {
         ? 'drop-shadow(0 0 3px #ff2a4a) drop-shadow(0 0 1px #ff5a7a)'
         : 'drop-shadow(0 0 3px #8a2aff)';
   if (B.dead && t % 4 < 2 && B.dt < 100) w.filter = 'brightness(3)';
-  w.drawImage(H.img, n * H.fw, fila * H.fh, H.fw, H.fh, -H.pieX * k, -H.pieY * k, H.fw * k, H.fh * k);
+  w.drawImage(
+    H.img,
+    n * H.fw,
+    H.unaFila ? 0 : fila * H.fh,
+    H.fw,
+    H.fh,
+    -H.pieX * k,
+    -H.pieY * k,
+    H.fw * k,
+    H.fh * k,
+  );
   w.restore();
   return true;
 }
@@ -76,5 +100,6 @@ function drawJefeHoja(B, t, jx, y) {
 const retratoHoja = B => {
   const H = HOJAS[B.id];
   if (!H || !H.img.complete) return null;
+  if (H.retrato) return [H.img, H.retrato];
   return H.suave ? [H.img, [0, 0, H.fw, H.fh]] : [H.img, [H.pieX - 34, H.pieY - 70, 68, 74]];
 };

@@ -35,10 +35,17 @@ function dañar(tg, d, heavy, sinArma) {
     relGolpe(
       P,
       tg,
-      dañoConEstado(P, tg, efectoGrimorio(P, tg, d * (sinArma ? 1 : A.mult) * (P.multTec || 1))),
+      dañoConEstado(
+        P,
+        tg,
+        efectoGrimorio(P, tg, d * (sinArma ? 1 : A.mult) * (P.multTec || 1) * (P.dañoMitico || 1)),
+      ),
     ),
   );
-  P.meter = Math.min(100, P.meter + d * 0.11 * (1 + 0.5 * lvl('abismo')) * (tiene(P, 'ojoAbismo') ? 2 : 1));
+  P.meter = Math.min(
+    100,
+    P.meter + d * 0.11 * (1 + 0.5 * lvl('abismo')) * (tiene(P, 'ojoAbismo') ? 2 : 1) * (P.furiaMitica || 1),
+  );
   const r = tg.ref;
   if (tg.jugador) return golpearJugador(r, heavy);
   // El monje meditando casi no recibe daño.

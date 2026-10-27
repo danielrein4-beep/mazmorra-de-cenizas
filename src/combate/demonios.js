@@ -233,9 +233,45 @@ function auraDemonio(B) {
   if (B.berserk && !B.trans && G.t % 130 == 0)
     zonaEn(B, G.P.x + rnd(-50, 50), G.P.y + rnd(-36, 36), 22, 40, RAYO_NEGRO, 'rayoNegro', 1);
 }
+// Belial, la Señora de las Mentiras: alas negras, cuernos y fuego morado en la mano; engaña con sombras.
+demonio(
+  'belial',
+  {
+    n: 'Belial',
+    sub: 'La Señora de las Mentiras',
+    idle: f4(400, 590, 19, 28),
+    run: f4(400, 590, 19, 28),
+    esc: 2.6,
+    r: 28,
+    cy: 40,
+    boca: 60,
+    horda: 'fantasma',
+    hp: 5600,
+    sp: 0.9,
+    grito1: '¿Creíste que estabas solo? Mira detrás de ti.',
+    ataques: {
+      1: ['teleporte', 'abismoNegro', 'garrasSombra', 'pozos', 'rayosNegros'],
+      2: ['teleporte', 'abismoNegro', 'garrasSombra', 'lluviaNegra', 'cadenas', 'pozos'],
+    },
+  },
+  {
+    color: '#ff3fd2',
+    bpm: 192,
+    grito: '¡NADA DE LO QUE VES ES REAL!',
+    n: 'Belial Ascendida',
+    hp: 4800,
+    sp: 1.05,
+    fases: [[0.45, '¡Arde en mi fuego morado!']],
+    ataques: {
+      1: ['teleporte', 'lluviaNegra', 'garrasSombra', 'abismoNegro', 'cadenas'],
+      2: ['teleporte', 'lluviaNegra', 'abismoNegro', 'garrasSombra', 'rayosNegros', 'pozos'],
+    },
+  },
+);
 // Los tres se dibujan con su hoja de artista (combate/jefes-hoja.js), sin teñir; tamaño y alturas a su medida.
 const MEDIDAS_DEMONIO = {
   silfred: { esc: 3, r: 30, cy: 44, boca: 66 },
+  belial: { esc: 2.6, r: 28, cy: 40, boca: 60 },
   zagred: { esc: 3.2, r: 34, cy: 44, boca: 62 },
   kiplot: {},
 };

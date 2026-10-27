@@ -64,6 +64,7 @@ function mostrarArmario() {
     L.appendChild(b);
   });
   irAPanelSiHace('armario');
+  pintarMiticos();
   pintarMarcos();
 }
 function elegirEnArmario(pi, id, x) {
