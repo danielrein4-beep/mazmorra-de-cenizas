@@ -4,7 +4,8 @@
 // (serie DuskBorne). Belial: Noir «ascendida» de TheSpriteShop. Todos de itch.io, con uso en juegos permitido.
 const imagenHoja = src => Object.assign(new Image(), { src });
 const HOJAS = {
-  // filas: cuadros de cada animación; vel: pasos por cuadro; suave: dibujo en alta (no es pixel art).
+  // filas: cuadros de cada animación; vel: pasos por cuadro; escala: 1 o 2 si es pixel art del tamaño del
+  // juego; menos de 1 si el dibujo es más fino (se reduce a los píxeles del mundo, ver cuadroLimpio).
   kiplot: {
     img: imagenHoja(KIPLOT_SRC),
     fw: 248,
@@ -14,7 +15,6 @@ const HOJAS = {
     pieX: 117,
     pieY: 123,
     escala: 0.92,
-    suave: 1,
   },
   silfred: {
     img: imagenHoja(SILFRED_SRC),
@@ -24,7 +24,7 @@ const HOJAS = {
     vel: [8, 6, 3, 6, 16],
     pieX: 62,
     pieY: 80,
-    escala: 1.5,
+    escala: 1,
   },
   zagred: {
     img: imagenHoja(ZAGRED_SRC),
@@ -53,6 +53,42 @@ const HOJAS = {
 };
 const FILA_HOJA = { idle: 0, walk: 1, attack: 2, hit: 3, death: 4 };
 
+// Para que los diablos parezcan del mismo juego que los héroes: cada cuadro se pasa una vez a los píxeles
+// del mundo (bordes nítidos, sin medio transparente) y lleva el mismo contorno oscuro de un píxel que el
+// resto de los personajes. Se guarda para no repetirlo.
+function cuadroLimpio(H, fila, n) {
+  const clave = fila * 100 + n;
+  H.cache = H.cache || {};
+  if (H.cache[clave]) return H.cache[clave];
+  const k = H.escala,
+    W = Math.ceil(H.fw * k) + 2,
+    A = Math.ceil(H.fh * k) + 2,
+    c = Object.assign(document.createElement('canvas'), { width: W, height: A }),
+    x = c.getContext('2d', { willReadFrequently: true });
+  x.imageSmoothingEnabled = k < 1;
+  x.imageSmoothingQuality = 'high';
+  x.drawImage(H.img, n * H.fw, H.unaFila ? 0 : fila * H.fh, H.fw, H.fh, 1, 1, H.fw * k, H.fh * k);
+  const img = x.getImageData(0, 0, W, A),
+    p = img.data,
+    lleno = new Uint8Array(W * A);
+  for (let j = 0; j < W * A; j++) {
+    lleno[j] = p[j * 4 + 3] > 110 ? 1 : 0;
+    p[j * 4 + 3] = lleno[j] ? 255 : 0;
+  }
+  for (let j = 0; j < W * A; j++) {
+    if (lleno[j]) continue;
+    const px = j % W;
+    if ((px > 0 && lleno[j - 1]) || (px < W - 1 && lleno[j + 1]) || lleno[j - W] || lleno[j + W]) {
+      p[j * 4] = 14;
+      p[j * 4 + 1] = 6;
+      p[j * 4 + 2] = 22;
+      p[j * 4 + 3] = 255;
+    }
+  }
+  x.putImageData(img, 0, 0);
+  return (H.cache[clave] = c);
+}
+
 // Qué animación y qué cuadro toca según lo que está haciendo el jefe.
 function cuadroHoja(B, t, H) {
   const c = (fila, paso) => [fila, Math.floor(paso / H.vel[fila]) % H.filas[fila]];
@@ -71,7 +107,7 @@ function drawJefeHoja(B, t, jx, y) {
     k = H.escala,
     der = B.face >= 0 != !!H.izq;
   w.save();
-  w.imageSmoothingEnabled = !!H.suave;
+  w.imageSmoothingEnabled = false;
   w.translate(Math.round(B.x + jx), Math.round(y));
   if (!der) w.scale(-1, 1);
   // Brillo de su color alrededor; blanco al recibir un golpe; rojo cuando está furioso.
@@ -82,17 +118,7 @@ function drawJefeHoja(B, t, jx, y) {
         ? 'drop-shadow(0 0 3px #ff2a4a) drop-shadow(0 0 1px #ff5a7a)'
         : 'drop-shadow(0 0 3px #8a2aff)';
   if (B.dead && t % 4 < 2 && B.dt < 100) w.filter = 'brightness(3)';
-  w.drawImage(
-    H.img,
-    n * H.fw,
-    H.unaFila ? 0 : fila * H.fh,
-    H.fw,
-    H.fh,
-    -H.pieX * k,
-    -H.pieY * k,
-    H.fw * k,
-    H.fh * k,
-  );
+  w.drawImage(cuadroLimpio(H, fila, n), -Math.round(H.pieX * k) - 1, -Math.round(H.pieY * k) - 1);
   w.restore();
   return true;
 }
@@ -101,5 +127,5 @@ const retratoHoja = B => {
   const H = HOJAS[B.id];
   if (!H || !H.img.complete) return null;
   if (H.retrato) return [H.img, H.retrato];
-  return H.suave ? [H.img, [0, 0, H.fw, H.fh]] : [H.img, [H.pieX - 34, H.pieY - 70, 68, 74]];
+  return H == HOJAS.kiplot ? [H.img, [0, 0, H.fw, H.fh]] : [H.img, [H.pieX - 34, H.pieY - 70, 68, 74]];
 };

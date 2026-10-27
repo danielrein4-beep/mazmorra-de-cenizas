@@ -270,7 +270,7 @@ demonio(
 );
 // Los tres se dibujan con su hoja de artista (combate/jefes-hoja.js), sin teñir; tamaño y alturas a su medida.
 const MEDIDAS_DEMONIO = {
-  silfred: { esc: 3, r: 30, cy: 44, boca: 66 },
+  silfred: { esc: 2, r: 22, cy: 32, boca: 46 },
   belial: { esc: 2.6, r: 28, cy: 40, boca: 60 },
   zagred: { esc: 3.2, r: 34, cy: 44, boca: 62 },
   kiplot: {},
